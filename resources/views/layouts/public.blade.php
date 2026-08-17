@@ -198,7 +198,7 @@
                                         'icon' => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>'
                                     ],
                                     'especiales' => [
-                                        'label' => 'Especiales & Parabrisas', 
+                                        'label' => 'Protección ExoShield', 
                                         'url' => '/proteccion-parabrisas-santiago', 
                                         'bg_raw' => 'rgba(139, 92, 246, 0.08)',
                                         'color_raw' => '#8b5cf6',
@@ -448,7 +448,7 @@
                     <ul class="space-y-3">
                         <li><a href="/reserva" class="text-white/60 hover:text-brand transition-colors text-sm font-light">Cotizador Online</a></li>
                         <li><a href="/#galeria" class="text-white/60 hover:text-brand transition-colors text-sm font-light">Galería de Trabajos</a></li>
-                        <li><a href="/#car-wash-game" class="text-white/60 hover:text-brand transition-colors text-sm font-light">Experiencia BMW M3 3D</a></li>
+                        <li><a href="/#faq" class="text-white/60 hover:text-brand transition-colors text-sm font-light">Preguntas Frecuentes</a></li>
                     </ul>
                 </div>
             </div>

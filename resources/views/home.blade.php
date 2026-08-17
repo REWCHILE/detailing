@@ -27,35 +27,46 @@
             (object)[
                 'title' => 'SELLADO',
                 'title_gradient' => 'CERÁMICO',
-                'subtitle' => 'Protección extrema con tecnología Gtechniq Platinum. Hasta 9 años de brillo permanente.',
+                'subtitle' => 'Protección molecular extrema con tecnología Gtechniq Platinum. Hasta 9 años de brillo permanente.',
                 'media_type' => 'video',
                 'media_path' => '/assets/videos/hero-gtechniq.mp4',
                 'button_primary_text' => 'Cotizar Sellado',
-                'button_primary_url' => '/reserva?category=ceramic',
+                'button_primary_url' => '/reserva?category=ceramico',
                 'button_secondary_text' => 'Saber más',
                 'button_secondary_url' => '/sellado-ceramico',
             ],
             (object)[
+                'title' => 'BLINDAJE',
+                'title_gradient' => 'EXOSHIELD',
+                'subtitle' => 'Película nanotecnológica TPU para parabrisas. 6x más resistente contra impactos de piedras, gravilla y rayas.',
+                'media_type' => 'video',
+                'media_path' => '/assets/videos/exoshield-web.mp4',
+                'button_primary_text' => 'Cotizar ExoShield',
+                'button_primary_url' => '/reserva?category=especiales',
+                'button_secondary_text' => 'Ver Blindaje',
+                'button_secondary_url' => '/proteccion-parabrisas-santiago',
+            ],
+            (object)[
                 'title' => 'CORRECCIÓN DE',
                 'title_gradient' => 'PINTURA',
-                'subtitle' => 'Restauración artesanal mediante pulido técnico multi-etapa, eliminando micro-rayas.',
+                'subtitle' => 'Restauración artesanal mediante pulido técnico multi-etapa, eliminando micro-rayas y hologramas.',
                 'media_type' => 'video',
                 'media_path' => '/assets/videos/pulido-correccion.mp4',
                 'button_primary_text' => 'Cotizar Pulido',
-                'button_primary_url' => '/reserva?category=correccion',
+                'button_primary_url' => '/reserva?category=pulido',
                 'button_secondary_text' => 'Ver Detalles',
                 'button_secondary_url' => '/pulido-de-autos-santiago',
             ],
             (object)[
-                'title' => 'DETALLADO DE',
-                'title_gradient' => 'INTERIOR',
-                'subtitle' => 'Limpieza a vapor, sanitización profunda y acondicionamiento protector de cuero.',
+                'title' => 'LIMPIEZA &',
+                'title_gradient' => 'DETALLADO',
+                'subtitle' => 'Limpieza a vapor, descontaminado profundo, sanitización y tratamiento premium para habitáculos.',
                 'media_type' => 'video',
                 'media_path' => '/assets/videos/lavado-premium.mp4',
                 'button_primary_text' => 'Cotizar Detallado',
                 'button_primary_url' => '/reserva?category=limpieza',
-                'button_secondary_text' => 'Ver Más',
-                'button_secondary_url' => '/detailing-interior',
+                'button_secondary_text' => 'Ver Servicios',
+                'button_secondary_url' => '/limpieza-y-detallado',
             ]
         ]);
     }
@@ -91,6 +102,9 @@ style="min-height: 100vh; min-height: 100dvh;">
 
 
     @foreach($activeSlides as $index => $slide)
+        @php
+            $isRight = ($index % 2 === 1);
+        @endphp
         <div x-show="activeSlide === {{ $index }}"
              x-transition:enter="transition ease-out duration-1000"
              x-transition:enter-start="opacity-0 scale-105"
@@ -104,35 +118,42 @@ style="min-height: 100vh; min-height: 100dvh;">
              <!-- Video/Image background (High Video Emphasis) -->
              <div class="absolute inset-0 bg-[#0A0A0A] overflow-hidden">
                  @if($slide->media_type === 'video')
-                     <video autoplay muted loop playsinline class="w-full h-full object-cover opacity-85 md:opacity-90 animate-slow-zoom">
+                     <video autoplay muted loop playsinline preload="auto" class="w-full h-full object-cover opacity-85 md:opacity-90 animate-slow-zoom">
                          <source src="{{ asset($slide->media_path) }}" type="video/mp4">
                      </video>
                  @else
                      <img src="{{ asset($slide->media_path) }}" class="w-full h-full object-cover opacity-85 md:opacity-90 animate-slow-zoom" alt="slide bg">
                  @endif
-                 <!-- Soft subtle gradient overlay so Video dominates visually -->
-                 <div class="absolute inset-0 bg-gradient-to-r from-[#0A0A0A]/90 via-[#0A0A0A]/40 to-transparent z-10 w-full md:w-1/2 lg:w-5/12"></div>
+
+                 <!-- Dynamic directional gradient vignette based on Left vs Right slide -->
+                 @if($isRight)
+                     <div class="absolute inset-y-0 right-0 bg-gradient-to-l from-[#0A0A0A]/95 via-[#0A0A0A]/60 to-transparent z-10 w-full md:w-7/12 lg:w-1/2"></div>
+                 @else
+                     <div class="absolute inset-y-0 left-0 bg-gradient-to-r from-[#0A0A0A]/95 via-[#0A0A0A]/60 to-transparent z-10 w-full md:w-7/12 lg:w-1/2"></div>
+                 @endif
                  <div class="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/70 via-transparent to-[#0A0A0A]/90 z-10"></div>
              </div>
 
-             <!-- Floating orb only on first slide -->
-             @if($index === 0)
+             <!-- Floating orb effect alternating left and right -->
+             @if($isRight)
+                 <div class="absolute top-1/3 right-10 w-80 h-80 bg-brand/20 rounded-full blur-[130px] opacity-60 pointer-events-none z-10"></div>
+             @else
                  <div class="absolute top-1/3 left-10 w-80 h-80 bg-brand/20 rounded-full blur-[130px] opacity-60 pointer-events-none z-10"></div>
              @endif
 
-             <!-- Content Container (Compact Middle-Left Area) -->
-             <div class="absolute inset-0 z-20 flex items-center justify-start pointer-events-none">
-                 <div class="w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16 pointer-events-auto">
-                     <div class="max-w-sm sm:max-w-md md:max-w-lg text-left pt-12 md:pt-0">
+             <!-- Content Container (Alternating Left / Right) -->
+             <div class="absolute inset-0 z-20 flex items-center {{ $isRight ? 'justify-end' : 'justify-start' }} pointer-events-none">
+                 <div class="w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16 pointer-events-auto flex {{ $isRight ? 'justify-end' : 'justify-start' }}">
+                     <div class="max-w-sm sm:max-w-md md:max-w-xl text-left pt-12 md:pt-0">
                           @if($index === 0)
-                              <h1 class="font-display text-2xl sm:text-4xl md:text-5xl font-extrabold text-white leading-[0.95] tracking-tight uppercase mb-3 text-left drop-shadow-md">
+                              <h1 class="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-[0.95] tracking-tight uppercase mb-3 text-left drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]">
                                   {{ $slide->title }}
                                   @if(!empty($slide->title_gradient))
                                       <span class="block text-gradient mt-0.5">{{ $slide->title_gradient }}</span>
                                   @endif
                               </h1>
                           @else
-                              <h2 class="font-display text-2xl sm:text-4xl md:text-5xl font-extrabold text-white leading-[0.95] tracking-tight uppercase mb-3 text-left drop-shadow-md">
+                              <h2 class="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-[0.95] tracking-tight uppercase mb-3 text-left drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]">
                                   {{ $slide->title }}
                                   @if(!empty($slide->title_gradient))
                                       <span class="block text-gradient mt-0.5">{{ $slide->title_gradient }}</span>
@@ -140,21 +161,20 @@ style="min-height: 100vh; min-height: 100dvh;">
                               </h2>
                           @endif
 
-
-                         <p class="text-xs sm:text-sm md:text-base text-white/90 max-w-sm mb-6 leading-relaxed font-normal text-left drop-shadow-sm">
+                         <p class="text-xs sm:text-sm md:text-base text-white/90 max-w-lg mb-6 leading-relaxed font-normal text-left drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
                              {{ $slide->subtitle }}
                          </p>
 
                          <div class="flex flex-row items-center justify-start gap-3">
                              @if($slide->button_primary_text)
-                                 <a href="{{ $slide->button_primary_url }}" class="flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 bg-brand hover:bg-brand-dark text-white font-semibold rounded-full text-xs sm:text-sm transition-all duration-300 shadow-md shadow-brand/30 hover:scale-105">
+                                 <a href="{{ $slide->button_primary_url }}" class="flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 bg-brand hover:bg-brand-dark text-white font-semibold rounded-full text-xs sm:text-sm transition-all duration-300 shadow-lg shadow-brand/30 hover:scale-105">
                                      <!-- Calendar Icon -->
                                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                                      <span>{{ $slide->button_primary_text }}</span>
                                  </a>
                              @endif
                              @if($slide->button_secondary_text)
-                                 <a href="{{ $slide->button_secondary_url }}" class="flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 border border-white/30 hover:border-brand/60 hover:bg-white/10 text-white font-semibold rounded-full text-xs sm:text-sm transition-all duration-300 backdrop-blur-xs">
+                                 <a href="{{ $slide->button_secondary_url }}" class="flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 border border-white/30 hover:border-brand/60 hover:bg-white/10 text-white font-semibold rounded-full text-xs sm:text-sm transition-all duration-300 backdrop-blur-md">
                                      <!-- Explore Grid Icon -->
                                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white/80 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
                                      <span>{{ $slide->button_secondary_text }}</span>
@@ -203,107 +223,63 @@ style="min-height: 100vh; min-height: 100dvh;">
 
 
 
-<!-- Ceramic Coating Full-Screen Video Section (Middle-Right Aligned) -->
-<section id="ceramic-showcase" class="hero-fullscreen relative w-full overflow-hidden bg-[#0A0A0A]" style="min-height: 100vh; min-height: 100dvh;">
-    <!-- Background Video (High Quality Gtechniq Showcase) -->
+<!-- Full-Screen Video Showcase: White BMW Multi-Etapa Correction (Right-Aligned Column) -->
+<section id="maestria-detailing" class="hero-fullscreen relative w-full overflow-hidden bg-[#0A0A0A]" style="min-height: 100vh; min-height: 100dvh;">
+    <!-- Background Video (White BMW Studio Correction in Full Screen) -->
     <div class="absolute inset-0 bg-[#0A0A0A] overflow-hidden">
-        <video autoplay muted loop playsinline class="w-full h-full object-cover opacity-85 md:opacity-90 animate-slow-zoom">
-            <source src="/assets/videos/hero-gtechniq.mp4" type="video/mp4">
+        <video autoplay muted loop playsinline preload="auto" class="w-full h-full object-cover opacity-85 md:opacity-90 animate-slow-zoom">
+            <source src="/assets/videos/pulido-correccion-2.mp4" type="video/mp4">
         </video>
-        <!-- Dark Gradient Overlay Focused on the Right Side -->
-        <div class="absolute inset-0 bg-gradient-to-l from-[#0A0A0A] via-[#0A0A0A]/90 to-transparent z-10 w-full md:w-3/4 lg:w-3/5 right-0 left-auto"></div>
+        <!-- Dark Gradient Overlay Focused on the Right Side for Maximum Legibility -->
+        <div class="absolute inset-y-0 right-0 bg-gradient-to-l from-[#0A0A0A] via-[#0A0A0A]/90 to-transparent z-10 w-full md:w-3/4 lg:w-3/5"></div>
         <div class="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/70 via-transparent to-[#0A0A0A]/90 z-10"></div>
     </div>
 
     <!-- Floating orb on right side -->
     <div class="absolute top-1/3 right-10 w-80 h-80 bg-brand/20 rounded-full blur-[130px] opacity-60 pointer-events-none z-10"></div>
 
-    <!-- Content Container (Compact Middle-Right Column Area) -->
+    <!-- Content Container (Middle-Right Aligned) -->
     <div class="absolute inset-0 z-20 flex items-center justify-end pointer-events-none">
-        <div class="w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16 pointer-events-auto">
-            <div class="max-w-sm sm:max-w-md md:max-w-lg text-right ml-auto pt-12 md:pt-0">
-                <!-- Gtechniq Badge (Right aligned) -->
+        <div class="w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16 pointer-events-auto flex justify-end">
+            <div class="max-w-sm sm:max-w-md md:max-w-xl text-right ml-auto pt-12 md:pt-0">
+                
+                <!-- Badge (Right aligned) -->
                 <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-brand/20 border border-brand/40 text-white text-[10px] sm:text-xs font-bold uppercase tracking-widest mb-4 backdrop-blur-md">
-                    <img src="/assets/logos/Gtechniq-Logo.png" alt="Gtechniq" class="h-3.5 object-contain">
-                    <span class="w-1.5 h-1.5 rounded-full bg-brand animate-pulse"></span>
-                    <span>Ceramic Coating 9H</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m12 3-1.912 5.886L4 9l4.912.863L12 15l1.912-5.137L20 9l-4.912-.114z"/></svg>
+                    <span>Demostración en Taller • 4K Studio</span>
                 </div>
 
                 <!-- Headline (Right aligned) -->
-                <h2 class="font-display text-2xl sm:text-4xl md:text-5xl font-extrabold text-white leading-[0.95] tracking-tight uppercase mb-3 text-right drop-shadow-md">
-                    SELLADO CERÁMICO
-                    <span class="block text-gradient mt-0.5">TECNOLOGÍA 9H</span>
+                <h2 class="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-[0.95] tracking-tight uppercase mb-3 text-right drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]">
+                    CORRECCIÓN
+                    <span class="block text-gradient mt-0.5">MULTI-ETAPA</span>
                 </h2>
 
                 <!-- Subtitle (Right aligned) -->
-                <p class="text-xs sm:text-sm md:text-base text-white/90 max-w-sm mb-6 leading-relaxed font-normal text-right ml-auto drop-shadow-sm">
-                    Protección extrema de nivel profesional con Gtechniq Platinum. Hasta 9 años de brillo espejo permanente y repelencia hidrofóbica.
+                <p class="text-xs sm:text-sm md:text-base text-white/90 max-w-lg mb-6 leading-relaxed font-normal text-right ml-auto drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
+                    Nivelación microscópica de barniz mediante pulido técnico multi-etapa. Eliminamos hasta un 95% de micro-rayas (swirls) y marcas severas sin comprometer la laca original.
                 </p>
+
+                <!-- Technical Specs Cards (Right aligned) -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+                    <div class="p-4 rounded-2xl bg-black/60 border border-white/15 backdrop-blur-md text-right">
+                        <span class="text-[10px] font-mono text-brand font-bold uppercase tracking-wider block mb-1">Medición Digital PTG</span>
+                        <p class="text-xs text-white/80 font-medium">Diagnóstico de espesor en micrones antes de intervenir.</p>
+                    </div>
+                    <div class="p-4 rounded-2xl bg-black/60 border border-white/15 backdrop-blur-md text-right">
+                        <span class="text-[10px] font-mono text-brand font-bold uppercase tracking-wider block mb-1">Acreditación Oficial</span>
+                        <p class="text-xs text-white/80 font-medium">Estándar internacional Gtechniq & ExoShield.</p>
+                    </div>
+                </div>
 
                 <!-- CTA Action Buttons (Right aligned) -->
                 <div class="flex flex-row items-center justify-end gap-3">
-                    <a href="/reserva?category=ceramic" class="flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 bg-brand hover:bg-brand-dark text-white font-semibold rounded-full text-xs sm:text-sm transition-all duration-300 shadow-md shadow-brand/30 hover:scale-105">
-                        <!-- Calendar Icon -->
+                    <a href="/reserva?category=pulido" class="flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 bg-brand hover:bg-brand-dark text-white font-semibold rounded-full text-xs sm:text-sm transition-all duration-300 shadow-lg shadow-brand/30 hover:scale-105">
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                        <span>Cotizar Sellado</span>
+                        <span>Cotizar Corrección</span>
                     </a>
-                    <a href="/sellado-ceramico" class="flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 border border-white/30 hover:border-brand/60 hover:bg-white/10 text-white font-semibold rounded-full text-xs sm:text-sm transition-all duration-300 backdrop-blur-xs">
-                        <span>Saber más</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white/80 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m9 18 6-6-6-6"/></svg>
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-
-
-<!-- Paint Correction Full-Screen Video Section (Middle-Left Aligned) -->
-<section id="pulido-showcase" class="hero-fullscreen relative w-full overflow-hidden bg-[#0A0A0A]" style="min-height: 100vh; min-height: 100dvh;">
-    <!-- Background Video (Polishing & Paint Correction HD Video) -->
-    <div class="absolute inset-0 bg-[#0A0A0A] overflow-hidden">
-        <video autoplay muted loop playsinline class="w-full h-full object-cover opacity-85 md:opacity-90 animate-slow-zoom">
-            <source src="/assets/videos/pulido-correccion.mp4" type="video/mp4">
-        </video>
-        <!-- Dark Gradient Overlay Focused on the Left Side -->
-        <div class="absolute inset-0 bg-gradient-to-r from-[#0A0A0A] via-[#0A0A0A]/90 to-transparent z-10 w-full md:w-3/4 lg:w-3/5 left-0 right-auto"></div>
-        <div class="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/70 via-transparent to-[#0A0A0A]/90 z-10"></div>
-    </div>
-
-    <!-- Floating orb on left side -->
-    <div class="absolute top-1/3 left-10 w-80 h-80 bg-brand/20 rounded-full blur-[130px] opacity-60 pointer-events-none z-10"></div>
-
-    <!-- Content Container (Compact Middle-Left Column Area) -->
-    <div class="absolute inset-0 z-20 flex items-center justify-start pointer-events-none">
-        <div class="w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16 pointer-events-auto">
-            <div class="max-w-sm sm:max-w-md md:max-w-lg text-left pt-12 md:pt-0">
-                <!-- Badge (Left aligned) -->
-                <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-brand/20 border border-brand/40 text-white text-[10px] sm:text-xs font-bold uppercase tracking-widest mb-4 backdrop-blur-md">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m12 3-1.912 5.886L4 9l4.912.863L12 15l1.912-5.137L20 9l-4.912-.114z"/></svg>
-                    <span>Pulido Técnico Multi-Etapa</span>
-                </div>
-
-                <!-- Headline (Left aligned) -->
-                <h2 class="font-display text-2xl sm:text-4xl md:text-5xl font-extrabold text-white leading-[0.95] tracking-tight uppercase mb-3 text-left drop-shadow-md">
-                    CORRECCIÓN DE PINTURA
-                    <span class="block text-gradient mt-0.5">ACABADO ESPEJO 8K</span>
-                </h2>
-
-                <!-- Subtitle (Left aligned) -->
-                <p class="text-xs sm:text-sm md:text-base text-white/90 max-w-sm mb-6 leading-relaxed font-normal text-left drop-shadow-sm">
-                    Restauración artesanal de pintura. Eliminamos hasta un 95% de micro-rayas, swirles y marcas de lavado, devolviendo la claridad óptica pura a la laca.
-                </p>
-
-                <!-- CTA Action Buttons (Left aligned) -->
-                <div class="flex flex-row items-center justify-start gap-3">
-                    <a href="/reserva?category=correccion" class="flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 bg-brand hover:bg-brand-dark text-white font-semibold rounded-full text-xs sm:text-sm transition-all duration-300 shadow-md shadow-brand/30 hover:scale-105">
-                        <!-- Calendar Icon -->
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                        <span>Cotizar Pulido</span>
-                    </a>
-                    <a href="/pulido-de-autos-santiago" class="flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 border border-white/30 hover:border-brand/60 hover:bg-white/10 text-white font-semibold rounded-full text-xs sm:text-sm transition-all duration-300 backdrop-blur-xs">
-                        <span>Ver Detalles</span>
+                    <a href="/pulido-de-autos-santiago" class="flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 border border-white/30 hover:border-brand/60 hover:bg-white/10 text-white font-semibold rounded-full text-xs sm:text-sm transition-all duration-300 backdrop-blur-md">
+                        <span>Ver Técnica</span>
                         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white/80 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m9 18 6-6-6-6"/></svg>
                     </a>
                 </div>
@@ -421,7 +397,7 @@ style="min-height: 100vh; min-height: 100dvh;">
             <!-- Card 3: ExoShield Windshield Protection -->
             <div class="w-[300px] sm:w-[380px] h-[480px] shrink-0 snap-start rounded-[2.5rem] overflow-hidden relative group shadow-2xl border border-black/10 dark:border-white/10 transition-all duration-500 hover:scale-[1.02] hover:border-brand/50">
                 <video autoplay muted loop playsinline class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                    <source src="/assets/videos/4K animated Windshield - Jeep .mp4" type="video/mp4">
+                    <source src="/assets/videos/exoshield-web.mp4" type="video/mp4">
                 </video>
                 <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent"></div>
                 
@@ -499,495 +475,6 @@ style="min-height: 100vh; min-height: 100dvh;">
         </div>
     </div>
 </section>
-
-<!-- Interactive Car Wash Game Section -->
-<section id="car-wash-game" 
-         class="py-24 md:py-32 relative overflow-hidden bg-[#0A0A0A] text-white select-none">
-    <!-- Glow Background Accents -->
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] bg-brand/15 rounded-full blur-[180px] pointer-events-none"></div>
-
-    <div class="container-custom relative z-20">
-        <!-- Section Header -->
-        <div class="text-center max-w-3xl mx-auto mb-10">
-            <span class="inline-flex items-center gap-2 text-brand text-xs font-bold tracking-[0.25em] uppercase mb-3 px-4 py-1.5 rounded-full bg-brand/15 border border-brand/30">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-brand animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v3m0 12v3m9-9h-3M6 12H3m15.364-6.364l-2.121 2.121M7.757 16.243l-2.121 2.121m12.728 0l-2.121-2.121M7.757 7.757L5.636 5.636"/></svg>
-                EXPERIENCIA INTERACTIVA MULTI-HERRAMIENTA
-            </span>
-            <h2 class="font-display text-3xl sm:text-5xl md:text-6xl font-extrabold text-white uppercase tracking-tight leading-none mb-4">
-                Lava & Detalla el <span class="text-gradient">BMW M3</span>
-            </h2>
-            <p class="text-white/70 text-sm sm:text-base font-light max-w-xl mx-auto">
-                Selecciona tus herramientas (hidrolavadora, espuma de jabón, esponja o sellado cerámico) para dejar el vehículo 100% perfecto.
-            </p>
-        </div>
-
-        <!-- Game Main Container -->
-        <div id="game-stage-wrapper" class="relative max-w-5xl mx-auto rounded-[2.5rem] overflow-hidden border border-white/15 bg-black/60 backdrop-blur-xl shadow-2xl p-4 sm:p-8">
-            
-            <!-- TOOL SELECTOR BAR & PROGRESS -->
-            <div class="flex flex-col gap-6 mb-6">
-                <!-- Top Toolbar: Interactive Tool Buttons -->
-                <div class="flex flex-wrap items-center justify-center gap-2 sm:gap-3 p-2 bg-white/5 rounded-2xl border border-white/10">
-                    <button data-tool="hydro" class="game-tool-btn active px-4 py-2.5 rounded-xl border border-brand bg-brand text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2 shadow-lg shadow-brand/20">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-cyan-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 3v3m0 12v3m9-9h-3M6 12H3m15.364-6.364l-2.121 2.121M7.757 16.243l-2.121 2.121m12.728 0l-2.121-2.121M7.757 7.757L5.636 5.636"/></svg>
-                        <span>1. Hidrolavadora</span>
-                    </button>
-                    
-                    <button data-tool="soap" class="game-tool-btn px-4 py-2.5 rounded-xl border border-white/15 bg-white/5 hover:bg-white/15 text-white/80 hover:text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>
-                        <span>2. Aplicar Jabón</span>
-                    </button>
-
-                    <button data-tool="sponge" class="game-tool-btn px-4 py-2.5 rounded-xl border border-white/15 bg-white/5 hover:bg-white/15 text-white/80 hover:text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-amber-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="5" width="18" height="14" rx="4"/></svg>
-                        <span>3. Pasar Esponja</span>
-                    </button>
-
-                    <button data-tool="ceramic" class="game-tool-btn px-4 py-2.5 rounded-xl border border-white/15 bg-white/5 hover:bg-white/15 text-white/80 hover:text-white font-bold text-xs uppercase tracking-wider transition-all flex items-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-brand animate-pulse" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m12 3-1.912 5.886L4 9l4.912.863L12 15l1.912-5.137L20 9l-4.912-.114z"/></svg>
-                        <span>4. Ceramic Coating 9H</span>
-                    </button>
-                </div>
-
-                <!-- HUD Stats Header -->
-                <div class="flex flex-col sm:flex-row items-center justify-between gap-4 px-2">
-                    <!-- Clean Progress Bar -->
-                    <div class="w-full sm:w-1/2 flex items-center gap-4">
-                        <span class="text-xs font-bold uppercase tracking-widest text-white/80 shrink-0">Progreso:</span>
-                        <div class="w-full h-4 bg-white/10 rounded-full overflow-hidden border border-white/20 relative">
-                            <div id="clean-progress-bar" class="h-full bg-gradient-to-r from-brand to-rose-400 transition-all duration-300 w-0"></div>
-                        </div>
-                        <span id="clean-percentage-text" class="text-brand font-display font-extrabold text-lg shrink-0 w-14 text-right">0%</span>
-                    </div>
-
-                    <!-- Action Controls -->
-                    <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-                        <button id="reset-mud-btn" class="px-3.5 py-2 rounded-full border border-white/20 bg-white/5 hover:bg-white/15 text-white text-[11px] font-bold uppercase tracking-wider transition-all duration-200 flex items-center gap-1.5">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
-                            Ensuciar
-                        </button>
-                        <button id="auto-clean-btn" class="px-3.5 py-2 rounded-full bg-brand hover:bg-brand-dark text-white text-[11px] font-bold uppercase tracking-wider transition-all duration-200 shadow-md shadow-brand/30">
-                            Lavado 100%
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Canvas & Image Stage -->
-            <div id="car-canvas-container" class="relative w-full aspect-[16/9] rounded-2xl overflow-hidden cursor-none bg-zinc-950 border border-white/10">
-                <!-- Base Image: Clean BMW M3 -->
-                <img id="clean-car-img" 
-                     src="/assets/images/game/bmw_clean.png" 
-                     alt="BMW M3 Limpio" 
-                     class="absolute inset-0 w-full h-full object-contain pointer-events-none select-none">
-
-                <!-- Canvas Layer 1: Mud & Dirt Layer -->
-                <canvas id="mud-canvas" class="absolute inset-0 w-full h-full z-10"></canvas>
-
-                <!-- Canvas Layer 2: Soap & Foam Layer -->
-                <canvas id="soap-canvas" class="absolute inset-0 w-full h-full z-15 pointer-events-none opacity-90"></canvas>
-
-                <!-- Canvas Layer 3: Ceramic Sparkles & Gloss Particle Canvas -->
-                <canvas id="sparkle-canvas" class="absolute inset-0 w-full h-full z-20 pointer-events-none"></canvas>
-
-                <!-- Floating Tool Nozzle (Follows Cursor) -->
-                <div id="washer-nozzle" class="pointer-events-none absolute z-30 opacity-0 transition-opacity duration-200 -translate-x-3 -translate-y-3">
-                    <div class="relative">
-                        <!-- Water Pressure Jet Cone -->
-                        <div id="water-spray-cone" class="absolute left-full top-1/2 -translate-y-1/2 w-32 h-16 bg-gradient-to-r from-cyan-400/80 via-white/40 to-transparent blur-[2px] opacity-0 transition-opacity pointer-events-none origin-left"></div>
-                        
-                        <!-- Tool Icon Badge -->
-                        <div id="nozzle-badge" class="w-12 h-12 bg-brand/90 backdrop-blur-md rounded-full border-2 border-white flex items-center justify-center shadow-lg shadow-brand/50 text-white font-bold text-lg">
-                            🚿
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 100% Celebration Banner Overlay -->
-                <div id="celebration-overlay" class="absolute inset-0 z-40 bg-black/80 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center opacity-0 pointer-events-none transition-opacity duration-500">
-                    <div class="w-16 h-16 rounded-full bg-brand text-white flex items-center justify-center mb-3 shadow-xl shadow-brand/40 animate-bounce">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                    </div>
-                    <h3 class="font-display text-3xl sm:text-5xl font-extrabold text-white uppercase mb-2">¡BMW M3 100% RECTIFICADO!</h3>
-                    <p class="text-white/80 text-xs sm:text-base max-w-lg mb-6 font-light">
-                        Tu vehículo merece el mismo nivel de brillo espejo impecable y protección extrema. Reserva tu servicio de detallado profesional hoy.
-                    </p>
-                    <div class="flex flex-col sm:flex-row items-center gap-3">
-                        <a href="/reserva" class="px-8 py-3.5 bg-brand hover:bg-brand-dark text-white font-bold rounded-full text-xs sm:text-sm uppercase tracking-wider transition-all duration-300 shadow-xl shadow-brand/40 hover:scale-105">
-                            Agendar Detallado Premium
-                        </a>
-                        <button id="replay-game-btn" class="px-6 py-3.5 border border-white/30 hover:bg-white/10 text-white font-bold rounded-full text-xs sm:text-sm uppercase tracking-wider transition-all">
-                            Lavar de nuevo
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- FOOTER BAR: Social Sharing & Signature -->
-            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mt-6 px-4 pt-4 border-t border-white/10">
-                <!-- Action Buttons: Download Photo & Share -->
-                <div class="flex flex-wrap items-center gap-2">
-                    <button id="download-photo-btn" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-brand text-white font-bold text-xs uppercase tracking-wider transition-all duration-300 flex items-center gap-2 border border-white/15">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-brand group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                        <span>Descargar Foto</span>
-                    </button>
-
-                    <a id="share-wa-btn" href="https://api.whatsapp.com/send?text=%C2%A1Acabo%20de%20dejar%20un%20BMW%20M3%20100%25%20pulido%20y%20detallado%20en%20High%20Contrast%20Detailing!%20Prueba%20la%20experiencia%203D%20interactiva%3A%20https%3A%2F%2Fhighcontrastdetailingcenter.cl" target="_blank" rel="noopener" class="px-4 py-2 rounded-xl bg-emerald-600/80 hover:bg-emerald-600 text-white font-bold text-xs uppercase tracking-wider transition-all duration-300 flex items-center gap-2 border border-emerald-500/30">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-1.14 4.162 4.226-1.109z"/></svg>
-                        <span>Compartir en WhatsApp</span>
-                    </a>
-
-                    <button id="copy-link-btn" class="px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs uppercase tracking-wider transition-all duration-300 flex items-center gap-2 border border-white/15">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
-                        <span id="copy-btn-text">Copiar Enlace</span>
-                    </button>
-                </div>
-
-                <!-- Signature REW.CL -->
-                <div class="text-[11px] text-white/50 flex items-center gap-1.5 font-mono shrink-0">
-                    <span>Developed by</span>
-                    <a href="https://rew.cl" target="_blank" rel="noopener" class="text-brand font-extrabold hover:underline tracking-widest uppercase transition-colors">REW.CL</a>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- Car Wash Game Engine Script -->
-<script>
-document.addEventListener('DOMContentLoaded', () => {
-    const container = document.getElementById('car-canvas-container');
-    const mudCanvas = document.getElementById('mud-canvas');
-    const soapCanvas = document.getElementById('soap-canvas');
-    const sparkleCanvas = document.getElementById('sparkle-canvas');
-    if (!container || !mudCanvas || !soapCanvas || !sparkleCanvas) return;
-
-    const ctxMud = mudCanvas.getContext('2d');
-    const ctxSoap = soapCanvas.getContext('2d');
-    const ctxSparkle = sparkleCanvas.getContext('2d');
-
-    const nozzle = document.getElementById('washer-nozzle');
-    const nozzleBadge = document.getElementById('nozzle-badge');
-    const sprayCone = document.getElementById('water-spray-cone');
-    const progressBar = document.getElementById('clean-progress-bar');
-    const progressText = document.getElementById('clean-percentage-text');
-    const resetBtn = document.getElementById('reset-mud-btn');
-    const autoCleanBtn = document.getElementById('auto-clean-btn');
-    const celebrationOverlay = document.getElementById('celebration-overlay');
-    const replayBtn = document.getElementById('replay-game-btn');
-    const downloadBtn = document.getElementById('download-photo-btn');
-    const copyLinkBtn = document.getElementById('copy-link-btn');
-    const copyBtnText = document.getElementById('copy-btn-text');
-
-    let currentTool = 'hydro'; // 'hydro', 'soap', 'sponge', 'ceramic'
-    let dirtyImg = new Image();
-    dirtyImg.src = '/assets/images/game/bmw_dirty.png';
-
-    let cleanImg = document.getElementById('clean-car-img');
-    let isDrawing = false;
-    let isCompleted = false;
-    let sparkles = [];
-
-    // Tool Selector Click
-    document.querySelectorAll('.game-tool-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.game-tool-btn').forEach(b => {
-                b.classList.remove('active', 'border-brand', 'bg-brand', 'shadow-lg');
-                b.classList.add('border-white/15', 'bg-white/5', 'text-white/80');
-            });
-            btn.classList.add('active', 'border-brand', 'bg-brand', 'shadow-lg');
-            btn.classList.remove('border-white/15', 'bg-white/5', 'text-white/80');
-            
-            currentTool = btn.dataset.tool;
-
-            // Update nozzle badge icon & cone visibility
-            if (currentTool === 'hydro') {
-                nozzleBadge.innerHTML = '🚿';
-                sprayCone.style.display = 'block';
-            } else if (currentTool === 'soap') {
-                nozzleBadge.innerHTML = '🧼';
-                sprayCone.style.display = 'none';
-            } else if (currentTool === 'sponge') {
-                nozzleBadge.innerHTML = '🧽';
-                sprayCone.style.display = 'none';
-            } else if (currentTool === 'ceramic') {
-                nozzleBadge.innerHTML = '💎';
-                sprayCone.style.display = 'none';
-            }
-        });
-    });
-
-    function resizeCanvas() {
-        const rect = container.getBoundingClientRect();
-        [mudCanvas, soapCanvas, sparkleCanvas].forEach(c => {
-            c.width = rect.width;
-            c.height = rect.height;
-        });
-        drawMudLayer();
-    }
-
-    function drawMudLayer() {
-        if (!dirtyImg.complete) return;
-        ctxMud.globalCompositeOperation = 'source-over';
-        ctxMud.clearRect(0, 0, mudCanvas.width, mudCanvas.height);
-        ctxSoap.clearRect(0, 0, soapCanvas.width, soapCanvas.height);
-        
-        const hRatio = mudCanvas.width / dirtyImg.width;
-        const vRatio = mudCanvas.height / dirtyImg.height;
-        const ratio = Math.min(hRatio, vRatio);
-        const centerShift_x = (mudCanvas.width - dirtyImg.width * ratio) / 2;
-        const centerShift_y = (mudCanvas.height - dirtyImg.height * ratio) / 2;
-        
-        ctxMud.drawImage(dirtyImg, 0, 0, dirtyImg.width, dirtyImg.height,
-                         centerShift_x, centerShift_y, dirtyImg.width * ratio, dirtyImg.height * ratio);
-        
-        updateProgress();
-    }
-
-    dirtyImg.onload = () => {
-        resizeCanvas();
-    };
-
-    window.addEventListener('resize', resizeCanvas);
-
-    function applyTool(x, y) {
-        if (isCompleted && currentTool !== 'ceramic') return;
-        
-        const brushRadius = Math.max(32, mudCanvas.width * 0.045);
-
-        if (currentTool === 'hydro') {
-            // Hydro pressure erases mud & soap
-            ctxMud.globalCompositeOperation = 'destination-out';
-            const grad = ctxMud.createRadialGradient(x, y, 0, x, y, brushRadius);
-            grad.addColorStop(0, 'rgba(0,0,0,1)');
-            grad.addColorStop(0.7, 'rgba(0,0,0,0.8)');
-            grad.addColorStop(1, 'rgba(0,0,0,0)');
-            ctxMud.fillStyle = grad;
-            ctxMud.beginPath();
-            ctxMud.arc(x, y, brushRadius, 0, Math.PI * 2);
-            ctxMud.fill();
-
-            // Erase soap too
-            ctxSoap.globalCompositeOperation = 'destination-out';
-            ctxSoap.beginPath();
-            ctxSoap.arc(x, y, brushRadius * 1.2, 0, Math.PI * 2);
-            ctxSoap.fill();
-
-        } else if (currentTool === 'soap') {
-            // Apply thick white snow foam bubbles onto soap canvas
-            ctxSoap.globalCompositeOperation = 'source-over';
-            for (let i = 0; i < 6; i++) {
-                const px = x + (Math.random() - 0.5) * brushRadius;
-                const py = y + (Math.random() - 0.5) * brushRadius;
-                const pr = Math.random() * 14 + 10;
-                
-                ctxSoap.fillStyle = 'rgba(255, 255, 255, 0.85)';
-                ctxSoap.beginPath();
-                ctxSoap.arc(px, py, pr, 0, Math.PI * 2);
-                ctxSoap.fill();
-            }
-        } else if (currentTool === 'sponge') {
-            // Sponge wipes off soap and erases mud smoothly
-            ctxSoap.globalCompositeOperation = 'destination-out';
-            ctxSoap.beginPath();
-            ctxSoap.arc(x, y, brushRadius * 1.3, 0, Math.PI * 2);
-            ctxSoap.fill();
-
-            ctxMud.globalCompositeOperation = 'destination-out';
-            ctxMud.beginPath();
-            ctxMud.arc(x, y, brushRadius, 0, Math.PI * 2);
-            ctxMud.fill();
-
-        } else if (currentTool === 'ceramic') {
-            // Ceramic Coating 9H adds glowing sparkles
-            for (let i = 0; i < 3; i++) {
-                sparkles.push({
-                    x: x + (Math.random() - 0.5) * brushRadius * 1.5,
-                    y: y + (Math.random() - 0.5) * brushRadius * 1.5,
-                    size: Math.random() * 8 + 4,
-                    alpha: 1,
-                    decay: Math.random() * 0.03 + 0.01
-                });
-            }
-        }
-
-        updateProgress();
-    }
-
-    // Sparkle Animation Loop for Ceramic Coating
-    function renderSparkles() {
-        ctxSparkle.clearRect(0, 0, sparkleCanvas.width, sparkleCanvas.height);
-        for (let i = sparkles.length - 1; i >= 0; i--) {
-            const s = sparkles[i];
-            s.alpha -= s.decay;
-            if (s.alpha <= 0) {
-                sparkles.splice(i, 1);
-                continue;
-            }
-            ctxSparkle.fillStyle = `rgba(251, 44, 107, ${s.alpha})`;
-            ctxSparkle.beginPath();
-            // Draw 4-point star sparkle
-            ctxSparkle.arc(s.x, s.y, s.size / 2, 0, Math.PI * 2);
-            ctxSparkle.fill();
-            
-            ctxSparkle.fillStyle = `rgba(255, 255, 255, ${s.alpha * 0.9})`;
-            ctxSparkle.beginPath();
-            ctxSparkle.arc(s.x, s.y, s.size / 4, 0, Math.PI * 2);
-            ctxSparkle.fill();
-        }
-        requestAnimationFrame(renderSparkles);
-    }
-    renderSparkles();
-
-    function updateProgress() {
-        try {
-            const w = mudCanvas.width;
-            const h = mudCanvas.height;
-            const imgData = ctxMud.getImageData(0, 0, w, h);
-            const data = imgData.data;
-            let transparentPixels = 0;
-            const step = 16;
-
-            for (let i = 3; i < data.length; i += 4 * step) {
-                if (data[i] === 0) transparentPixels++;
-            }
-            
-            const totalSamples = data.length / (4 * step);
-            const percentage = Math.min(100, Math.round((transparentPixels / totalSamples) * 100));
-            
-            progressBar.style.width = percentage + '%';
-            progressText.textContent = percentage + '%';
-
-            if (percentage >= 75 && !isCompleted) {
-                isCompleted = true;
-                celebrationOverlay.classList.remove('opacity-0', 'pointer-events-none');
-            }
-        } catch (e) {}
-    }
-
-    // Mouse & Touch Event Handlers
-    function getPos(e) {
-        const rect = mudCanvas.getBoundingClientRect();
-        let clientX = e.clientX;
-        let clientY = e.clientY;
-        if (e.touches && e.touches[0]) {
-            clientX = e.touches[0].clientX;
-            clientY = e.touches[0].clientY;
-        }
-        return {
-            x: clientX - rect.left,
-            y: clientY - rect.top
-        };
-    }
-
-    container.addEventListener('mouseenter', () => {
-        nozzle.classList.remove('opacity-0');
-    });
-
-    container.addEventListener('mouseleave', () => {
-        nozzle.classList.add('opacity-0');
-        sprayCone.classList.add('opacity-0');
-        isDrawing = false;
-    });
-
-    container.addEventListener('mousemove', (e) => {
-        const pos = getPos(e);
-        nozzle.style.left = pos.x + 'px';
-        nozzle.style.top = pos.y + 'px';
-
-        applyTool(pos.x, pos.y);
-        if (currentTool === 'hydro') sprayCone.classList.remove('opacity-0');
-    });
-
-    container.addEventListener('mousedown', (e) => {
-        isDrawing = true;
-        const pos = getPos(e);
-        applyTool(pos.x, pos.y);
-        if (currentTool === 'hydro') sprayCone.classList.remove('opacity-0');
-    });
-
-    window.addEventListener('mouseup', () => {
-        isDrawing = false;
-    });
-
-    // Touch events for mobile
-    container.addEventListener('touchstart', (e) => {
-        const pos = getPos(e);
-        nozzle.style.left = pos.x + 'px';
-        nozzle.style.top = pos.y + 'px';
-        nozzle.classList.remove('opacity-0');
-        applyTool(pos.x, pos.y);
-    }, { passive: true });
-
-    container.addEventListener('touchmove', (e) => {
-        const pos = getPos(e);
-        nozzle.style.left = pos.x + 'px';
-        nozzle.style.top = pos.y + 'px';
-        applyTool(pos.x, pos.y);
-    }, { passive: true });
-
-    container.addEventListener('touchend', () => {
-        nozzle.classList.add('opacity-0');
-        sprayCone.classList.add('opacity-0');
-    });
-
-    // Reset & Auto-clean
-    resetBtn?.addEventListener('click', () => {
-        isCompleted = false;
-        celebrationOverlay.classList.add('opacity-0', 'pointer-events-none');
-        drawMudLayer();
-    });
-
-    autoCleanBtn?.addEventListener('click', () => {
-        ctxMud.clearRect(0, 0, mudCanvas.width, mudCanvas.height);
-        ctxSoap.clearRect(0, 0, soapCanvas.width, soapCanvas.height);
-        updateProgress();
-    });
-
-    replayBtn?.addEventListener('click', () => {
-        isCompleted = false;
-        celebrationOverlay.classList.add('opacity-0', 'pointer-events-none');
-        drawMudLayer();
-    });
-
-    // Download Photo Feature
-    downloadBtn?.addEventListener('click', () => {
-        const tempCanvas = document.createElement('canvas');
-        tempCanvas.width = mudCanvas.width;
-        tempCanvas.height = mudCanvas.height;
-        const tempCtx = tempCanvas.getContext('2d');
-
-        // Draw clean car base + mud + soap layers
-        tempCtx.drawImage(cleanImg, 0, 0, tempCanvas.width, tempCanvas.height);
-        tempCtx.drawImage(mudCanvas, 0, 0);
-        tempCtx.drawImage(soapCanvas, 0, 0);
-        tempCtx.drawImage(sparkleCanvas, 0, 0);
-
-        // Add Watermark
-        tempCtx.font = 'bold 16px sans-serif';
-        tempCtx.fillStyle = '#FB2C6B';
-        tempCtx.fillText('HIGH CONTRAST DETAILING - Developed by REW.CL', 20, tempCanvas.height - 20);
-
-        const dataUrl = tempCanvas.toDataURL('image/png');
-        const link = document.createElement('a');
-        link.download = 'BMW_M3_HighContrast_Detailing.png';
-        link.href = dataUrl;
-        link.click();
-    });
-
-    // Copy Link Action
-    copyLinkBtn?.addEventListener('click', () => {
-        navigator.clipboard.writeText(window.location.href).then(() => {
-            copyBtnText.textContent = '¡Copiado!';
-            setTimeout(() => {
-                copyBtnText.textContent = 'Copiar Enlace';
-            }, 2000);
-        });
-    });
-});
-</script>
-
-
 
 <!-- Gallery Section -->
 <script>
@@ -1195,36 +682,68 @@ class="section-padding relative overflow-hidden">
 </section>
 
 <!-- Testimonials Section -->
-<section id="testimonios" x-data="{ 
-    current: 0,
-    testimonials: [
-        { name: 'Rodrigo Fernández', vehicle: 'BMW M4 Competition', rating: 5, text: 'Increíble trabajo. Mi M4 quedó como recién salido del concesionario. El tratamiento cerámico superó todas mis expectativas. Profesionalismo de otro nivel.', service: 'Tratamiento Cerámico', image: '/assets/images/testimonials/bmw_m4.png' },
-        { name: 'Carolina Muñoz', vehicle: 'Mercedes-Benz GLC 300', rating: 5, text: 'Llevé mi GLC con rayones que me tenían preocupada. Después de la corrección de pintura, desaparecieron por completo. Muy recomendados.', service: 'Corrección de Pintura', image: '/assets/images/testimonials/mercedes_glc.png' },
-        { name: 'Sebastián Torres', vehicle: 'Porsche 911 Carrera', rating: 5, text: 'Como dueño de un 911, soy muy exigente con quién toca mi auto. High Contrast es el único lugar donde lo llevo. Perfeccionistas.', service: 'Pulido Profesional', image: '/assets/images/testimonials/porsche_911.png' },
-        { name: 'María José Contreras', vehicle: 'Audi Q5', rating: 5, text: 'El detailing interior dejó mi Q5 impecable. Los cueros quedaron como nuevos y el olor es increíble. Volveré cada mes.', service: 'Detailing Interior', image: '/assets/images/testimonials/audi_q5.png' },
-        { name: 'Andrés Villalobos', vehicle: 'Tesla Model 3', rating: 5, text: 'Profesionales, puntuales y el resultado habla por sí solo. El cerámico protege mi Tesla de todo. 100% recomendado.', service: 'Tratamiento Cerámico', image: '/assets/images/testimonials/tesla_model3.png' }
-    ],
-    next() {
-        this.current = (this.current + 1) % this.testimonials.length;
-    },
-    prev() {
-        this.current = (this.current - 1 + this.testimonials.length) % this.testimonials.length;
-    }
-}" class="py-24 md:py-36 relative overflow-hidden bg-black text-white min-h-[720px] flex items-center">
+<section id="testimonios" 
+         x-data="{ 
+            current: 0,
+            autoplayTimer: null,
+            autoplayDuration: 10000,
+            testimonials: [
+                { name: 'Rodrigo Fernández', vehicle: 'BMW M4 Competition', rating: 5, text: 'Increíble trabajo. Mi M4 quedó como recién salido del concesionario. El tratamiento cerámico superó todas mis expectativas. Profesionalismo de otro nivel.', service: 'Tratamiento Cerámico', image: '/assets/images/testimonials/bmw_m4.png' },
+                { name: 'Carolina Muñoz', vehicle: 'Mercedes-Benz GLC 300', rating: 5, text: 'Llevé mi GLC con rayones que me tenían preocupada. Después de la corrección de pintura, desaparecieron por completo. Muy recomendados.', service: 'Corrección de Pintura', image: '/assets/images/testimonials/mercedes_glc.png' },
+                { name: 'Sebastián Torres', vehicle: 'Porsche 911 Carrera', rating: 5, text: 'Como dueño de un 911, soy muy exigente con quién toca mi auto. High Contrast es el único lugar donde lo llevo. Perfeccionistas.', service: 'Pulido Profesional', image: '/assets/images/testimonials/porsche_911.png' },
+                { name: 'María José Contreras', vehicle: 'Audi Q5', rating: 5, text: 'El detailing interior dejó mi Q5 impecable. Los cueros quedaron como nuevos y el olor es increíble. Volveré cada mes.', service: 'Detailing Interior', image: '/assets/images/testimonials/audi_q5.png' },
+                { name: 'Andrés Villalobos', vehicle: 'Tesla Model 3', rating: 5, text: 'Profesionales, puntuales y el resultado habla por sí solo. El cerámico protege mi Tesla de todo. 100% recomendado.', service: 'Tratamiento Cerámico', image: '/assets/images/testimonials/tesla_model3.png' }
+            ],
+            startAutoplay() {
+                this.stopAutoplay();
+                this.autoplayTimer = setInterval(() => {
+                    this.next();
+                }, this.autoplayDuration);
+            },
+            stopAutoplay() {
+                if (this.autoplayTimer) {
+                    clearInterval(this.autoplayTimer);
+                    this.autoplayTimer = null;
+                }
+            },
+            next() {
+                this.current = (this.current + 1) % this.testimonials.length;
+                this.startAutoplay();
+            },
+            prev() {
+                this.current = (this.current - 1 + this.testimonials.length) % this.testimonials.length;
+                this.startAutoplay();
+            },
+            goTo(index) {
+                this.current = index;
+                this.startAutoplay();
+            }
+         }" 
+         x-init="startAutoplay()"
+         @mouseenter="stopAutoplay()"
+         @mouseleave="startAutoplay()"
+         class="py-24 md:py-36 relative overflow-hidden bg-black text-white min-h-[720px] flex items-center">
 
-    <!-- FULL HERO VEHICLE BACKGROUND LAYER (100% PROTAGONISM, BRIGHT & CLEAR) -->
+    <!-- FULL HERO VEHICLE BACKGROUND LAYER (BRIGHT, VIBRANT & 100% PROTAGONIST) -->
     <template x-for="(t, index) in testimonials" :key="t.image">
-        <div class="absolute inset-0 transition-all duration-700 ease-in-out pointer-events-none z-0"
-             :class="index === current ? 'opacity-90 scale-100' : 'opacity-0 scale-105'">
-            <img :src="t.image" :alt="t.vehicle" class="w-full h-full object-cover object-center">
-            <!-- Subtle gradient to ensure right-hand card legibility while keeping the vehicle bright -->
-            <div class="absolute inset-0 bg-gradient-to-r from-black/40 via-black/60 to-black/95"></div>
-            <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/60"></div>
+        <div class="absolute inset-0 transition-opacity duration-1000 ease-in-out pointer-events-none z-0 overflow-hidden"
+             :class="index === current ? 'opacity-100' : 'opacity-0'">
+            <!-- Vehicle Image with enhanced brightness and contrast -->
+            <img :src="t.image" :alt="t.vehicle" 
+                 class="w-full h-full object-cover object-left md:object-center brightness-105 contrast-105 saturate-[1.1] transition-transform duration-1000 ease-out"
+                 :class="index === current ? 'scale-100' : 'scale-105'">
+            
+            <!-- Focused right-side gradient vignette so vehicle remains 100% bright on the left/center while text is perfectly legible on the right -->
+            <div class="absolute inset-y-0 right-0 w-full md:w-3/5 lg:w-1/2 bg-gradient-to-l from-black/95 via-black/80 to-transparent"></div>
+            
+            <!-- Soft top and bottom blends for seamless page transitions -->
+            <div class="absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black via-black/40 to-transparent"></div>
+            <div class="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
         </div>
     </template>
 
-    <!-- Glow Accent -->
-    <div class="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-brand/10 rounded-full blur-[180px] pointer-events-none z-0"></div>
+    <!-- Subtle Ambient Glow on Vehicle Side -->
+    <div class="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-brand/15 rounded-full blur-[180px] pointer-events-none z-0"></div>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
         <!-- Section Header -->
@@ -1243,7 +762,7 @@ class="section-padding relative overflow-hidden">
 
             <!-- Right Side: Testimonial Card (Highly Legible & Glassmorphic) -->
             <div class="lg:col-span-6">
-                <div class="relative rounded-[2.5rem] overflow-hidden border border-white/20 bg-black/85 backdrop-blur-2xl shadow-2xl min-h-[380px] flex flex-col justify-between p-8 sm:p-10 md:p-12">
+                <div class="relative rounded-[2.5rem] overflow-hidden border border-white/20 bg-black/75 backdrop-blur-2xl shadow-2xl min-h-[380px] flex flex-col justify-between p-8 sm:p-10 md:p-12">
                     <!-- Card Content -->
                     <div>
                         <!-- Quote Icon & Service Badge -->
@@ -1279,22 +798,25 @@ class="section-padding relative overflow-hidden">
                     </div>
                 </div>
 
-                <!-- Navigation Controls & Dots -->
+                <!-- Navigation Controls & Dots with Autoplay indicator -->
                 <div class="flex items-center justify-between gap-5 mt-6 px-2">
-                    <div class="flex gap-2.5">
-                        <template x-for="(testimonial, i) in testimonials">
-                            <button @click="current = i"
+                    <!-- Slide Indicator Dots -->
+                    <div class="flex gap-2.5 items-center">
+                        <template x-for="(testimonial, i) in testimonials" :key="i">
+                            <button @click="goTo(i)"
                                     :class="i === current ? 'bg-brand w-8' : 'bg-white/30 hover:bg-white/60 w-2.5'"
-                                    class="h-2.5 rounded-full transition-all duration-300"></button>
+                                    class="h-2.5 rounded-full transition-all duration-300 focus:outline-none"
+                                    :aria-label="'Ir a testimonio ' + (i + 1)"></button>
                         </template>
                     </div>
 
+                    <!-- Prev/Next Controls -->
                     <div class="flex items-center gap-3">
-                        <button @click="prev()" class="w-12 h-12 rounded-full border border-white/20 bg-black/70 hover:bg-brand hover:border-brand flex items-center justify-center text-white transition-all duration-300 shadow-lg backdrop-blur-md" aria-label="Anterior">
+                        <button @click="prev()" class="w-12 h-12 rounded-full border border-white/20 bg-black/70 hover:bg-brand hover:border-brand flex items-center justify-center text-white transition-all duration-300 shadow-lg backdrop-blur-md focus:outline-none hover:scale-105 active:scale-95" aria-label="Anterior">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
                         </button>
 
-                        <button @click="next()" class="w-12 h-12 rounded-full border border-white/20 bg-black/70 hover:bg-brand hover:border-brand flex items-center justify-center text-white transition-all duration-300 shadow-lg backdrop-blur-md" aria-label="Siguiente">
+                        <button @click="next()" class="w-12 h-12 rounded-full border border-white/20 bg-black/70 hover:bg-brand hover:border-brand flex items-center justify-center text-white transition-all duration-300 shadow-lg backdrop-blur-md focus:outline-none hover:scale-105 active:scale-95" aria-label="Siguiente">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
                         </button>
                     </div>

@@ -46,5 +46,11 @@ public/assets/videos/
 public/assets/images/galeria/
 *.mp4
 
+scratch/
+*.zip
+*.sql
+storage/framework/views/*
+!storage/framework/views/.gitignore
+
 
 

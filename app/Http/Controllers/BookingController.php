@@ -46,10 +46,12 @@ class BookingController extends Controller
             'region' => 'Región Metropolitana',
         ]);
 
+        $allExtras = Extra::where('is_active', true)->where('price', '>', 0)->orderBy('display_order')->get();
+
         $path = storage_path('app/category_order.json');
         $categoryOrder = file_exists($path) ? json_decode(file_get_contents($path), true) : ['limpieza', 'correccion', 'ceramico', 'especiales'];
 
-        return view('reserva', compact('services', 'vehicleTypes', 'businessProfile', 'categoryOrder'));
+        return view('reserva', compact('services', 'vehicleTypes', 'businessProfile', 'categoryOrder', 'allExtras'));
     }
 
     /**
@@ -731,19 +733,22 @@ class BookingController extends Controller
         $vehicle = $request->input('vehicle');
         $service = $request->input('service');
 
+        $existing = \App\Models\AbandonedQuote::where('session_id', $sessionId)->first();
+        $status = ($existing && $existing->status === 'RECOVERED') ? 'RECOVERED' : 'DRAFT';
+
         $draft = \App\Models\AbandonedQuote::updateOrCreate(
             ['session_id' => $sessionId],
             [
-                'customer_name' => $customerName ?: null,
-                'customer_email' => $customerEmail ?: null,
-                'customer_phone' => $customerPhone ?: null,
-                'commune' => $commune ?: null,
-                'vehicle_type_name' => is_array($vehicle) ? ($vehicle['name'] ?? null) : null,
-                'service_name' => is_array($service) ? ($service['name'] ?? null) : null,
-                'extras' => $request->input('extras', []),
-                'total_price' => (int) $request->input('totalPrice', 0),
-                'last_step_reached' => (int) $request->input('step', 1),
-                'status' => 'DRAFT',
+                'customer_name' => $customerName ?: ($existing?->customer_name ?? null),
+                'customer_email' => $customerEmail ?: ($existing?->customer_email ?? null),
+                'customer_phone' => $customerPhone ?: ($existing?->customer_phone ?? null),
+                'commune' => $commune ?: ($existing?->commune ?? null),
+                'vehicle_type_name' => is_array($vehicle) ? ($vehicle['name'] ?? null) : ($existing?->vehicle_type_name ?? null),
+                'service_name' => is_array($service) ? ($service['name'] ?? null) : ($existing?->service_name ?? null),
+                'extras' => $request->input('extras', $existing?->extras ?? []),
+                'total_price' => (int) $request->input('totalPrice', $existing?->total_price ?? 0),
+                'last_step_reached' => (int) $request->input('step', $existing?->last_step_reached ?? 1),
+                'status' => $status,
                 'last_activity_at' => now(),
             ]
         );

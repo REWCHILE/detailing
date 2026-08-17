@@ -310,74 +310,7 @@
         </div>
     </section>
 
-    <!-- The Gtechniq Lineup -->
-    <section class="py-32 bg-white dark:bg-surface-900 overflow-hidden transition-colors border-b border-black/5 dark:border-white/5">
-        <div class="container-custom">
-            <div class="text-center mb-24 fade-in-up">
-                <h2 class="font-display text-4xl md:text-6xl font-black text-black dark:text-white mb-6 transition-colors">
-                    La Línea <span class="text-gradient">Gtechniq</span>
-                </h2>
-                <p class="text-black/60 dark:text-white/40 max-w-2xl mx-auto italic transition-colors text-lg font-light">
-                    Ingeniería molecular británica para cada superficie de tu vehículo.
-                </p>
-            </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-                @foreach([
-                    ['name' => 'Crystal Serum Ultra', 'tag' => 'Pro Only · 10H', 'color' => '#E8508A', 'image' => '/assets/images/gtechniq/csu-product.png', 'desc' => 'Protección 10H con garantía de 9 años. Capa superior ultra-dura y base flexible 7H para máxima resistencia a swirls y químicos (pH2-pH13). Resistente a temperaturas de -40°C a +250°C.', 'durability' => '9 años'],
-                    ['name' => 'EXOv5 Hydrophobic', 'tag' => 'Ultra Durable', 'color' => '#FB2C6B', 'image' => '/assets/images/gtechniq/exov5-product.png', 'desc' => 'Recubrimiento hidrofóbico de aplicación única. Produce un acabado cálido de alto brillo con propiedades antiestáticas que repelen suciedad y agua de forma extrema.', 'durability' => '2 años'],
-                    ['name' => 'HALOv2 Flexible', 'tag' => 'PPF & Vinyl', 'color' => '#6366f1', 'image' => '/assets/images/gtechniq/halov2-product.png', 'desc' => 'Protección específica para PPF y vinilo. Compatible con acabados gloss, satinados y mate sin afectar las propiedades de auto-reparación del PPF.', 'durability' => '2 años'],
-                    ['name' => 'Crystal Serum Light', 'tag' => 'SiO2 · 9H', 'color' => '#10b981', 'image' => '/assets/images/gtechniq/csl-product.png', 'desc' => 'Fórmula a base de dióxido de silicio que se adhiere a nivel molecular. Protege contra swirls, UV, deposiciones de aves y manchas de agua con un brillo y profundidad superiores.', 'durability' => '5 años'],
-                    ['name' => 'C4 Trim Restorer', 'tag' => 'Trim & Plastic', 'color' => '#FB2C6B', 'image' => '/assets/images/gtechniq/c4-product.png', 'desc' => 'Restaura plásticos exteriores a su estado original. Se adhiere a nivel molecular sin dejar residuos grasosos. Funciona en plástico, vinilo y goma texturizada.', 'durability' => '2 años'],
-                    ['name' => 'C5 Wheel Armour', 'tag' => 'Wheels & Caliper', 'color' => '#E8508A', 'image' => '/assets/images/gtechniq/c5-product.png', 'desc' => 'Protección de grado profesional contra polvo de frenos, suciedad y contaminantes de carretera. Resiste temperaturas de hasta 600°C (1112°F).', 'durability' => '2 años']
-                ] as $product)
-                    <div class="relative group fade-in-up">
-                        <!-- Background Glow behind the card -->
-                        <div class="absolute inset-0 blur-[80px] opacity-5 group-hover:opacity-20 transition-opacity duration-700 rounded-full bottle-glow" style="background-color: {{ $product['color'] }}"></div>
-                        
-                        <div class="relative p-8 rounded-[40px] bg-gray-50/50 dark:bg-[#111111]/30 border border-black/5 dark:border-white/5 backdrop-blur-md group-hover:border-brand/40 hover:bg-white dark:hover:bg-white/[0.04] transition-all duration-500 shadow-sm dark:shadow-2xl flex flex-col justify-between h-full">
-                            <div>
-                                <!-- Product Tag + Durability -->
-                                <div class="mb-6 flex justify-between items-start">
-                                    <span class="text-[9px] font-extrabold uppercase tracking-[0.3em] text-brand bg-brand/10 px-4 py-1.5 rounded-full border border-brand/20">
-                                        {{ $product['tag'] }}
-                                    </span>
-                                    <span class="text-[9px] font-extrabold uppercase tracking-wider text-black/40 dark:text-white/30 bg-black/5 dark:bg-white/5 px-3 py-1.5 rounded-full">
-                                        {{ $product['durability'] }}
-                                    </span>
-                                </div>
-
-                                <!-- Real Product Image from Gtechniq -->
-                                <div class="aspect-[4/3] mb-8 relative rounded-2xl overflow-hidden bg-white dark:bg-surface-800 border border-black/5 dark:border-white/5 flex items-center justify-center">
-                                    <img 
-                                        src="{{ $product['image'] }}" 
-                                        alt="{{ $product['name'] }} - Gtechniq"
-                                        class="w-full h-full object-contain p-4 transition-transform duration-500 group-hover:scale-105 mix-blend-multiply dark:mix-blend-normal"
-                                        loading="lazy"
-                                    >
-                                    <!-- Glass Reflection Sweep -->
-                                    <div class="absolute inset-0 bg-gradient-to-tr from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-out z-10 pointer-events-none"></div>
-                                </div>
-
-                                <h3 class="text-xl font-bold text-black dark:text-white mb-3 group-hover:text-brand transition-colors">{{ $product['name'] }}</h3>
-                                <p class="text-black/60 dark:text-white/40 text-sm leading-relaxed mb-6 transition-colors font-medium">{{ $product['desc'] }}</p>
-                            </div>
-                            
-                            <div class="pt-6 border-t border-black/5 dark:border-white/5 flex items-center justify-between mt-auto">
-                                <div class="flex items-center gap-2">
-                                    <img src="/assets/logos/Gtechniq-Logo.png" alt="Gtechniq" class="h-3 object-contain opacity-40 dark:opacity-30 dark:brightness-200">
-                                    <span class="text-[10px] text-black/30 dark:text-white/20 font-bold uppercase tracking-tighter">Surface Science</span>
-                                </div>
-                                <div class="w-8 h-8 rounded-full border border-black/10 dark:border-white/10 flex items-center justify-center group-hover:border-brand/50 transition-colors">
-                                    <div class="w-1.5 h-1.5 rounded-full bg-brand animate-pulse"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div>
-        </div>
-    </section>
 
     <!-- Section: Beneficios Detallados -->
     <section class="section-padding bg-gray-50 dark:bg-surface-800 relative transition-colors border-b border-black/5 dark:border-white/5">

@@ -287,11 +287,11 @@
                                 <td class="px-6 py-4 text-center">
                                     @php
                                         $stepLabels = [
-                                            1 => 'Paso 1: Tus Datos',
-                                            2 => 'Paso 2: Vehículo',
-                                            3 => 'Paso 3: Servicio',
-                                            4 => 'Paso 4: Resumen',
-                                            5 => 'Paso 5: Horario'
+                                            1 => 'Paso 1: Servicio',
+                                            2 => 'Paso 2: Datos & Vehículo',
+                                            3 => 'Paso 3: Cotización',
+                                            4 => 'Paso 3: Cotización',
+                                            5 => 'Paso 3: Cotización'
                                         ];
                                     @endphp
                                     <div class="flex flex-col items-center gap-1">
