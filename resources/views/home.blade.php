@@ -31,7 +31,7 @@
                 'media_type' => 'video',
                 'media_path' => '/assets/videos/hero-gtechniq.mp4',
                 'button_primary_text' => 'Cotizar Sellado',
-                'button_primary_url' => '/reserva?category=ceramico',
+                'button_primary_url' => '/reserva?category=ceramico&service=nivel-1-proteccion-dos-anos',
                 'button_secondary_text' => 'Saber más',
                 'button_secondary_url' => '/sellado-ceramico',
             ],
@@ -42,7 +42,7 @@
                 'media_type' => 'video',
                 'media_path' => '/assets/videos/exoshield-web.mp4',
                 'button_primary_text' => 'Cotizar ExoShield',
-                'button_primary_url' => '/reserva?category=especiales',
+                'button_primary_url' => '/reserva?category=especiales&service=proteccion-exoshield',
                 'button_secondary_text' => 'Ver Blindaje',
                 'button_secondary_url' => '/proteccion-parabrisas-santiago',
             ],
@@ -53,7 +53,7 @@
                 'media_type' => 'video',
                 'media_path' => '/assets/videos/pulido-correccion.mp4',
                 'button_primary_text' => 'Cotizar Pulido',
-                'button_primary_url' => '/reserva?category=pulido',
+                'button_primary_url' => '/reserva?category=pulido&service=servicio-de-pulido',
                 'button_secondary_text' => 'Ver Detalles',
                 'button_secondary_url' => '/pulido-de-autos-santiago',
             ],
@@ -64,7 +64,7 @@
                 'media_type' => 'video',
                 'media_path' => '/assets/videos/lavado-premium.mp4',
                 'button_primary_text' => 'Cotizar Detallado',
-                'button_primary_url' => '/reserva?category=limpieza',
+                'button_primary_url' => '/reserva?category=limpieza&service=paquete-lavado',
                 'button_secondary_text' => 'Ver Servicios',
                 'button_secondary_url' => '/limpieza-y-detallado',
             ]
@@ -118,8 +118,10 @@ style="min-height: 100vh; min-height: 100dvh;">
              <!-- Video/Image background (High Video Emphasis) -->
              <div class="absolute inset-0 bg-[#0A0A0A] overflow-hidden">
                  @if($slide->media_type === 'video')
-                     <video autoplay muted loop playsinline preload="auto" class="w-full h-full object-cover opacity-85 md:opacity-90 animate-slow-zoom">
-                         <source src="{{ asset($slide->media_path) }}" type="video/mp4">
+                     <video autoplay muted loop playsinline preload="auto" 
+                            x-init="if ('{{ $slide->media_path }}'.includes('gtechniq')) { $el.currentTime = 20; $el.addEventListener('loadedmetadata', () => { $el.currentTime = 20; }); $el.addEventListener('timeupdate', () => { if ($el.currentTime < 18) $el.currentTime = 20; }); }"
+                            class="w-full h-full object-cover opacity-85 md:opacity-90 animate-slow-zoom">
+                         <source src="{{ asset($slide->media_path) . (str_contains($slide->media_path, 'gtechniq') ? '#t=20' : '') }}" type="video/mp4">
                      </video>
                  @else
                      <img src="{{ asset($slide->media_path) }}" class="w-full h-full object-cover opacity-85 md:opacity-90 animate-slow-zoom" alt="slide bg">
@@ -191,10 +193,10 @@ style="min-height: 100vh; min-height: 100dvh;">
     <template x-if="slidesCount > 1">
         <div class="absolute bottom-8 left-6 md:left-12 lg:left-16 z-30 flex items-center gap-4 sm:gap-6">
             <!-- Slide Counter -->
-            <div class="text-white/70 font-mono text-xs sm:text-sm tracking-wider drop-shadow-sm">
-                <span class="text-white font-bold" x-text="String(activeSlide + 1).padStart(2, '0')"></span>
+            <div class="text-white/70 font-mono text-xs sm:text-sm tracking-wider drop-shadow-sm flex items-center">
+                <span class="text-brand font-black text-sm sm:text-base" x-text="String(activeSlide + 1).padStart(2, '0')"></span>
                 <span class="mx-1 text-white/40">/</span>
-                <span x-text="String(slidesCount).padStart(2, '0')"></span>
+                <span class="text-white/80 font-bold" x-text="String(slidesCount).padStart(2, '0')"></span>
             </div>
 
             <!-- Slide Dots -->

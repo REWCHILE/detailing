@@ -1,16 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" x-data="{ 
-    theme: (function(){ try { return localStorage.getItem('public_theme') || 'light'; } catch(e) { return 'light'; } })(),
-    toggleTheme() {
-        this.theme = this.theme === 'dark' ? 'light' : 'dark';
-        try { localStorage.setItem('public_theme', this.theme); } catch(e) {}
-        if (this.theme === 'dark') {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-    }
-}" :class="theme">
+<html lang="es" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -287,12 +276,8 @@
                 <a href="/#testimonios" :class="isScrolled ? 'text-black/70 dark:text-white/70 hover:text-brand dark:hover:text-brand' : 'text-white/70 hover:text-white'" class="px-4 py-2 text-sm font-medium transition-all">Testimonios</a>
                 <a href="/#faq" :class="isScrolled ? 'text-black/70 dark:text-white/70 hover:text-brand dark:hover:text-brand' : 'text-white/70 hover:text-white'" class="px-4 py-2 text-sm font-medium transition-all">Preguntas</a>
 
-                <!-- Theme Toggle & CTA -->
+                <!-- Navigation Actions (Mi portal & Cotiza ahora) -->
                 <div class="flex items-center gap-3 ml-4">
-                    <button @click="toggleTheme()" :class="isScrolled ? 'text-black/70 dark:text-white/70 hover:bg-black/5 dark:hover:bg-white/5' : 'text-white/70 hover:bg-white/10'" class="p-2 rounded-full transition-all" aria-label="Cambiar tema">
-                        <svg x-show="theme === 'dark'" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-yellow-400"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
-                        <svg x-show="theme === 'light'" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" :class="isScrolled ? 'text-slate-700' : 'text-white'" style="display: none;"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
-                    </button>
                     @if(auth()->check() && (auth()->user()->isAdmin() || auth()->user()->isStaff()))
                         <a href="{{ route('admin.dashboard') }}" 
                            :class="isScrolled ? 'bg-black/5 dark:bg-white/10 text-black dark:text-white hover:bg-black/10 dark:hover:bg-white/20 border border-black/10 dark:border-white/10' : 'bg-white/15 text-white hover:bg-white/25 border border-white/25 backdrop-blur-md shadow-lg shadow-black/20'" 
@@ -309,10 +294,6 @@
 
             <!-- Mobile Menu Toggle -->
             <div class="flex items-center gap-3 md:hidden">
-                <button @click="toggleTheme()" :class="isScrolled ? 'text-black/70 dark:text-white/70' : 'text-white/70'" class="p-2 rounded-full" aria-label="Cambiar tema">
-                    <svg x-show="theme === 'dark'" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-yellow-400"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
-                    <svg x-show="theme === 'light'" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" :class="isScrolled ? 'text-slate-700' : 'text-white'" style="display: none;"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
-                </button>
                 <button @click="isMobileOpen = !isMobileOpen" :class="isScrolled ? 'text-black/70 dark:text-white/70' : 'text-white/70'" class="p-2" aria-label="Menu">
                     <svg x-show="!isMobileOpen" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
                     <svg x-show="isMobileOpen" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
@@ -371,7 +352,7 @@
 
                 <!-- Services Box (Centered Grid/List) -->
                 <div class="w-full rounded-2xl bg-white/[0.03] border border-white/[0.08] p-3.5 text-center">
-                    <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-brand/80 mb-2.5">Servicios Élite</div>
+                    <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-brand/80 mb-2.5">Nuestros Servicios</div>
                     <div class="grid grid-cols-1 gap-1.5">
                         @if(isset($navCategoryOrder))
                             @foreach($navCategoryOrder as $catId)
@@ -460,7 +441,7 @@
                 <!-- Services Links -->
                 <div>
                     <h3 class="font-display font-bold text-white mb-5 text-xs uppercase tracking-[0.2em] text-brand">
-                        Servicios Élite
+                        Nuestros Servicios
                     </h3>
                     <ul class="space-y-2.5">
                         <li><a href="/limpieza-y-detallado" class="text-white/60 hover:text-brand transition-colors text-sm font-light">Limpieza & Detallado</a></li>
@@ -526,6 +507,51 @@
             </div>
         </div>
     </footer>
+
+    <!-- Left-side Scroll Progress Bar & Go to Top Button -->
+    <div x-data="{ 
+        scrollProgress: 0, 
+        showBackToTop: false,
+        updateScroll() {
+            const winScroll = window.pageYOffset || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            this.scrollProgress = height > 0 ? Math.min(100, Math.max(0, (winScroll / height) * 100)) : 0;
+            this.showBackToTop = this.scrollProgress >= 50 || winScroll > 900;
+        },
+        scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }" 
+    @scroll.window="updateScroll()" 
+    x-init="updateScroll()"
+    class="pointer-events-none">
+        
+        <!-- Vertical Pink Progress Track on Left Edge -->
+        <div class="fixed left-0 top-0 bottom-0 w-1 bg-black/10 z-40">
+            <div class="w-full bg-brand transition-all duration-100 ease-out shadow-[0_0_10px_#FB2C6B]"
+                 :style="`height: ${scrollProgress}%;`"></div>
+        </div>
+
+        <!-- Floating 'Go To Top' Anchor at Bottom-Left (Appears when scrolled down) -->
+        <div x-show="showBackToTop"
+             x-transition:enter="transition ease-out duration-300 transform"
+             x-transition:enter-start="opacity-0 -translate-x-6 scale-90"
+             x-transition:enter-end="opacity-100 translate-x-0 scale-100"
+             x-transition:leave="transition ease-in duration-200 transform"
+             x-transition:leave-start="opacity-100 translate-x-0 scale-100"
+             x-transition:leave-end="opacity-0 -translate-x-6 scale-90"
+             class="fixed bottom-6 left-6 z-40 pointer-events-auto"
+             style="display: none;">
+            <button @click="scrollToTop()"
+                    class="group flex items-center gap-2 px-3.5 py-2.5 rounded-full bg-[#111111]/90 hover:bg-brand text-white border border-white/15 shadow-2xl backdrop-blur-xl transition-all duration-300 hover:scale-105 hover:shadow-brand/40"
+                    aria-label="Volver arriba">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-brand group-hover:text-white transition-colors duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                </svg>
+                <span class="text-xs font-bold uppercase tracking-wider font-display text-white">Top</span>
+            </button>
+        </div>
+    </div>
 
     <!-- WhatsApp Floating Button -->
     <div x-data="{ isTooltipOpen: false }" class="fixed bottom-6 right-6 z-50">
