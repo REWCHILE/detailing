@@ -427,20 +427,43 @@
                                 <button 
                                     type="button"
                                     @click="selectVehicle(vt)"
-                                    class="relative rounded-2xl border-2 transition-all duration-300 text-left p-5 flex flex-col justify-between cursor-pointer group"
+                                    class="relative rounded-2xl border-2 transition-all duration-300 text-left p-5 flex flex-col justify-between cursor-pointer group select-none overflow-hidden"
                                     :class="selectedVehicle && selectedVehicle.id === vt.id
                                         ? 'border-brand bg-brand/15 shadow-xl shadow-brand/30 ring-2 ring-brand/40 scale-[1.02]'
-                                        : 'border-white/15 bg-zinc-900 hover:border-brand/50'"
+                                        : 'border-white/15 bg-zinc-900/90 hover:border-brand/50 hover:bg-zinc-900'"
                                 >
-                                    <div class="text-3xl mb-2" x-text="getVehicleIcon(vt.slug)"></div>
+                                    <!-- Background ambient glow when selected -->
+                                    <div x-show="selectedVehicle && selectedVehicle.id === vt.id" class="absolute -top-10 -right-10 w-24 h-24 bg-brand/30 rounded-full blur-2xl pointer-events-none"></div>
+
+                                    <div class="flex items-center justify-between gap-3 mb-3">
+                                        <div class="p-2.5 rounded-xl border transition-all duration-300 flex items-center justify-center shrink-0"
+                                             :class="selectedVehicle && selectedVehicle.id === vt.id 
+                                                ? 'bg-brand text-white border-brand shadow-lg shadow-brand/40' 
+                                                : 'bg-white/5 text-brand border-white/10 group-hover:border-brand/40 group-hover:bg-brand/10'">
+                                            <span x-html="getVehicleSvg(vt.slug)"></span>
+                                        </div>
+
+                                        <!-- Selected Check Badge -->
+                                        <div class="w-6 h-6 rounded-full flex items-center justify-center transition-all duration-300"
+                                             :class="selectedVehicle && selectedVehicle.id === vt.id ? 'bg-brand text-white shadow-md' : 'bg-white/5 text-transparent border border-white/15 group-hover:border-brand/40'">
+                                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                                <polyline points="20 6 9 17 4 12"/>
+                                            </svg>
+                                        </div>
+                                    </div>
+
                                     <div>
-                                        <h5 class="font-display font-extrabold text-white text-base leading-tight mb-1" x-text="vt.name"></h5>
+                                        <h5 class="font-display italic font-black text-white text-lg tracking-tight mb-1 transition-colors"
+                                            :class="selectedVehicle && selectedVehicle.id === vt.id ? 'text-brand' : 'text-white group-hover:text-brand'"
+                                            x-text="vt.name"></h5>
                                         <p class="text-white/50 text-xs line-clamp-2" x-text="vt.description"></p>
                                     </div>
                                     
-                                    <div class="mt-4 pt-2 border-t border-white/10 flex items-center justify-between text-xs font-bold">
-                                        <span class="text-brand uppercase font-black" x-text="selectedVehicle && selectedVehicle.id === vt.id ? '✓ SELECCIONADO' : 'ELEGIR'"></span>
-                                        <span class="text-white/60 text-xs font-mono" x-text="selectedService ? formatCLP(getAdjustedPriceForVehicle(selectedService, vt)) : ''"></span>
+                                    <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs font-bold">
+                                        <span class="uppercase tracking-wider transition-colors"
+                                              :class="selectedVehicle && selectedVehicle.id === vt.id ? 'text-brand font-black' : 'text-white/40 group-hover:text-brand'"
+                                              x-text="selectedVehicle && selectedVehicle.id === vt.id ? '✓ SELECCIONADO' : 'ELEGIR'"></span>
+                                        <span class="text-white/80 font-mono font-bold text-xs" x-text="selectedService ? formatCLP(getAdjustedPriceForVehicle(selectedService, vt)) : ''"></span>
                                     </div>
                                 </button>
                             </template>
@@ -1183,6 +1206,43 @@ function bookingWizard() {
                 return [description];
             }
             return description.split(/[•\-]/).map(i => i.trim()).filter(i => i.length > 2);
+        },
+
+        getVehicleSvg(slug) {
+            const s = (slug || '').toLowerCase();
+            if (s.includes('grande') || s.includes('camioneta') || s.includes('pickup')) {
+                return `<svg viewBox="0 0 64 32" class="w-12 h-6 fill-current" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M2 20 C2 18 4 16 7 16 L11 16 L16 7 C17.5 4.5 20.5 3.5 24 3.5 L40 3.5 C42 3.5 43.5 4.5 44 6.5 L44 14 L58 14 C60 14 62 16 63 18 L63 22 C63 24 61.5 25 59.5 25 L56 25 C55 20.5 51.5 17 47 17 C42.5 17 39 20.5 38 25 L26 25 C25 20.5 21.5 17 17 17 C12.5 17 9 20.5 8 25 L3 25 C1.5 25 0.5 24 0.5 22.5 C0.5 21.5 1 20.5 2 20 Z" opacity="0.95"/>
+                    <path d="M19 8 L24 5.5 L32 5.5 L32 14.5 L15.5 14.5 Z" fill="#0A0A0A" opacity="0.4"/>
+                    <path d="M34 5.5 L40 5.5 C41.5 5.5 42.5 6.5 42.8 8 L43 14.5 L34 14.5 Z" fill="#0A0A0A" opacity="0.4"/>
+                    <circle cx="17" cy="25" r="6.5" fill="currentColor"/>
+                    <circle cx="17" cy="25" r="3" fill="#0A0A0A"/>
+                    <circle cx="47" cy="25" r="6.5" fill="currentColor"/>
+                    <circle cx="47" cy="25" r="3" fill="#0A0A0A"/>
+                </svg>`;
+            }
+            if (s.includes('mediano') || s.includes('suv') || s.includes('crossover')) {
+                return `<svg viewBox="0 0 64 32" class="w-12 h-6 fill-current" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M3 21 C3 19 5 17 8 17 L12 17 L18 8 C19.5 5.5 22.5 4 26 4 L48 4 C50 4 52 5 53.5 6.8 L57 14 L59 17 C61.5 17 63 18.5 63 21.5 C63 23 62 24.5 60.5 24.5 L56 24.5 C55 20.5 51.5 17.5 47 17.5 C42.5 17.5 39 20.5 38 24.5 L26 24.5 C25 20.5 21.5 17.5 17 17.5 C12.5 17.5 9 20.5 8 24.5 L3.5 24.5 C2 24.5 1 23.5 1 22 C1 21.5 2 21 3 21 Z" opacity="0.95"/>
+                    <path d="M25 2 L47 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/>
+                    <path d="M21 9 L26 6 L35 6 L35 15.5 L17.5 15.5 Z" fill="#0A0A0A" opacity="0.4"/>
+                    <path d="M37.5 6 L47 6 C48.5 6 50 7 51 8.5 L54 15.5 L37.5 15.5 Z" fill="#0A0A0A" opacity="0.4"/>
+                    <circle cx="17" cy="24.5" r="6" fill="currentColor"/>
+                    <circle cx="17" cy="24.5" r="2.8" fill="#0A0A0A"/>
+                    <circle cx="47" cy="24.5" r="6" fill="currentColor"/>
+                    <circle cx="47" cy="24.5" r="2.8" fill="#0A0A0A"/>
+                </svg>`;
+            }
+            // Autos (Sedan / Coupe / Compacto)
+            return `<svg viewBox="0 0 64 32" class="w-12 h-6 fill-current" xmlns="http://www.w3.org/2000/svg">
+                <path d="M4 22 C4 20 6 18 9 18 L13 18 L18 10 C19.5 7.5 22.5 6 26 6 L44 6 C47.5 6 50.5 8 52 11 L56 18 L58 18 C61 18 63 20 63 23 C63 24.5 62 25.5 60.5 25.5 L55 25.5 C54 22 51 19 47 19 C43 19 40 22 39 25.5 L25 25.5 C24 22 21 19 17 19 C13 19 10 22 9 25.5 L3.5 25.5 C2 25.5 1 24.5 1 23 C1 22.5 2 22 4 22 Z" opacity="0.95"/>
+                <path d="M21 10.5 L26.5 8 L37 8 L37 17 L17.5 17 Z" fill="#0A0A0A" opacity="0.4"/>
+                <path d="M39.5 8 L44 8 C46.5 8 48.5 9.5 49.5 11.5 L53 17 L39.5 17 Z" fill="#0A0A0A" opacity="0.4"/>
+                <circle cx="17" cy="25.5" r="5.5" fill="currentColor"/>
+                <circle cx="17" cy="25.5" r="2.5" fill="#0A0A0A"/>
+                <circle cx="47" cy="25.5" r="5.5" fill="currentColor"/>
+                <circle cx="47" cy="25.5" r="2.5" fill="#0A0A0A"/>
+            </svg>`;
         },
 
         getVehicleIcon(slug) {
