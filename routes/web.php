@@ -19,6 +19,7 @@ Route::get('/proteccion-parabrisas-santiago', [PageController::class, 'proteccio
 Route::get('/detailing-interior', [PageController::class, 'detailingInterior'])->name('detailing-interior');
 Route::get('/tratamiento-ceramico', [PageController::class, 'tratamientoCeramico'])->name('tratamiento-ceramico');
 Route::get('/restauracion-de-focos', [PageController::class, 'restauracionDeFocos'])->name('restauracion-de-focos');
+Route::get('/sitemap.xml', [PageController::class, 'sitemap'])->name('sitemap');
 
 // Redirects for legacy SEO/Next.js paths
 Route::redirect('/cotizar', '/reserva');

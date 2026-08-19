@@ -58,7 +58,59 @@
         <meta name="description" content="@yield('meta_description', 'Centro de detailing automotriz premium en Chicureo, Chile. Pulido profesional, tratamiento cerámico, detailing interior y exterior.')">
     @endif
     <meta name="keywords" content="@yield('meta_keywords', 'car detailing, detailing chicureo, pulido de autos, tratamiento cerámico, detailing premium, lavado premium, corrección de pintura, High Contrast Detailing')">
-    <meta name="robots" content="@yield('meta_robots', 'index, follow')">
+    <meta name="robots" content="@yield('meta_robots', 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1')">
+    <link rel="canonical" href="{{ url()->current() }}">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="High Contrast Detailing Center">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:title" content="{{ $__seo && $__seo->seo_title ? $__seo->seo_title : 'High Contrast Detailing Center | Car Detailing Premium en Chicureo' }}">
+    <meta property="og:description" content="{{ $__seo && $__seo->seo_description ? $__seo->seo_description : 'Centro de detailing automotriz premium en Chicureo, Chile. Pulido profesional, tratamiento cerámico 9H, ExoShield y detailing integral.' }}">
+    <meta property="og:image" content="{{ asset('assets/images/galeria/HCD-70.jpg') }}">
+    <meta property="og:locale" content="es_CL">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="{{ url()->current() }}">
+    <meta name="twitter:title" content="{{ $__seo && $__seo->seo_title ? $__seo->seo_title : 'High Contrast Detailing Center' }}">
+    <meta name="twitter:description" content="{{ $__seo && $__seo->seo_description ? $__seo->seo_description : 'Centro de detailing automotriz premium en Chicureo, Chile.' }}">
+    <meta name="twitter:image" content="{{ asset('assets/images/galeria/HCD-70.jpg') }}">
+
+    <!-- Schema.org JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "AutoRepair",
+      "name": "High Contrast Detailing Center",
+      "image": "{{ asset('assets/images/galeria/HCD-70.jpg') }}",
+      "@id": "https://highcontrastdetailingcenter.cl",
+      "url": "https://highcontrastdetailingcenter.cl",
+      "telephone": "{{ $profile->phone ?? '+56912345678' }}",
+      "priceRange": "$$$",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "{{ $profile->address_line1 ?? 'Chicureo' }}",
+        "addressLocality": "Colina",
+        "addressRegion": "Región Metropolitana",
+        "addressCountry": "CL"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": -33.2750,
+        "longitude": -70.6750
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+        "opens": "08:30",
+        "closes": "18:30"
+      },
+      "sameAs": [
+        "https://www.instagram.com/{{ ltrim($profile->instagram ?? 'highcontrastdc', '@') }}"
+      ]
+    }
+    </script>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -407,11 +459,14 @@
                     <h3 class="font-display font-bold text-white mb-5 text-xs uppercase tracking-[0.2em] text-brand">
                         Servicios Élite
                     </h3>
-                    <ul class="space-y-3">
+                    <ul class="space-y-2.5">
                         <li><a href="/limpieza-y-detallado" class="text-white/60 hover:text-brand transition-colors text-sm font-light">Limpieza & Detallado</a></li>
-                        <li><a href="/sellado-ceramico" class="text-white/60 hover:text-brand transition-colors text-sm font-light">Ceramic Coating Gtechniq</a></li>
+                        <li><a href="/sellado-ceramico" class="text-white/60 hover:text-brand transition-colors text-sm font-light">Sellado Cerámico Gtechniq</a></li>
                         <li><a href="/pulido-de-autos-santiago" class="text-white/60 hover:text-brand transition-colors text-sm font-light">Corrección de Pintura</a></li>
-                        <li><a href="/proteccion-parabrisas-santiago" class="text-white/60 hover:text-brand transition-colors text-sm font-light">Protección ExoShield</a></li>
+                        <li><a href="/proteccion-parabrisas-santiago" class="text-white/60 hover:text-brand transition-colors text-sm font-light">Protección ExoShield SPRINT</a></li>
+                        <li><a href="/detailing-interior" class="text-white/60 hover:text-brand transition-colors text-sm font-light">Detailing Interior a Vapor</a></li>
+                        <li><a href="/tratamiento-ceramico" class="text-white/60 hover:text-brand transition-colors text-sm font-light">Tratamiento Cerámico 9H</a></li>
+                        <li><a href="/restauracion-de-focos" class="text-white/60 hover:text-brand transition-colors text-sm font-light">Restauración de Focos</a></li>
                     </ul>
                 </div>
 
@@ -445,8 +500,9 @@
                     <h3 class="font-display font-bold text-white mb-5 text-xs uppercase tracking-[0.2em] text-brand">
                         Acceso Rápido
                     </h3>
-                    <ul class="space-y-3">
+                    <ul class="space-y-2.5">
                         <li><a href="/reserva" class="text-white/60 hover:text-brand transition-colors text-sm font-light">Cotizador Online</a></li>
+                        <li><a href="/nosotros" class="text-white/60 hover:text-brand transition-colors text-sm font-light">Nuestra Historia</a></li>
                         <li><a href="/#galeria" class="text-white/60 hover:text-brand transition-colors text-sm font-light">Galería de Trabajos</a></li>
                         <li><a href="/#faq" class="text-white/60 hover:text-brand transition-colors text-sm font-light">Preguntas Frecuentes</a></li>
                     </ul>
