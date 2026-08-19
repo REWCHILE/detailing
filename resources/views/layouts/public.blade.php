@@ -79,37 +79,37 @@
 
     <!-- Schema.org JSON-LD Structured Data -->
     <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "AutoRepair",
-      "name": "High Contrast Detailing Center",
-      "image": "{{ asset('assets/images/galeria/HCD-70.jpg') }}",
-      "@id": "https://highcontrastdetailingcenter.cl",
-      "url": "https://highcontrastdetailingcenter.cl",
-      "telephone": "{{ $profile->phone ?? '+56912345678' }}",
-      "priceRange": "$$$",
-      "address": {
-        "@type": "PostalAddress",
-        "streetAddress": "{{ $profile->address_line1 ?? 'Chicureo' }}",
-        "addressLocality": "Colina",
-        "addressRegion": "Región Metropolitana",
-        "addressCountry": "CL"
-      },
-      "geo": {
-        "@type": "GeoCoordinates",
-        "latitude": -33.2750,
-        "longitude": -70.6750
-      },
-      "openingHoursSpecification": {
-        "@type": "OpeningHoursSpecification",
-        "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-        "opens": "08:30",
-        "closes": "18:30"
-      },
-      "sameAs": [
-        "https://www.instagram.com/{{ ltrim($profile->instagram ?? 'highcontrastdc', '@') }}"
+    {!! json_encode([
+      '@context' => 'https://schema.org',
+      '@type' => 'AutoRepair',
+      'name' => 'High Contrast Detailing Center',
+      'image' => asset('assets/images/galeria/HCD-70.jpg'),
+      '@id' => 'https://highcontrastdetailingcenter.cl',
+      'url' => 'https://highcontrastdetailingcenter.cl',
+      'telephone' => $profile->phone ?? '+56912345678',
+      'priceRange' => '$$$',
+      'address' => [
+        '@type' => 'PostalAddress',
+        'streetAddress' => $profile->address_line1 ?? 'Chicureo',
+        'addressLocality' => 'Colina',
+        'addressRegion' => 'Región Metropolitana',
+        'addressCountry' => 'CL'
+      ],
+      'geo' => [
+        '@type' => 'GeoCoordinates',
+        'latitude' => -33.2750,
+        'longitude' => -70.6750
+      ],
+      'openingHoursSpecification' => [
+        '@type' => 'OpeningHoursSpecification',
+        'dayOfWeek' => ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+        'opens' => '08:30',
+        'closes' => '18:30'
+      ],
+      'sameAs' => [
+        'https://www.instagram.com/' . ltrim($profile->instagram ?? 'highcontrastdc', '@')
       ]
-    }
+    ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) !!}
     </script>
     
     <!-- Google Fonts -->
