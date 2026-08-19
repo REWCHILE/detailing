@@ -322,96 +322,99 @@
 
     </nav>
 
-    <!-- Mobile Navigation Panel -->
-    <div x-show="isMobileOpen" x-transition class="md:hidden fixed inset-0 z-50 overflow-y-auto px-8 pt-24 mobile-nav-panel" style="display: none;">
-        <style>
-            .mobile-nav-panel {
-                background: rgba(10, 10, 10, 0.98) !important;
-                backdrop-filter: blur(25px) !important;
-                -webkit-backdrop-filter: blur(25px) !important;
-                z-index: 99999 !important;
-            }
-            .mobile-nav-link {
-                color: rgba(255, 255, 255, 0.9) !important;
-                transition: color 0.2s ease;
-            }
-            .mobile-nav-link:hover, .mobile-nav-link.active {
-                color: #FB2C6B !important;
-            }
-            .mobile-nav-close {
-                color: rgba(255, 255, 255, 0.6) !important;
-            }
-            .mobile-nav-close:hover {
-                color: #ffffff !important;
-            }
-            .mobile-services-box {
-                background: rgba(255, 255, 255, 0.03) !important;
-                border: 1px solid rgba(255, 255, 255, 0.08) !important;
-            }
-            .mobile-services-title {
-                color: rgba(255, 255, 255, 0.4) !important;
-            }
-            .mobile-service-link {
-                color: rgba(255, 255, 255, 0.8) !important;
-                transition: color 0.2s ease;
-            }
-            .mobile-service-link:hover, .mobile-service-link.active {
-                color: #FB2C6B !important;
-            }
-            .mobile-service-icon {
-                background: rgba(251, 44, 107, 0.1) !important;
-                color: #FB2C6B !important;
-                padding: 8px !important;
-                border-radius: 8px !important;
-                display: inline-flex !important;
-                align-items: center !important;
-                justify-content: center !important;
-                transition: all 0.25s ease !important;
-            }
-            .mobile-service-link:hover .mobile-service-icon, .mobile-service-link.active .mobile-service-icon {
-                background: #FB2C6B !important;
-                color: #ffffff !important;
-            }
-        </style>
-        <button @click="isMobileOpen = false" class="absolute right-6 top-6 p-2 mobile-nav-close" aria-label="Cerrar menu">
-            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
-        </button>
-        <div class="flex flex-col gap-4 pb-12">
-            <a href="/" @click="isMobileOpen = false" class="px-5 py-4 font-display text-2xl font-bold mobile-nav-link {{ request()->is('/') ? 'active' : '' }}">Inicio</a>
-            <a href="/nosotros" @click="isMobileOpen = false" class="px-5 py-4 font-display text-2xl font-bold mobile-nav-link {{ request()->is('nosotros') ? 'active' : '' }}">Nosotros</a>
+    <!-- Mobile Navigation Slide-Over Drawer (Right to Left) -->
+    <div x-show="isMobileOpen" 
+         class="md:hidden fixed inset-0 z-[99999] overflow-hidden" 
+         style="display: none;"
+         x-cloak>
+        
+        <!-- Backdrop Overlay -->
+        <div x-show="isMobileOpen"
+             x-transition:enter="transition-opacity ease-out duration-300"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition-opacity ease-in duration-200"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             @click="isMobileOpen = false"
+             class="fixed inset-0 bg-black/80 backdrop-blur-md"></div>
+
+        <!-- Slide-in Drawer Container -->
+        <div x-show="isMobileOpen"
+             x-transition:enter="transform transition ease-out duration-300"
+             x-transition:enter-start="translate-x-full"
+             x-transition:enter-end="translate-x-0"
+             x-transition:leave="transform transition ease-in duration-200"
+             x-transition:leave-start="translate-x-0"
+             x-transition:leave-end="translate-x-full"
+             class="fixed inset-y-0 right-0 w-full max-w-[360px] sm:max-w-sm bg-[#0E0E0E]/98 border-l border-white/10 shadow-2xl backdrop-blur-2xl flex flex-col justify-between overflow-y-auto px-6 py-7 text-center items-center">
             
-            <div class="space-y-3 rounded-3xl p-5 mobile-services-box">
-                <div class="text-xs font-bold uppercase tracking-wider mobile-services-title" style="margin-bottom: 8px;">Servicios</div>
-                
-                @if(isset($navCategoryOrder))
-                    @foreach($navCategoryOrder as $catId)
-                        @if(isset($catDetails[$catId]))
-                            @php $detail = $catDetails[$catId]; @endphp
-                            <a href="{{ $detail['url'] }}" @click="isMobileOpen = false" class="flex items-center font-bold mobile-service-link text-white transition-all duration-200" style="padding: 10px 0; gap: 16px;">
-                                <span class="rounded-xl flex items-center justify-center shrink-0" style="width: 40px; height: 40px; background-color: {{ $detail['bg_raw'] }}; color: {{ $detail['color_raw'] }}">
-                                    {!! $detail['icon'] !!}
-                                </span>
-                                <span class="text-base tracking-tight" style="white-space: nowrap;">{{ $detail['label'] }}</span>
-                            </a>
-                        @endif
-                    @endforeach
-                @endif
+            <!-- Drawer Header (Close Button & Logo) -->
+            <div class="w-full flex items-center justify-between pb-4 border-b border-white/10">
+                <div class="flex items-center gap-2.5">
+                    <img src="{{ $profile->logo ? asset($profile->logo) : asset('assets/logos/main-logo.png') }}" alt="{{ $profile->business_name ?? 'High Contrast' }}" class="h-8 w-8 object-contain">
+                    <span class="font-display font-bold text-white text-sm tracking-tight">HIGH CONTRAST</span>
+                </div>
+                <button @click="isMobileOpen = false" class="p-2 rounded-full bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-colors" aria-label="Cerrar menú">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
+                </button>
             </div>
 
-            <a href="/#galeria" @click="isMobileOpen = false" class="px-5 py-4 font-display text-2xl font-bold mobile-nav-link">Galeria</a>
-            <a href="/#testimonios" @click="isMobileOpen = false" class="px-5 py-4 font-display text-2xl font-bold mobile-nav-link">Testimonios</a>
-            <a href="/#faq" @click="isMobileOpen = false" class="px-5 py-4 font-display text-2xl font-bold mobile-nav-link">Preguntas</a>
-
-            @if(auth()->check() && (auth()->user()->isAdmin() || auth()->user()->isStaff()))
-                <a href="{{ route('admin.dashboard') }}" @click="isMobileOpen = false" class="mt-4 rounded-full bg-white/10 border border-white/20 px-8 py-4 text-center text-lg font-semibold text-white shadow-lg flex items-center justify-center gap-2 hover:bg-white/20 transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-brand"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
-                    Mi portal
+            <!-- Drawer Center Content (Centered Navigation) -->
+            <div class="w-full my-auto py-5 flex flex-col items-center justify-center space-y-3.5">
+                <a href="/" @click="isMobileOpen = false" class="w-full py-1.5 font-display text-xl sm:text-2xl font-bold tracking-tight text-white/90 hover:text-brand transition-colors {{ request()->is('/') ? 'text-brand' : '' }}">
+                    Inicio
                 </a>
-            @endif
+                <a href="/nosotros" @click="isMobileOpen = false" class="w-full py-1.5 font-display text-xl sm:text-2xl font-bold tracking-tight text-white/90 hover:text-brand transition-colors {{ request()->is('nosotros') ? 'text-brand' : '' }}">
+                    Nosotros
+                </a>
 
-            <a href="/reserva" @click="isMobileOpen = false" class="mt-4 rounded-full bg-brand px-8 py-4 text-center text-lg font-semibold text-white shadow-lg shadow-brand/20">
-                Cotiza ahora
-            </a>
+                <!-- Services Box (Centered Grid/List) -->
+                <div class="w-full rounded-2xl bg-white/[0.03] border border-white/[0.08] p-3.5 text-center">
+                    <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-brand/80 mb-2.5">Servicios Élite</div>
+                    <div class="grid grid-cols-1 gap-1.5">
+                        @if(isset($navCategoryOrder))
+                            @foreach($navCategoryOrder as $catId)
+                                @if(isset($catDetails[$catId]))
+                                    @php $detail = $catDetails[$catId]; @endphp
+                                    <a href="{{ $detail['url'] }}" @click="isMobileOpen = false" class="flex items-center justify-center gap-2.5 p-2 rounded-xl bg-white/[0.02] hover:bg-white/[0.08] text-white/85 hover:text-brand transition-all text-xs sm:text-sm font-semibold">
+                                        <span class="w-6 h-6 rounded-md flex items-center justify-center shrink-0" style="background-color: {{ $detail['bg_raw'] }}; color: {{ $detail['color_raw'] }}">
+                                            {!! $detail['icon'] !!}
+                                        </span>
+                                        <span>{{ $detail['label'] }}</span>
+                                    </a>
+                                @endif
+                            @endforeach
+                        @endif
+                    </div>
+                </div>
+
+                <a href="/#galeria" @click="isMobileOpen = false" class="w-full py-1 font-display text-base font-bold text-white/80 hover:text-brand transition-colors">Galería</a>
+                <a href="/#testimonios" @click="isMobileOpen = false" class="w-full py-1 font-display text-base font-bold text-white/80 hover:text-brand transition-colors">Testimonios</a>
+                <a href="/#faq" @click="isMobileOpen = false" class="w-full py-1 font-display text-base font-bold text-white/80 hover:text-brand transition-colors">Preguntas</a>
+
+                <!-- Portal Link if authenticated -->
+                @if(auth()->check() && (auth()->user()->isAdmin() || auth()->user()->isStaff()))
+                    <a href="{{ route('admin.dashboard') }}" @click="isMobileOpen = false" class="w-full rounded-full bg-white/10 border border-white/20 px-6 py-2.5 text-center text-xs sm:text-sm font-bold text-white shadow-md flex items-center justify-center gap-2 hover:bg-white/20 transition-all">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-brand"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                        Mi portal
+                    </a>
+                @endif
+
+                <!-- CTA Button -->
+                <a href="/reserva" @click="isMobileOpen = false" class="w-full rounded-full bg-brand hover:bg-brand-dark px-6 py-3 text-center text-sm sm:text-base font-bold text-white shadow-xl shadow-brand/25 transition-all">
+                    Cotiza ahora
+                </a>
+            </div>
+
+            <!-- Drawer Footer (Social / Contact Info) -->
+            <div class="w-full pt-3.5 border-t border-white/10 flex flex-col items-center gap-1.5 text-xs text-white/40 font-light">
+                <a href="https://instagram.com/{{ ltrim($profile->instagram ?? 'highcontrastdc', '@') }}" target="_blank" rel="noopener noreferrer" class="text-white/60 hover:text-brand font-medium flex items-center gap-1.5 transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-brand"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
+                    <span>{{ '@' . ltrim($profile->instagram ?? 'highcontrastdc', '@') }}</span>
+                </a>
+                <p class="text-[11px]">© {{ date('Y') }} High Contrast Detailing Center</p>
+            </div>
         </div>
     </div>
 
