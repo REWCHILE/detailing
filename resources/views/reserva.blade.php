@@ -427,33 +427,34 @@
                                 <button 
                                     type="button"
                                     @click="selectVehicle(vt)"
-                                    class="relative rounded-2xl border-2 transition-all duration-300 text-left p-5 flex flex-col justify-between cursor-pointer group select-none overflow-hidden"
+                                    class="relative rounded-[2rem] border-2 transition-all duration-300 text-left p-4 sm:p-5 flex flex-col justify-between cursor-pointer group select-none overflow-hidden"
                                     :class="selectedVehicle && selectedVehicle.id === vt.id
-                                        ? 'border-brand bg-brand/15 shadow-xl shadow-brand/30 ring-2 ring-brand/40 scale-[1.02]'
-                                        : 'border-white/15 bg-zinc-900/90 hover:border-brand/50 hover:bg-zinc-900'"
+                                        ? 'border-brand bg-zinc-950 shadow-2xl shadow-brand/40 ring-2 ring-brand/50 scale-[1.02]'
+                                        : 'border-white/15 bg-zinc-950/80 hover:border-brand/50 hover:bg-zinc-900'"
                                 >
-                                    <!-- Background ambient glow when selected -->
-                                    <div x-show="selectedVehicle && selectedVehicle.id === vt.id" class="absolute -top-10 -right-10 w-24 h-24 bg-brand/30 rounded-full blur-2xl pointer-events-none"></div>
+                                    <!-- Ambient Glow when selected -->
+                                    <div x-show="selectedVehicle && selectedVehicle.id === vt.id" class="absolute -top-12 -right-12 w-32 h-32 bg-brand/30 rounded-full blur-3xl pointer-events-none"></div>
 
+                                    <!-- Top Row: 3D Artwork Image & Checkbox -->
                                     <div class="flex items-center justify-between gap-3 mb-3">
-                                        <div class="p-2.5 rounded-xl border transition-all duration-300 flex items-center justify-center shrink-0"
+                                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden bg-black p-1 border transition-all duration-300 shrink-0 shadow-lg"
                                              :class="selectedVehicle && selectedVehicle.id === vt.id 
-                                                ? 'bg-brand text-white border-brand shadow-lg shadow-brand/40' 
-                                                : 'bg-white/5 text-brand border-white/10 group-hover:border-brand/40 group-hover:bg-brand/10'">
-                                            <span x-html="getVehicleSvg(vt.slug)"></span>
+                                                ? 'border-brand ring-2 ring-brand/40 shadow-[0_0_20px_rgba(251,44,107,0.5)]' 
+                                                : 'border-white/10 group-hover:border-brand/40'">
+                                            <img :src="getVehicleImage(vt.slug)" :alt="vt.name" class="w-full h-full object-cover rounded-xl transition-transform duration-500 group-hover:scale-110">
                                         </div>
 
-                                        <!-- Selected Check Badge -->
-                                        <div class="w-6 h-6 rounded-full flex items-center justify-center transition-all duration-300"
-                                             :class="selectedVehicle && selectedVehicle.id === vt.id ? 'bg-brand text-white shadow-md' : 'bg-white/5 text-transparent border border-white/15 group-hover:border-brand/40'">
-                                            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                                        <!-- Selected Check Circle -->
+                                        <div class="w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300"
+                                             :class="selectedVehicle && selectedVehicle.id === vt.id ? 'bg-brand text-white shadow-lg shadow-brand/60' : 'bg-white/5 text-transparent border border-white/20 group-hover:border-brand/50'">
+                                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                                                 <polyline points="20 6 9 17 4 12"/>
                                             </svg>
                                         </div>
                                     </div>
 
                                     <div>
-                                        <h5 class="font-display italic font-black text-white text-lg tracking-tight mb-1 transition-colors"
+                                        <h5 class="font-display italic font-black text-white text-lg sm:text-xl tracking-tight mb-1 transition-colors"
                                             :class="selectedVehicle && selectedVehicle.id === vt.id ? 'text-brand' : 'text-white group-hover:text-brand'"
                                             x-text="vt.name"></h5>
                                         <p class="text-white/50 text-xs line-clamp-2" x-text="vt.description"></p>
@@ -463,7 +464,7 @@
                                         <span class="uppercase tracking-wider transition-colors"
                                               :class="selectedVehicle && selectedVehicle.id === vt.id ? 'text-brand font-black' : 'text-white/40 group-hover:text-brand'"
                                               x-text="selectedVehicle && selectedVehicle.id === vt.id ? '✓ SELECCIONADO' : 'ELEGIR'"></span>
-                                        <span class="text-white/80 font-mono font-bold text-xs" x-text="selectedService ? formatCLP(getAdjustedPriceForVehicle(selectedService, vt)) : ''"></span>
+                                        <span class="text-white/90 font-mono font-black text-xs sm:text-sm" x-text="selectedService ? formatCLP(getAdjustedPriceForVehicle(selectedService, vt)) : ''"></span>
                                     </div>
                                 </button>
                             </template>
@@ -1243,6 +1244,17 @@ function bookingWizard() {
                 <circle cx="47" cy="25.5" r="5.5" fill="currentColor"/>
                 <circle cx="47" cy="25.5" r="2.5" fill="#0A0A0A"/>
             </svg>`;
+        },
+
+        getVehicleImage(slug) {
+            const s = (slug || '').toLowerCase();
+            if (s.includes('grande') || s.includes('camioneta') || s.includes('pickup')) {
+                return '/assets/images/vehicles/vehicle_grandes.jpg';
+            }
+            if (s.includes('mediano') || s.includes('suv') || s.includes('crossover')) {
+                return '/assets/images/vehicles/vehicle_medianos.jpg';
+            }
+            return '/assets/images/vehicles/vehicle_autos.jpg';
         },
 
         getVehicleIcon(slug) {
