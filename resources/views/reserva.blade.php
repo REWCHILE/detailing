@@ -523,7 +523,7 @@
                                               :class="isExtraSelected(extra) 
                                                 ? 'bg-brand text-white border-brand shadow-[0_0_15px_rgba(251,44,107,0.5)]' 
                                                 : 'bg-brand/15 text-brand border-brand/30 group-hover:bg-brand/25 group-hover:border-brand/60'"
-                                              x-text="'+ ' + formatCLP(extra.price)">
+                                              x-text="parseInt(extra.price) === 0 ? (isCourtesy(extra) ? '🎁 CORTESÍA' : '✓ INCLUIDO') : ('+ ' + formatCLP(extra.price))">
                                         </span>
                                     </div>
                                 </div>
@@ -594,7 +594,7 @@
                         </div>
 
                         <!-- Detalle de Ítems Seleccionados -->
-                        <div class="py-6 space-y-4 border-b border-white/10">
+                        <div class="py-6 space-y-5 border-b border-white/10">
                             <!-- Servicio Principal -->
                             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-zinc-900/90 border border-white/10">
                                 <div class="flex items-center gap-3.5">
@@ -618,29 +618,56 @@
                                 </div>
                             </div>
 
-                            <!-- Extras / Tratamientos Adicionales Seleccionados -->
-                            <template x-if="selectedExtras.length > 0">
+                            <!-- 1. Servicios y Tratamientos que incluye tu compra -->
+                            <template x-if="includedTreatments.length > 0">
                                 <div class="space-y-2.5 pt-2">
-                                    <span class="text-xs font-extrabold uppercase tracking-wider text-white/60 block pl-1">
-                                        Tratamientos Adicionales Agregados (<span x-text="selectedExtras.length"></span>):
-                                    </span>
-                                    <template x-for="extra in selectedExtras" :key="extra.id || extra.name">
-                                        <div class="flex items-center justify-between gap-3 p-3.5 rounded-2xl bg-zinc-900/60 border border-white/10 hover:border-brand/40 transition-colors">
-                                            <div class="flex items-center gap-3">
-                                                <div class="w-7 h-7 rounded-lg bg-brand/10 border border-brand/30 text-brand flex items-center justify-center text-xs font-black shrink-0">
+                                    <div class="flex items-center justify-between pl-1">
+                                        <span class="text-xs font-extrabold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+                                            <span>✓</span>
+                                            <span>Servicios que incluye tu compra (<span x-text="includedTreatments.length"></span>):</span>
+                                        </span>
+                                        <span class="text-[10px] uppercase font-bold text-white/40 tracking-wider">Incluidos en el valor base</span>
+                                    </div>
+                                    <template x-for="item in includedTreatments" :key="item.id || item.name || item">
+                                        <div class="flex items-center justify-between gap-3 p-3 rounded-2xl bg-zinc-900/50 border border-white/10">
+                                            <div class="flex items-center gap-2.5">
+                                                <div class="w-6 h-6 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 flex items-center justify-center text-xs font-black shrink-0">
                                                     ✓
                                                 </div>
-                                                <span class="text-sm font-bold text-white/95" x-text="extra.name"></span>
+                                                <span class="text-xs sm:text-sm font-semibold text-white/90" x-text="item.name || item"></span>
                                             </div>
-                                            <span class="text-brand font-mono font-bold text-sm shrink-0" x-text="'+ ' + formatCLP(extra.price)"></span>
+                                            <span class="px-2.5 py-1 rounded-full text-[11px] font-black uppercase tracking-wider font-mono shrink-0"
+                                                  :class="isCourtesy(item) ? 'bg-pink-500/15 text-pink-400 border border-pink-500/30' : 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'"
+                                                  x-text="isCourtesy(item) ? '🎁 CORTESÍA' : '✓ INCLUIDO'">
+                                            </span>
                                         </div>
                                     </template>
                                 </div>
                             </template>
 
-                            <template x-if="selectedExtras.length === 0">
-                                <div class="p-3.5 rounded-2xl bg-zinc-900/40 border border-white/5 text-xs text-white/40 italic flex items-center gap-2">
-                                    <span>✨ Sin tratamientos adicionales seleccionados.</span>
+                            <!-- 2. Adicionales & Extras Seleccionados (De pago) -->
+                            <template x-if="paidExtras.length > 0">
+                                <div class="space-y-2.5 pt-2">
+                                    <span class="text-xs font-extrabold uppercase tracking-wider text-brand block pl-1">
+                                        + Adicionales Seleccionados (<span x-text="paidExtras.length"></span>):
+                                    </span>
+                                    <template x-for="extra in paidExtras" :key="extra.id || extra.name">
+                                        <div class="flex items-center justify-between gap-3 p-3.5 rounded-2xl bg-zinc-900/80 border border-brand/30 hover:border-brand transition-colors">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-7 h-7 rounded-lg bg-brand/15 border border-brand/40 text-brand flex items-center justify-center text-xs font-black shrink-0">
+                                                    +
+                                                </div>
+                                                <span class="text-sm font-bold text-white/95" x-text="extra.name"></span>
+                                            </div>
+                                            <span class="text-brand font-mono font-black text-sm shrink-0" x-text="'+ ' + formatCLP(extra.price)"></span>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+
+                            <template x-if="paidExtras.length === 0">
+                                <div class="p-3 rounded-2xl bg-zinc-900/30 border border-white/5 text-xs text-white/40 italic flex items-center gap-2">
+                                    <span>✨ Sin adicionales de pago agregados (puedes agregar extras opcionales en el paso superior).</span>
                                 </div>
                             </template>
                         </div>
@@ -1498,6 +1525,58 @@ function bookingWizard() {
 
         isExtraSelected(extra) {
             return this.selectedExtras.some(e => (e.id === extra.id || e.name === extra.name));
+        },
+
+        isCourtesy(item) {
+            if (!item) return false;
+            if (item.pivot && (item.pivot.is_courtesy == 1 || item.pivot.is_courtesy === true)) return true;
+            if (item.is_courtesy == 1 || item.is_courtesy === true) return true;
+            const name = ((item.name || item || '') + '').toLowerCase();
+            return name.includes('cortesía') || name.includes('cortesia');
+        },
+
+        get includedTreatments() {
+            if (!this.selectedService) return [];
+            const result = [];
+            
+            // 1. Add any items from selectedExtras that are included or marked courtesy or price 0
+            this.selectedExtras.forEach(e => {
+                const isInc = (e.pivot && (e.pivot.is_included == 1 || e.pivot.is_courtesy == 1)) || parseInt(e.price) === 0 || this.isCourtesy(e);
+                if (isInc && !result.some(r => r.name === e.name)) {
+                    result.push(e);
+                }
+            });
+
+            // 2. Also pull included items from the selected service's linked extras
+            if (this.selectedService.extras && Array.isArray(this.selectedService.extras)) {
+                this.selectedService.extras.forEach(e => {
+                    const isInc = (e.pivot && (e.pivot.is_included == 1 || e.pivot.is_courtesy == 1)) || parseInt(e.price) === 0 || this.isCourtesy(e);
+                    if (isInc && !result.some(r => r.name === e.name)) {
+                        result.push(e);
+                    }
+                });
+            }
+
+            // 3. If no extras found, extract from service bullet points
+            if (result.length === 0) {
+                const points = this.getServiceDetailPoints(this.selectedService);
+                points.forEach(p => {
+                    result.push({ 
+                        name: p, 
+                        price: 0, 
+                        is_courtesy: (p.toLowerCase().includes('cortesía') || p.toLowerCase().includes('cortesia')) ? 1 : 0 
+                    });
+                });
+            }
+
+            return result;
+        },
+
+        get paidExtras() {
+            return this.selectedExtras.filter(e => {
+                const isInc = (e.pivot && (e.pivot.is_included == 1 || e.pivot.is_courtesy == 1)) || parseInt(e.price) === 0 || this.isCourtesy(e);
+                return !isInc && parseInt(e.price) > 0;
+            });
         },
 
         selectVehicle(vt) {
