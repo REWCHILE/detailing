@@ -44,20 +44,31 @@ class EmailService
         }
 
         $encryption = null;
+        $scheme = null;
         if ($secure) {
-            $encryption = ($port == 465) ? 'ssl' : 'tls';
+            if ((int)$port === 465) {
+                $encryption = 'ssl';
+                $scheme = 'smtps';
+            } else {
+                $encryption = 'tls';
+                $scheme = null;
+            }
         }
 
         $config = [
             'transport' => 'smtp',
+            'scheme' => $scheme,
             'host' => $host,
             'port' => (int) $port,
             'encryption' => $encryption,
             'username' => $user,
             'password' => $password,
-            'timeout' => null,
-            'local_domain' => env('MAIL_EHLO_DOMAIN'),
+            'timeout' => 15,
+            'local_domain' => env('MAIL_EHLO_DOMAIN', parse_url((string) env('APP_URL', 'http://localhost'), PHP_URL_HOST)),
         ];
+
+        // Purge any previously cached instance of the dynamic_smtp mailer
+        Mail::purge('dynamic_smtp');
 
         // Register custom mailer configuration in runtime
         config(['mail.mailers.dynamic_smtp' => $config]);
