@@ -123,17 +123,6 @@
                                         <div class="absolute inset-0 bg-gradient-to-r from-black/95 via-black/65 to-black/15 z-10 pointer-events-none"></div>
                                         <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 z-10 pointer-events-none"></div>
 
-                                        <!-- Top Row: Badge & Service Count -->
-                                        <div class="relative z-20 flex items-center justify-between gap-2">
-                                            <span class="px-4 py-1.5 rounded-full bg-black/80 border border-white/20 text-white text-[11px] sm:text-xs font-extrabold uppercase tracking-widest backdrop-blur-md shadow-lg flex items-center gap-2">
-                                                <span x-text="cat.icon"></span>
-                                                <span x-text="cat.badge"></span>
-                                            </span>
-                                            <span class="px-4 py-1.5 rounded-full bg-brand/20 border border-brand/50 text-brand text-xs sm:text-sm font-black uppercase tracking-wider backdrop-blur-md shadow-lg"
-                                                  x-text="getCategoryServicesCount(cat.key) + ' Servicios'">
-                                            </span>
-                                        </div>
-
                                         <!-- Bottom Row: Title in Pink, Description & CTA Button -->
                                         <div class="relative z-20 mt-auto pt-4">
                                             <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
@@ -221,30 +210,6 @@
                                             <!-- Cinematic Vignette for High Text Contrast and Rich Video Exposure -->
                                             <div class="absolute inset-0 bg-gradient-to-r from-black/95 via-black/65 to-black/15 z-10 pointer-events-none"></div>
                                             <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 z-10 pointer-events-none"></div>
-                                        </div>
-
-                                        <!-- Top Row: Badge & Protection/Benefit Pill -->
-                                        <div class="relative z-20 flex items-center justify-between gap-2">
-                                            <span class="px-4 py-1.5 rounded-full bg-black/80 border border-white/20 text-white text-[11px] sm:text-xs font-extrabold uppercase tracking-widest backdrop-blur-md shadow-lg flex items-center gap-2">
-                                                <span x-text="getServiceLevelBadgeIcon(srv)"></span>
-                                                <span x-text="getServiceLevelBadge(srv, index)"></span>
-                                            </span>
-
-                                            <div class="flex items-center gap-2">
-                                                <template x-if="selectedService && selectedService.id === srv.id">
-                                                    <span class="px-3.5 py-1.5 rounded-full bg-brand border border-brand/50 text-white text-[11px] sm:text-xs font-black uppercase tracking-wider backdrop-blur-md shadow-lg flex items-center gap-1.5">
-                                                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                                                        <span>Seleccionado</span>
-                                                    </span>
-                                                </template>
-                                                <span 
-                                                    class="px-4 py-1.5 rounded-full border text-xs sm:text-sm font-semibold backdrop-blur-md shadow-lg hidden sm:inline-flex items-center"
-                                                    :class="selectedService && selectedService.id === srv.id
-                                                        ? 'bg-brand/20 border-brand/50 text-brand'
-                                                        : 'bg-black/80 border-white/20 text-white/90'"
-                                                    x-text="getServiceProtectionSubtitle(srv)"
-                                                ></span>
-                                            </div>
                                         </div>
 
                                         <!-- Bottom Row: Title, Price & Action Buttons -->
