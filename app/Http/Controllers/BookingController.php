@@ -257,18 +257,24 @@ class BookingController extends Controller
         $service = Service::where('id', $serviceId)->orWhere('slug', $serviceId)->firstOrFail();
         $vehicleType = VehicleType::where('id', $vehicleTypeId)->orWhere('slug', $vehicleTypeId)->firstOrFail();
         
-        $requiredExtras = $service->extras()->wherePivot('is_required', true)->get();
+        // 1. Included / required extras from service configuration
+        $serviceExtras = $service->extras()->get();
+        $includedExtras = $serviceExtras->filter(function($e) {
+            return $e->pivot && ($e->pivot->is_required || $e->pivot->is_included || $e->pivot->is_courtesy);
+        });
+
+        // 2. Selected optional extras from customer request (searched globally in catalog)
         $optionalExtras = collect();
         if (!empty($extraIds)) {
-            $optionalExtras = $service->extras()
-                ->wherePivot('is_required', false)
-                ->where(function($q) use ($extraIds) {
-                    $q->whereIn('extras.id', $extraIds)
-                      ->orWhereIn('extras.slug', $extraIds);
-                })
-                ->get();
+            $optionalExtras = Extra::where(function($q) use ($extraIds) {
+                $q->whereIn('id', $extraIds)
+                  ->orWhereIn('slug', $extraIds)
+                  ->orWhereIn('name', $extraIds);
+            })->get();
         }
-        $extras = $requiredExtras->merge($optionalExtras)->unique('id');
+
+        // Merge both ensuring uniqueness
+        $extras = $includedExtras->merge($optionalExtras)->unique('id');
 
         $durationMinutes = $service->duration_minutes + $extras->sum('duration_minutes');
         $startAt = new DateTime($request->input('startAt'));
@@ -287,7 +293,15 @@ class BookingController extends Controller
         $externalReference = 'booking_' . $publicId . '_' . Str::random(8);
 
         $subtotal = $service->getPriceForVehicleType($vehicleType->id);
-        $extrasTotal = $extras->sum('price');
+        
+        // Calculate extras total: 0 CLP for included extras, full price for added extras
+        $extrasTotal = 0;
+        foreach ($extras as $extra) {
+            $isIncluded = $includedExtras->contains('id', $extra->id);
+            if (!$isIncluded) {
+                $extrasTotal += (int) $extra->price;
+            }
+        }
         $totalAmount = $subtotal + $extrasTotal;
 
         $profile = BusinessProfile::firstOrCreate(['id' => 'default']);
@@ -297,11 +311,19 @@ class BookingController extends Controller
 
         $customerEmail = strtolower(trim($request->input('customer.email')));
         $customerPhone = trim($request->input('customer.phone'));
-        $licensePlate = trim($request->input('vehicle.licensePlate'));
-        $normalizedPlate = strtoupper(preg_replace('/[^a-zA-Z0-9]/', '', $licensePlate));
+        $rawPlate = trim($request->input('vehicle.licensePlate', 'COTIZACION'));
+        $isQuotePlate = empty($rawPlate) || in_array(strtoupper($rawPlate), ['COTIZACION', 'COT', 'COTIZAR', 'SIN PATENTE', 'PROSPECTO', 'S/P']) || str_starts_with(strtoupper($rawPlate), 'COT-');
+        
+        if ($isQuotePlate) {
+            $licensePlate = 'COT-' . strtoupper(Str::random(6));
+            $normalizedPlate = strtoupper(preg_replace('/[^a-zA-Z0-9]/', '', $licensePlate));
+        } else {
+            $licensePlate = $rawPlate;
+            $normalizedPlate = strtoupper(preg_replace('/[^a-zA-Z0-9]/', '', $licensePlate));
+        }
 
         try {
-            $result = DB::transaction(function () use ($request, $service, $vehicleType, $extras, $startAt, $endAt, $expiresAt, $bookingStatus, $publicId, $externalReference, $subtotal, $extrasTotal, $totalAmount, $customerEmail, $customerPhone, $normalizedPlate, $profile, $durationMinutes, $now) {
+            $result = DB::transaction(function () use ($request, $service, $vehicleType, $extras, $includedExtras, $startAt, $endAt, $expiresAt, $bookingStatus, $publicId, $externalReference, $subtotal, $extrasTotal, $totalAmount, $customerEmail, $customerPhone, $licensePlate, $normalizedPlate, $isQuotePlate, $profile, $durationMinutes, $now) {
                 // Find or create customer
                 $customer = Customer::where('email', $customerEmail)
                     ->orWhere('phone', $customerPhone)
@@ -321,15 +343,18 @@ class BookingController extends Controller
                     $customer->update($customerData);
                 }
 
-                // Check plate conflict
-                $existingVehicle = CustomerVehicle::where('license_plate_normalized', $normalizedPlate)->first();
-                if ($existingVehicle && $existingVehicle->customer_id !== $customer->id) {
-                    throw new \Exception('LICENSE_PLATE_ALREADY_REGISTERED');
+                // Check plate conflict (skip for generated quote plates)
+                $existingVehicle = null;
+                if (!$isQuotePlate) {
+                    $existingVehicle = CustomerVehicle::where('license_plate_normalized', $normalizedPlate)->first();
+                    if ($existingVehicle && $existingVehicle->customer_id !== $customer->id) {
+                        throw new \Exception('LICENSE_PLATE_ALREADY_REGISTERED');
+                    }
                 }
 
                 $vehicleData = [
                     'vehicle_type_id' => $vehicleType->id,
-                    'license_plate' => $request->input('vehicle.licensePlate'),
+                    'license_plate' => $licensePlate,
                     'license_plate_normalized' => $normalizedPlate,
                 ];
 
@@ -391,13 +416,14 @@ class BookingController extends Controller
 
                 // Booking Extras
                 foreach ($extras as $extra) {
+                    $isIncluded = $includedExtras->contains('id', $extra->id);
                     BookingExtra::create([
                         'id' => (string) Str::ulid(),
                         'booking_id' => $booking->id,
                         'extra_id' => $extra->id,
                         'name_snapshot' => $extra->name,
-                        'price_snapshot' => $extra->price,
-                        'duration_minutes_snapshot' => $extra->duration_minutes,
+                        'price_snapshot' => $isIncluded ? 0 : (int) $extra->price,
+                        'duration_minutes_snapshot' => (int) $extra->duration_minutes,
                     ]);
                 }
 
@@ -426,10 +452,9 @@ class BookingController extends Controller
                 ]);
             } else {
                 try {
-                    \App\Services\EmailService::sendBookingEmail($result['booking'], 'CONFIRMED');
                     \App\Services\EmailService::sendQuoteNotificationEmails($result['booking']);
                 } catch (\Exception $e) {
-                    \Illuminate\Support\Facades\Log::error("[SMTP] Error sending confirmation email for manual booking: " . $e->getMessage());
+                    \Illuminate\Support\Facades\Log::error("[SMTP] Error sending notification email for booking: " . $e->getMessage());
                 }
             }
 
@@ -471,7 +496,7 @@ class BookingController extends Controller
         $booking = Booking::where('public_id', $cleanId)
             ->orWhere('id', $cleanId)
             ->orWhere(DB::raw('LOWER(public_id)'), strtolower($cleanId))
-            ->with(['customer', 'customerVehicle.vehicleType', 'extras', 'payments' => function($q) {
+            ->with(['customer', 'customerVehicle.vehicleType', 'service.extras', 'extras.extra', 'payments' => function($q) {
                 $q->orderBy('created_at', 'desc');
             }])
             ->first();

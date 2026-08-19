@@ -243,10 +243,10 @@
                     </button>
                     @if(auth()->check() && (auth()->user()->isAdmin() || auth()->user()->isStaff()))
                         <a href="{{ route('admin.dashboard') }}" 
-                           :class="isScrolled ? 'bg-black/5 dark:bg-white/10 text-slate-800 dark:text-white hover:bg-black/10 dark:hover:bg-white/20 border border-black/10 dark:border-white/10' : 'bg-slate-900/5 dark:bg-white/15 text-slate-800 dark:text-white hover:bg-slate-900/10 dark:hover:bg-white/25 border border-slate-900/10 dark:border-white/20 backdrop-blur-md'" 
+                           :class="isScrolled ? 'bg-black/5 dark:bg-white/10 text-black dark:text-white hover:bg-black/10 dark:hover:bg-white/20 border border-black/10 dark:border-white/10' : 'bg-white/15 text-white hover:bg-white/25 border border-white/25 backdrop-blur-md shadow-lg shadow-black/20'" 
                            class="rounded-full px-4 py-2 text-xs sm:text-sm font-bold transition-all duration-300 flex items-center gap-2 shadow-sm shrink-0">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-brand shrink-0"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
-                            <span>Mi portal</span>
+                            <span class="font-bold">Mi portal</span>
                         </a>
                     @endif
                     <a href="/reserva" class="rounded-full bg-brand px-6 py-2.5 text-sm font-semibold text-white transition-all duration-300 hover:bg-brand-dark hover:shadow-lg hover:shadow-brand/30">
@@ -456,7 +456,7 @@
             <!-- Footer Bottom with Powered by REW.CL -->
             <div class="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
                 <p class="text-white/40 text-xs font-light">
-                    © {{ date('Y') }} {{ $profile->business_name ?? 'High Contrast' }}. Todos los derechos reservados. Chicureo, Chile.
+                    © {{ date('Y') }} <span class="text-brand font-bold tracking-wide">{{ $profile->business_name ?? 'High Contrast Detailing Center' }}</span>. Todos los derechos reservados. Chicureo, Chile.
                 </p>
                 <div class="flex items-center gap-2 text-xs font-mono text-white/50">
                     <span>Powered by</span>

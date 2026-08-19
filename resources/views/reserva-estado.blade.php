@@ -168,17 +168,17 @@
                 Reserva {{ $booking->public_id }}
             </p>
             <h1 class="font-display text-4xl md:text-5xl font-extrabold text-black dark:text-white mb-4 transition-colors tracking-tight">
-                Estado de tu reserva
+                Estado de tu cotización
             </h1>
             <p class="text-black/60 dark:text-white/50 text-lg mb-10 transition-colors">
-                Tu reserva quedó registrada. Aquí puedes revisar el servicio, el horario y el estado actual del pago.
+                Tu solicitud ha quedado registrada correctamente. A continuación puedes revisar el detalle de los servicios seleccionados y el estado del proceso.
             </p>
 
             <!-- Status Indicator Grid -->
             <div class="grid gap-6 md:grid-cols-2 mb-10 fade-in-up" style="animation-delay: 200ms;">
                 <!-- Status card -->
                 <div class="rounded-2xl border border-black/5 dark:border-white/5 bg-black/[0.01] dark:bg-black/15 p-6 transition-all duration-300">
-                    <p class="text-black/40 dark:text-white/40 text-xs uppercase tracking-wider font-bold mb-2.5">Estado de la Reserva</p>
+                    <p class="text-black/40 dark:text-white/40 text-xs uppercase tracking-wider font-bold mb-2.5">Estado del Servicio</p>
                     <div class="flex items-center gap-3">
                         @if($booking->status?->value === 'CONFIRMED')
                             <span class="w-3.5 h-3.5 rounded-full bg-green-500 glow-dot-green"></span>
@@ -187,26 +187,18 @@
                             <span class="w-3.5 h-3.5 rounded-full bg-red-500"></span>
                             <span class="text-red-600 dark:text-red-400 font-extrabold text-lg">Cancelada</span>
                         @else
-                            <span class="w-3.5 h-3.5 rounded-full bg-yellow-500 glow-dot-yellow"></span>
-                            <span class="text-yellow-600 dark:text-yellow-400 font-extrabold text-lg">Pendiente de Confirmación</span>
+                            <span class="w-3.5 h-3.5 rounded-full bg-green-500 glow-dot-green"></span>
+                            <span class="text-green-600 dark:text-green-400 font-extrabold text-lg">Cotización Registrada</span>
                         @endif
                     </div>
                 </div>
 
                 <!-- Payment status card -->
                 <div class="rounded-2xl border border-black/5 dark:border-white/5 bg-black/[0.01] dark:bg-black/15 p-6 transition-all duration-300">
-                    <p class="text-black/40 dark:text-white/40 text-xs uppercase tracking-wider font-bold mb-2.5">Estado del Pago</p>
+                    <p class="text-black/40 dark:text-white/40 text-xs uppercase tracking-wider font-bold mb-2.5">Coordinación & Contacto</p>
                     <div class="flex items-center gap-3">
-                        @if($booking->payment_status?->value === 'PAID')
-                            <span class="w-3.5 h-3.5 rounded-full bg-green-500"></span>
-                            <span class="text-green-600 dark:text-green-400 font-extrabold text-lg">Pagado</span>
-                        @elseif($booking->payment_status?->value === 'REFUNDED')
-                            <span class="w-3.5 h-3.5 rounded-full bg-gray-500"></span>
-                            <span class="text-gray-600 dark:text-gray-400 font-extrabold text-lg">Reembolsado</span>
-                        @else
-                            <span class="w-3.5 h-3.5 rounded-full bg-yellow-500 glow-dot-yellow"></span>
-                            <span class="text-yellow-600 dark:text-yellow-400 font-extrabold text-lg">Pendiente de Pago</span>
-                        @endif
+                        <span class="w-3.5 h-3.5 rounded-full bg-brand glow-dot-pink"></span>
+                        <span class="text-brand font-extrabold text-lg">Pendiente de Contacto</span>
                     </div>
                 </div>
             </div>
@@ -237,10 +229,15 @@
                     @endif
                 </div>
 
-                <!-- Date & Time Detail -->
+                <!-- Date & Time Detail / Coordinación -->
+                @php
+                    $isQuote = str_starts_with(strtoupper($booking->customerVehicle->license_plate ?? ''), 'COT-') || strtoupper($booking->customerVehicle->license_plate ?? '') === 'COTIZACION' || empty($booking->customerVehicle->license_plate);
+                @endphp
                 <div class="rounded-2xl border border-black/5 dark:border-white/5 bg-black/[0.01] dark:bg-white/[0.01] p-6 premium-detail-card fade-in-up group" style="animation-delay: 400ms;">
                     <div class="flex items-center justify-between mb-4">
-                        <p class="text-black/40 dark:text-white/40 text-xs uppercase tracking-wider font-bold">Horario</p>
+                        <p class="text-black/40 dark:text-white/40 text-xs uppercase tracking-wider font-bold">
+                            {{ $isQuote ? 'Coordinación de Cita' : 'Horario' }}
+                        </p>
                         <div class="detail-icon text-brand/75 group-hover:text-brand transition-all">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
@@ -250,11 +247,21 @@
                             </svg>
                         </div>
                     </div>
-                    <p class="text-black dark:text-white text-lg font-bold leading-snug group-hover:text-brand transition-colors duration-250">
-                        {{ $formattedDate }}
-                    </p>
+                    @if($isQuote)
+                        <p class="text-black dark:text-white text-lg font-bold leading-snug group-hover:text-brand transition-colors duration-250">
+                            A convenir con el cliente
+                        </p>
+                        <p class="text-brand text-xs mt-1.5 font-bold flex items-center gap-1.5">
+                            <span>💬</span>
+                            <span>Coordinación directa vía WhatsApp o llamada</span>
+                        </p>
+                    @else
+                        <p class="text-black dark:text-white text-lg font-bold leading-snug group-hover:text-brand transition-colors duration-250">
+                            {{ $formattedDate }}
+                        </p>
+                    @endif
                     <p class="text-black/50 dark:text-white/50 text-sm mt-3 font-semibold">
-                        Duración estimada: {{ formatDuration($booking->duration_minutes) }}
+                        Duración estimada del trabajo: {{ formatDuration($booking->duration_minutes) }}
                     </p>
                 </div>
 
@@ -337,42 +344,98 @@
                 </div>
             </div>
 
-            <!-- Extras Details -->
-            @if($booking->extras->count() > 0)
-                <div class="mt-8 rounded-2xl border border-black/5 dark:border-white/5 bg-black/[0.01] dark:bg-white/[0.01] p-6 premium-detail-card fade-in-up group" style="animation-delay: 700ms;">
-                    <div class="flex items-center gap-2 mb-4">
-                        <div class="detail-icon text-brand/75 group-hover:text-brand transition-all">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM17 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2h-2zM5 15a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM17 15a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2h-2z" />
-                            </svg>
-                        </div>
-                        <p class="text-black/40 dark:text-white/40 text-xs uppercase tracking-wider font-bold">Servicios Extras Adicionales</p>
+            <!-- Servicios que incluye tu compra (Extras & Included Features) -->
+            @php
+                $srvName = strtolower($booking->service_name_snapshot ?? ($booking->service->name ?? ''));
+                $fallbackHighlights = [];
+                if (str_contains($srvName, 'exoshield') || str_contains($srvName, 'parabrisas')) {
+                    $fallbackHighlights = [
+                        'Película nanotecnológica TPU de alta resistencia contra impactos de piedras y gravilla',
+                        'Protección UV total contra desgaste prematuro y trizaduras en parabrisas',
+                        'Capa hidrofóbica integrada para máxima visibilidad y seguridad bajo lluvia',
+                        'Instalación técnica certificada de precisión sin distorsión óptica',
+                        'Garantía oficial ExoShield contra delaminación y amarilleamiento'
+                    ];
+                } elseif (str_contains($srvName, 'pulido') || str_contains($srvName, 'corrección') || str_contains($srvName, 'correccion') || str_contains($srvName, 'paso') || str_contains($srvName, 'etapa')) {
+                    $fallbackHighlights = [
+                        'Lavado artesanal con método de dos baldes y shampoo pH neutro',
+                        'Descontaminado químico férrico y mecánico con claybar',
+                        'Corrección técnica y nivelación de micro-rayas y marcas de remolino',
+                        'Refinado óptico de máxima claridad y profundidad de color',
+                        'Sellado de protección sintético o cera premium de alta duración'
+                    ];
+                } elseif (str_contains($srvName, 'foco') || str_contains($srvName, 'focos')) {
+                    $fallbackHighlights = [
+                        'Lijado al agua multi-etapa para remoción de capa quemada y opaca',
+                        'Pulido y refinado óptico con compuestos especiales para policarbonato',
+                        'Restauración de transparencia al 100% y potencia del haz de luz',
+                        'Aplicación de sellador UV cerámico para prevenir futuro desgaste'
+                    ];
+                } elseif (str_contains($srvName, 'cerámico') || str_contains($srvName, 'ceramico') || str_contains($srvName, 'coating') || str_contains($srvName, 'gtechniq')) {
+                    $fallbackHighlights = [
+                        'Descontaminado técnico y pulido ligero de preparación de pintura',
+                        'Limpieza interior profunda y acondicionamiento de habitáculo',
+                        'Aplicación de recubrimiento cerámico 9H de alta durabilidad',
+                        'Capa Top Coat para brillo espejo e hidrofobia extrema'
+                    ];
+                } else {
+                    $fallbackHighlights = [
+                        'Lavado técnico artesanal con espuma activa pH neutro',
+                        'Limpieza y aspirado profundo de habitáculo y tapicería',
+                        'Limpieza intensiva de llantas y pasos de rueda',
+                        'Acondicionamiento y protección UV para neumáticos y molduras'
+                    ];
+                }
+            @endphp
+
+            <div class="mt-8 rounded-2xl border border-black/5 dark:border-white/5 bg-black/[0.01] dark:bg-white/[0.01] p-6 premium-detail-card fade-in-up group" style="animation-delay: 700ms;">
+                <div class="flex items-center gap-2 mb-4">
+                    <div class="detail-icon text-brand/75 group-hover:text-brand transition-all">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM17 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2h-2zM5 15a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM17 15a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2h-2z" />
+                        </svg>
                     </div>
-                    <div class="space-y-3 divide-y divide-black/5 dark:divide-white/5">
+                    <p class="text-black/40 dark:text-white/40 text-xs uppercase tracking-wider font-bold">Servicios que incluye tu compra</p>
+                </div>
+
+                <div class="space-y-3 divide-y divide-black/5 dark:divide-white/5">
+                    @if($booking->extras && $booking->extras->count() > 0)
                         @foreach($booking->extras as $extra)
                             <div class="flex items-center justify-between text-sm py-2 first:pt-0 last:pb-0">
                                 <div class="flex flex-col">
                                     <span class="text-black/85 dark:text-white/85 font-bold">{{ $extra->name_snapshot ?? $extra->extra->name ?? '' }}</span>
-                                    <span class="text-black/40 dark:text-white/40 text-xs font-semibold">Duración: +{{ formatDuration($extra->duration_minutes_snapshot ?? $extra->extra->duration_minutes ?? 0) }}</span>
+                                    @if(($extra->duration_minutes_snapshot ?? 0) > 0)
+                                        <span class="text-black/40 dark:text-white/40 text-xs font-semibold">Duración: +{{ formatDuration($extra->duration_minutes_snapshot) }}</span>
+                                    @endif
                                 </div>
                                 @php
                                     $extraPrice = $extra->price_snapshot ?? $extra->extra->price ?? 0;
-                                    $isIncluded = $extra->is_included_snapshot ?? $extra->extra->is_included ?? false;
-                                    $isCourtesy = $extra->is_courtesy_snapshot ?? $extra->extra->is_courtesy ?? false;
                                 @endphp
-                                @if($onlinePaymentsActive && $extraPrice > 0 && !$isIncluded && !$isCourtesy)
+                                @if($onlinePaymentsActive && $extraPrice > 0)
                                     <span class="text-brand font-extrabold">+{{ formatCLP($extraPrice) }}</span>
                                 @else
-                                    <span class="text-brand font-bold uppercase text-sm flex items-center gap-1">
+                                    <span class="text-brand font-bold uppercase text-xs sm:text-sm flex items-center gap-1">
                                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                                         INCLUIDO
                                     </span>
                                 @endif
                             </div>
                         @endforeach
-                    </div>
+                    @else
+                        @foreach($fallbackHighlights as $highlight)
+                            <div class="flex items-center justify-between text-sm py-2 first:pt-0 last:pb-0">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="text-brand font-black text-sm">✓</span>
+                                    <span class="text-black/80 dark:text-white/80 font-medium text-xs sm:text-sm">{{ $highlight }}</span>
+                                </div>
+                                <span class="text-brand font-bold uppercase text-xs flex items-center gap-1 shrink-0 ml-2">
+                                    INCLUIDO
+                                </span>
+                            </div>
+                        @endforeach
+                    @endif
                 </div>
-            @endif
+            </div>
 
             <!-- Back to home -->
             <div class="mt-12 text-center fade-in-up" style="animation-delay: 800ms;">

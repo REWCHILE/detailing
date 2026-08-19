@@ -451,4 +451,91 @@ class AdminController extends Controller
 
         return view('admin.clientes', compact('customers', 'search'));
     }
+
+    /**
+     * GET /admin/leads
+     * Display live quotation leads and abandoned quotes with instant WhatsApp actions.
+     */
+    public function leadsIndex(Request $request)
+    {
+        \App\Http\Controllers\BookingController::ensureAbandonedQuotesTableExists();
+
+        $filter = $request->input('filter', 'all'); // all, with_phone, draft, recovered, contacted
+        $search = $request->input('search');
+
+        $query = \App\Models\AbandonedQuote::query();
+
+        // Search
+        if ($search) {
+            $escapedSearch = str_replace(['%', '_'], ['\%', '\_'], $search);
+            $query->where(function($q) use ($escapedSearch) {
+                $q->where('customer_name', 'like', "%{$escapedSearch}%")
+                  ->orWhere('customer_phone', 'like', "%{$escapedSearch}%")
+                  ->orWhere('customer_email', 'like', "%{$escapedSearch}%")
+                  ->orWhere('service_name', 'like', "%{$escapedSearch}%")
+                  ->orWhere('commune', 'like', "%{$escapedSearch}%");
+            });
+        }
+
+        // Filter
+        if ($filter === 'with_phone') {
+            $query->whereNotNull('customer_phone')->where('customer_phone', '!=', '');
+        } elseif ($filter === 'draft') {
+            $query->where('status', 'DRAFT');
+        } elseif ($filter === 'recovered') {
+            $query->where('status', 'RECOVERED');
+        } elseif ($filter === 'contacted') {
+            $query->where('status', 'CONTACTED');
+        }
+
+        $leads = $query->orderByDesc('last_activity_at')->paginate(25)->withQueryString();
+
+        // Key stats
+        $totalLeads = \App\Models\AbandonedQuote::count();
+        $totalWithPhone = \App\Models\AbandonedQuote::whereNotNull('customer_phone')->where('customer_phone', '!=', '')->count();
+        $totalDraftValue = \App\Models\AbandonedQuote::where('status', 'DRAFT')->sum('total_price');
+        $activeTodayCount = \App\Models\AbandonedQuote::where('last_activity_at', '>=', now()->startOfDay())->count();
+        $recoveredCount = \App\Models\AbandonedQuote::where('status', 'RECOVERED')->count();
+        $contactedCount = \App\Models\AbandonedQuote::where('status', 'CONTACTED')->count();
+
+        return view('admin.leads', compact(
+            'leads',
+            'filter',
+            'search',
+            'totalLeads',
+            'totalWithPhone',
+            'totalDraftValue',
+            'activeTodayCount',
+            'recoveredCount',
+            'contactedCount'
+        ));
+    }
+
+    /**
+     * POST /api/admin/leads/{id}/status
+     * Update lead status (DRAFT, CONTACTED, RECOVERED, CANCELLED).
+     */
+    public function updateLeadStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|string',
+        ]);
+
+        $lead = \App\Models\AbandonedQuote::findOrFail($id);
+        $lead->update(['status' => $request->input('status')]);
+
+        return response()->json(['success' => true, 'message' => 'Estado del lead actualizado.']);
+    }
+
+    /**
+     * DELETE /api/admin/leads/{id}
+     * Delete an abandoned quote or lead.
+     */
+    public function deleteLead($id)
+    {
+        $lead = \App\Models\AbandonedQuote::findOrFail($id);
+        $lead->delete();
+
+        return response()->json(['success' => true, 'message' => 'Lead eliminado correctamente.']);
+    }
 }

@@ -891,22 +891,11 @@ class AdminCatalogController extends Controller
         // SEO management data
         $seoPages = PageSeo::orderBy('id')->get();
 
-        // Abandoned Quotes Lead Capture for selected period
-        BookingController::ensureAbandonedQuotesTableExists();
-        $abandonedQuery = \App\Models\AbandonedQuote::query();
-
-        if ($periodStart) $abandonedQuery->where('last_activity_at', '>=', $periodStart);
-        if ($periodEnd) $abandonedQuery->where('last_activity_at', '<=', $periodEnd);
-
-        $abandonedQuotes = $abandonedQuery->orderByDesc('last_activity_at')->get();
-        $totalAbandonedValue = $abandonedQuotes->where('status', 'DRAFT')->sum('total_price');
-
         return view('admin.paginas', compact(
             'period', 'currentPeriodLabel', 'totalPeriod', 'uniquePeriod',
             'totalToday', 'totalYesterday', 'totalWeek', 'totalMonth', 'totalAll',
             'topPage', 'pages', 'chartTitle', 'chartLabels', 'chartValues',
-            'mapLocations', 'topReferrers', 'seoPages',
-            'abandonedQuotes', 'totalAbandonedValue'
+            'mapLocations', 'topReferrers', 'seoPages'
         ));
     }
 

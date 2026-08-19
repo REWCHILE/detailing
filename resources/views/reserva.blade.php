@@ -461,53 +461,68 @@
                             </p>
                         </div>
 
-                        <div class="flex flex-col gap-3.5 max-w-2xl mx-auto">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-5xl mx-auto">
                             <template x-for="extra in availableExtras" :key="extra.id || extra.name">
                                 <div 
                                     @click="toggleExtra(extra)"
-                                    class="flex items-center justify-between p-4 sm:p-5 rounded-2xl border cursor-pointer transition-all duration-300 group select-none shadow-md"
+                                    class="relative flex flex-col justify-between p-6 rounded-[2rem] border-2 cursor-pointer transition-all duration-300 group select-none shadow-xl overflow-hidden"
                                     :class="isExtraSelected(extra) 
-                                        ? 'bg-zinc-950/90 border-brand ring-2 ring-brand/40 shadow-brand/20 shadow-lg scale-[1.01]' 
-                                        : 'bg-zinc-950/60 border-white/10 hover:border-brand/40 hover:bg-zinc-900/80'"
+                                        ? 'bg-zinc-950 border-brand ring-2 ring-brand/40 shadow-[0_0_30px_rgba(251,44,107,0.3)] scale-[1.015]' 
+                                        : 'bg-zinc-950/70 border-white/10 hover:border-brand/50 hover:bg-zinc-900/90 hover:scale-[1.01]'"
                                 >
-                                    <div class="flex items-center gap-4 min-w-0">
-                                        <!-- Custom Glowing Checkbox -->
-                                        <div 
-                                            class="w-7 h-7 sm:w-8 sm:h-8 rounded-xl border-2 flex items-center justify-center transition-all duration-300 shrink-0"
-                                            :class="isExtraSelected(extra) 
-                                                ? 'bg-brand border-brand text-white shadow-[0_0_15px_rgba(251,44,107,0.7)] scale-105' 
-                                                : 'border-white/30 bg-black/40 text-transparent group-hover:border-brand/70 group-hover:bg-brand/10'"
-                                        >
-                                            <template x-if="isExtraSelected(extra)">
-                                                <svg class="w-4 h-4 sm:w-4.5 sm:h-4.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5">
-                                                    <polyline points="20 6 9 17 4 12"/>
-                                                </svg>
-                                            </template>
+                                    <!-- Background ambient glow when selected -->
+                                    <div x-show="isExtraSelected(extra)" class="absolute -top-16 -right-16 w-44 h-44 bg-brand/25 rounded-full blur-3xl pointer-events-none"></div>
+
+                                    <div class="flex items-start gap-4 sm:gap-5">
+                                        <!-- Large 3D Artwork Emblem (Crisp 100px-112px display for stunning detailing visuals) -->
+                                        <div class="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full p-1 shrink-0 transition-all duration-500 group-hover:scale-105 shadow-xl"
+                                             :class="isExtraSelected(extra) 
+                                                ? 'bg-gradient-to-tr from-brand via-pink-500 to-rose-400 shadow-[0_0_25px_rgba(251,44,107,0.7)]' 
+                                                : 'bg-gradient-to-b from-white/20 to-white/5 group-hover:from-brand/70 group-hover:to-brand/30'">
+                                            <div class="w-full h-full rounded-full overflow-hidden bg-black flex items-center justify-center relative shadow-inner">
+                                                <template x-if="extra.image">
+                                                    <img :src="extra.image" :alt="extra.name" class="w-full h-full object-cover rounded-full transition-transform duration-700 group-hover:scale-115">
+                                                </template>
+                                                <template x-if="!extra.image">
+                                                    <span class="text-4xl" x-text="extra.icon || '✨'"></span>
+                                                </template>
+                                            </div>
                                         </div>
 
-                                        <!-- Extra Icon + Name & Short Benefit -->
-                                        <div class="flex items-center gap-3 min-w-0">
-                                            <span class="text-2xl sm:text-3xl shrink-0" x-text="extra.icon || '✨'"></span>
-                                            <div class="min-w-0">
-                                                <div class="flex items-center gap-2">
-                                                    <span class="font-display italic font-bold text-lg sm:text-xl transition-colors" 
-                                                          :class="isExtraSelected(extra) ? 'text-brand' : 'text-white group-hover:text-brand'" 
-                                                          x-text="extra.name"></span>
-                                                    <span x-show="isExtraSelected(extra)" class="text-[10px] uppercase font-black px-2 py-0.5 rounded-full bg-brand/20 text-brand border border-brand/30 shrink-0">
-                                                        Agregado
-                                                    </span>
-                                                </div>
-                                                <p class="text-xs text-white/50 font-normal truncate mt-0.5" x-text="extra.description || ''"></p>
+                                        <!-- Info: Title, Description & Badge -->
+                                        <div class="min-w-0 flex-1">
+                                            <div class="flex items-start justify-between gap-2">
+                                                <span class="font-display italic font-black text-lg sm:text-xl transition-colors leading-tight" 
+                                                      :class="isExtraSelected(extra) ? 'text-brand' : 'text-white group-hover:text-brand'" 
+                                                      x-text="extra.name"></span>
                                             </div>
+                                            <p class="text-xs sm:text-sm text-white/65 font-normal leading-relaxed mt-2" x-text="extra.description || ''"></p>
                                         </div>
                                     </div>
 
-                                    <!-- Price Pill in Brand Pink -->
-                                    <div class="ml-3 shrink-0">
-                                        <span class="px-3.5 py-1.5 rounded-full font-display font-black text-sm sm:text-base tracking-wide border transition-all"
+                                    <!-- Bottom Row: Status Indicator & Price -->
+                                    <div class="mt-5 pt-3.5 border-t border-white/10 flex items-center justify-between">
+                                        <div class="flex items-center gap-2">
+                                            <div class="w-5 h-5 rounded-md border flex items-center justify-center transition-all duration-300 shrink-0"
+                                                 :class="isExtraSelected(extra) 
+                                                    ? 'bg-brand border-brand text-white shadow-[0_0_8px_rgba(251,44,107,0.8)]' 
+                                                    : 'border-white/30 bg-black/40 text-transparent group-hover:border-brand/70'">
+                                                <template x-if="isExtraSelected(extra)">
+                                                    <svg class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5">
+                                                        <polyline points="20 6 9 17 4 12"/>
+                                                    </svg>
+                                                </template>
+                                            </div>
+                                            <span class="text-xs uppercase font-extrabold tracking-wider transition-colors"
+                                                  :class="isExtraSelected(extra) ? 'text-brand' : 'text-white/50 group-hover:text-white'"
+                                                  x-text="isExtraSelected(extra) ? '✓ Agregado al tratamiento' : 'Agregar tratamiento'">
+                                            </span>
+                                        </div>
+
+                                        <span class="px-4 py-1.5 rounded-full font-display font-black text-sm sm:text-base tracking-wide border transition-all"
                                               :class="isExtraSelected(extra) 
-                                                ? 'bg-brand text-white border-brand shadow-[0_0_10px_rgba(251,44,107,0.4)]' 
-                                                : 'bg-brand/15 text-brand border-brand/30 group-hover:bg-brand/25 group-hover:border-brand/50'"
+                                                ? 'bg-brand text-white border-brand shadow-[0_0_15px_rgba(251,44,107,0.5)]' 
+                                                : 'bg-brand/15 text-brand border-brand/30 group-hover:bg-brand/25 group-hover:border-brand/60'"
                                               x-text="'+ ' + formatCLP(extra.price)">
                                         </span>
                                     </div>
@@ -519,24 +534,24 @@
                     <!-- Bloque A: Formulario de Contacto -->
                     <div class="mb-10 p-6 sm:p-8 rounded-3xl bg-zinc-900 border border-white/15">
                         <h4 class="font-display font-bold text-white text-base mb-4 flex items-center gap-2">
-                            <span class="w-6 h-6 rounded-full bg-brand text-white text-xs flex items-center justify-center font-black">A</span>
-                            <span>Información Personal de Contacto</span>
+                            <span class="w-6 h-6 rounded-full bg-brand text-white text-xs flex items-center justify-center font-black">C</span>
+                            <span>Información de Contacto</span>
                         </h4>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-xs font-bold text-white/70 uppercase tracking-wider mb-2">Nombre Completo *</label>
-                                <input type="text" x-model="name" @input.debounce.600ms="saveDraftLead(2)" required placeholder="Ej: Juan Pérez" class="w-full px-4 py-3.5 rounded-2xl bg-black border border-white/20 focus:border-brand text-white text-sm outline-none">
+                                <input type="text" x-model="name" @input="submitError = null; saveDraftLead(2)" required placeholder="Ej: Juan Pérez" class="w-full px-4 py-3.5 rounded-2xl bg-black border border-white/20 focus:border-brand text-white text-sm outline-none">
                             </div>
 
                             <div>
                                 <label class="block text-xs font-bold text-white/70 uppercase tracking-wider mb-2">WhatsApp / Teléfono *</label>
-                                <input type="text" x-model="phone" @input.debounce.600ms="saveDraftLead(2)" required placeholder="Ej: +56 9 1234 5678" class="w-full px-4 py-3.5 rounded-2xl bg-black border border-white/20 focus:border-brand text-white text-sm outline-none">
+                                <input type="text" x-model="phone" @input="submitError = null; saveDraftLead(2)" required placeholder="Ej: +56 9 1234 5678" class="w-full px-4 py-3.5 rounded-2xl bg-black border border-white/20 focus:border-brand text-white text-sm outline-none">
                             </div>
 
                             <div>
                                 <label class="block text-xs font-bold text-white/70 uppercase tracking-wider mb-2">Correo Electrónico (Opcional)</label>
-                                <input type="email" x-model="email" @input.debounce.600ms="saveDraftLead(2)" placeholder="Ej: juan@email.com" class="w-full px-4 py-3.5 rounded-2xl bg-black border border-white/20 focus:border-brand text-white text-sm outline-none">
+                                <input type="email" x-model="email" @input="submitError = null; saveDraftLead(2)" placeholder="Ej: juan@email.com" class="w-full px-4 py-3.5 rounded-2xl bg-black border border-white/20 focus:border-brand text-white text-sm outline-none">
                             </div>
 
                             <div>
@@ -558,7 +573,114 @@
                         </div>
                     </div>
 
-                    <div class="rounded-xl border border-red-500/20 bg-red-500/5 px-4 py-3 text-sm text-red-400 mb-6" x-show="submitError" x-text="submitError"></div>
+                    <!-- RESUMEN DETALLADO DE COTIZACIÓN -->
+                    <div class="mb-10 p-6 sm:p-8 md:p-10 rounded-[2.5rem] bg-zinc-950/90 border-2 border-brand/40 shadow-2xl shadow-brand/10 backdrop-blur-xl">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-6 border-b border-white/10">
+                            <div>
+                                <div class="flex items-center gap-2">
+                                    <span class="px-3 py-1 rounded-full bg-brand/15 border border-brand/30 text-brand text-[10px] sm:text-xs font-black uppercase tracking-wider">
+                                        Paso Final
+                                    </span>
+                                    <span class="text-white/40 text-xs font-bold uppercase tracking-wider">Revisión de Pedido</span>
+                                </div>
+                                <h4 class="font-display italic font-black text-2xl sm:text-3xl text-white uppercase tracking-wide mt-1">
+                                    Resumen de tu Cotización
+                                </h4>
+                            </div>
+                            <div class="text-left sm:text-right">
+                                <span class="text-xs text-white/50 uppercase font-bold block">Total Estimado</span>
+                                <span class="text-brand font-display font-black text-3xl sm:text-4xl drop-shadow-[0_2px_15px_rgba(251,44,107,0.6)]" x-text="formatCLP(getTotalPrice())"></span>
+                            </div>
+                        </div>
+
+                        <!-- Detalle de Ítems Seleccionados -->
+                        <div class="py-6 space-y-4 border-b border-white/10">
+                            <!-- Servicio Principal -->
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-zinc-900/90 border border-white/10">
+                                <div class="flex items-center gap-3.5">
+                                    <div class="w-10 h-10 rounded-xl bg-brand/20 border border-brand/50 text-brand flex items-center justify-center text-lg font-black shrink-0">
+                                        <span x-text="getServiceLevelBadgeIcon(selectedService)"></span>
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-xs font-extrabold uppercase tracking-wider text-brand" x-text="getCategoryBadgeLabel(selectedService)"></span>
+                                            <span class="text-white/30 text-xs">•</span>
+                                            <span class="text-xs font-semibold text-white/70 flex items-center gap-1">
+                                                <span x-text="selectedVehicle ? getVehicleIcon(selectedVehicle.slug) : '🚗'"></span>
+                                                <span x-text="selectedVehicle ? selectedVehicle.name : 'Vehículo no seleccionado'"></span>
+                                            </span>
+                                        </div>
+                                        <h5 class="font-display font-black text-base sm:text-lg text-white" x-text="selectedService ? selectedService.name : 'Servicio'"></h5>
+                                    </div>
+                                </div>
+                                <div class="text-left sm:text-right pl-14 sm:pl-0">
+                                    <span class="text-white font-mono font-bold text-base sm:text-lg" x-text="selectedService ? formatCLP(getAdjustedPrice(selectedService)) : '$0'"></span>
+                                </div>
+                            </div>
+
+                            <!-- Extras / Tratamientos Adicionales Seleccionados -->
+                            <template x-if="selectedExtras.length > 0">
+                                <div class="space-y-2.5 pt-2">
+                                    <span class="text-xs font-extrabold uppercase tracking-wider text-white/60 block pl-1">
+                                        Tratamientos Adicionales Agregados (<span x-text="selectedExtras.length"></span>):
+                                    </span>
+                                    <template x-for="extra in selectedExtras" :key="extra.id || extra.name">
+                                        <div class="flex items-center justify-between gap-3 p-3.5 rounded-2xl bg-zinc-900/60 border border-white/10 hover:border-brand/40 transition-colors">
+                                            <div class="flex items-center gap-3">
+                                                <div class="w-7 h-7 rounded-lg bg-brand/10 border border-brand/30 text-brand flex items-center justify-center text-xs font-black shrink-0">
+                                                    ✓
+                                                </div>
+                                                <span class="text-sm font-bold text-white/95" x-text="extra.name"></span>
+                                            </div>
+                                            <span class="text-brand font-mono font-bold text-sm shrink-0" x-text="'+ ' + formatCLP(extra.price)"></span>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+
+                            <template x-if="selectedExtras.length === 0">
+                                <div class="p-3.5 rounded-2xl bg-zinc-900/40 border border-white/5 text-xs text-white/40 italic flex items-center gap-2">
+                                    <span>✨ Sin tratamientos adicionales seleccionados.</span>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- Desglose de Totales -->
+                        <div class="pt-6 space-y-2.5 text-sm">
+                            <div class="flex items-center justify-between text-white/70">
+                                <span>Subtotal Servicio (<span x-text="selectedVehicle ? selectedVehicle.name : 'Estándar'"></span>)</span>
+                                <span class="font-mono font-semibold" x-text="selectedService ? formatCLP(getAdjustedPrice(selectedService)) : '$0'"></span>
+                            </div>
+
+                            <template x-if="getExtrasTotal() > 0">
+                                <div class="flex items-center justify-between text-white/70">
+                                    <span>Subtotal Tratamientos Extras</span>
+                                    <span class="font-mono font-semibold text-brand" x-text="'+ ' + formatCLP(getExtrasTotal())"></span>
+                                </div>
+                            </template>
+
+                            <div class="flex items-center justify-between pt-3 border-t border-white/10 text-base sm:text-lg font-black text-white">
+                                <span class="font-display uppercase tracking-wider">Total Estimado Final:</span>
+                                <span class="font-display text-2xl sm:text-3xl text-brand drop-shadow-[0_2px_10px_rgba(251,44,107,0.5)]" x-text="formatCLP(getTotalPrice())"></span>
+                            </div>
+                        </div>
+
+                        <!-- Nota de confianza y contacto -->
+                        <div class="mt-6 p-4 rounded-2xl bg-brand/10 border border-brand/25 flex items-start gap-3 text-xs text-white/80">
+                            <span class="text-base shrink-0">💬</span>
+                            <span><strong>Sin pago por adelantado:</strong> Al solicitar la cotización, nuestro equipo revisará los requerimientos de tu vehículo y te contactará de inmediato por WhatsApp para coordinar fecha y hora a tu conveniencia.</span>
+                        </div>
+                    </div>
+
+                    <!-- Mensaje de Error Reactivo -->
+                    <div class="rounded-2xl border border-red-500/30 bg-red-500/10 px-5 py-4 text-sm font-semibold text-red-400 mb-6 flex items-center gap-3 animate-pulse" x-show="submitError">
+                        <svg class="w-5 h-5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <line x1="12" y1="8" x2="12" y2="12"/>
+                            <line x1="12" y1="16" x2="12.01" y2="16"/>
+                        </svg>
+                        <span x-text="submitError"></span>
+                    </div>
 
                     <!-- Step 2 Actions (Direct Submit & Final Step) -->
                     <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-white/15">
@@ -583,6 +705,97 @@
 
         </div>
 
+        <!-- EXIT INTENT RETENTION MODAL (OPCIÓN C) -->
+        <div 
+            x-show="showExitModal" 
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+            class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl select-none"
+            style="display: none;"
+            @keydown.escape.window="showExitModal = false"
+        >
+            <!-- Modal Box -->
+            <div 
+                @click.away="showExitModal = false"
+                x-transition:enter="transition ease-out duration-300"
+                x-transition:enter-start="opacity-0 scale-90 translate-y-4"
+                x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                class="relative w-full max-w-lg rounded-[2.5rem] bg-zinc-950 border-2 border-brand/50 p-6 sm:p-8 md:p-10 shadow-[0_0_50px_rgba(251,44,107,0.35)] overflow-hidden text-center"
+            >
+                <!-- Glow Effect -->
+                <div class="absolute -top-24 -left-24 w-48 h-48 bg-brand/30 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -bottom-24 -right-24 w-48 h-48 bg-brand/20 rounded-full blur-3xl pointer-events-none"></div>
+
+                <!-- Close Button -->
+                <button 
+                    type="button" 
+                    @click="showExitModal = false" 
+                    class="absolute top-5 right-5 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white/70 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+                >
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+
+                <!-- Badge -->
+                <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-brand/15 border border-brand/40 text-brand text-[11px] font-black uppercase tracking-widest mb-3">
+                    <span>⚡</span>
+                    <span>Asesoría Técnica en 1 Clic</span>
+                </span>
+
+                <!-- Title -->
+                <h3 class="font-display italic font-black text-2xl sm:text-3xl text-white uppercase tracking-tight leading-tight">
+                    ¿Tienes dudas con tu <span class="text-brand" x-text="selectedService ? selectedService.name : 'Cotización'"></span>?
+                </h3>
+
+                <p class="text-xs sm:text-sm text-white/70 mt-2.5 leading-relaxed font-medium">
+                    No te preocupes por los tecnicismos. Nuestro equipo en Chicureo te asesora directamente por WhatsApp para resolver dudas sobre pintura, tiempos y disponibilidad.
+                </p>
+
+                <!-- Summary Snapshot Card -->
+                <template x-if="selectedService">
+                    <div class="my-5 p-4 rounded-2xl bg-zinc-900/90 border border-white/10 flex items-center justify-between text-left">
+                        <div class="min-w-0 flex-1 pr-2">
+                            <span class="text-[10px] font-extrabold uppercase tracking-wider text-brand block" x-text="selectedVehicle ? selectedVehicle.name : 'Vehículo'"></span>
+                            <p class="text-sm font-bold text-white truncate" x-text="selectedService.name"></p>
+                        </div>
+                        <div class="text-right shrink-0">
+                            <span class="text-[10px] text-white/40 uppercase block">Total</span>
+                            <span class="text-brand font-display font-black text-lg" x-text="formatCLP(getTotalPrice())"></span>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- Action Buttons -->
+                <div class="space-y-3 pt-2">
+                    <a 
+                        :href="getExitWhatsAppUrl()" 
+                        target="_blank"
+                        @click="showExitModal = false"
+                        class="w-full py-4 px-6 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-display italic font-black text-sm uppercase tracking-wider shadow-lg shadow-emerald-600/40 flex items-center justify-center gap-2.5 transition-all hover:scale-[1.02]"
+                    >
+                        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
+                            <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.993.585 1.771.884 2.802.884l.006.001c3.18 0 5.767-2.586 5.768-5.766 0-3.18-2.587-5.772-5.78-5.772zm3.393 8.245c-.144.405-.837.774-1.17.824-.312.045-.694.073-1.905-.429-1.547-.643-2.534-2.213-2.61-2.316-.076-.103-.625-.833-.625-1.59 0-.756.397-1.127.538-1.282.14-.156.307-.195.41-.195.102 0 .205.001.294.005.093.004.218-.035.34.258.125.297.424 1.036.46 1.112.038.077.063.167.013.268-.052.102-.078.166-.155.257-.078.09-.163.2-.234.269-.078.077-.16.16-.068.318.092.158.408.672.875 1.088.6.536 1.106.702 1.264.78.158.077.25-.067.34-.171.092-.104.394-.462.499-.619.104-.157.208-.13.348-.078.14.052.888.419 1.04.496.152.078.254.116.29.181.037.065.037.377-.107.782z"/>
+                        </svg>
+                        <span>HABLAR CON UN ASESOR POR WHATSAPP</span>
+                    </a>
+
+                    <button 
+                        type="button" 
+                        @click="showExitModal = false; scrollToTop()" 
+                        class="w-full py-3 px-6 rounded-full border border-white/20 text-white/70 hover:text-white hover:border-white/40 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
+                    >
+                        Prefiero continuar cotizando online
+                    </button>
+                </div>
+
+            </div>
+        </div>
+
     </div>
 </main>
 @endsection
@@ -602,6 +815,7 @@ function bookingWizard() {
         sessionId: '',
         currentStep: 1,
         maxStepReached: 1,
+        showExitModal: false,
         steps: [
             { number: 1, label: 'Servicios' },
             { number: 2, label: 'Tus Datos & Vehículo' }
@@ -745,6 +959,36 @@ function bookingWizard() {
             }
 
             this.saveDraftLead(1);
+            this.setupExitIntent();
+        },
+
+        setupExitIntent() {
+            const handleMouseLeave = (e) => {
+                if (e.clientY <= 25) {
+                    if (this.selectedService && !this.isSubmitting && !sessionStorage.getItem('hcd_exit_shown')) {
+                        sessionStorage.setItem('hcd_exit_shown', 'true');
+                        this.showExitModal = true;
+                    }
+                }
+            };
+            document.addEventListener('mouseleave', handleMouseLeave);
+
+            // Inactivity timer on step 2 (after 45s without submitting)
+            setTimeout(() => {
+                if (this.currentStep === 2 && this.selectedService && !this.isSubmitting && !sessionStorage.getItem('hcd_exit_shown')) {
+                    sessionStorage.setItem('hcd_exit_shown', 'true');
+                    this.showExitModal = true;
+                }
+            }, 45000);
+        },
+
+        getExitWhatsAppUrl() {
+            const srvName = this.selectedService ? this.selectedService.name : 'un servicio de detailing';
+            const vtName = this.selectedVehicle ? ` (${this.selectedVehicle.name})` : '';
+            const total = this.getTotalPrice() > 0 ? ` [Presupuesto estimado: ${this.formatCLP(this.getTotalPrice())}]` : '';
+            const client = this.name ? ` Mi nombre es ${this.name}.` : '';
+            const msg = `Hola High Contrast Detailing! Estoy en el cotizador web revisando ${srvName}${vtName}${total}.${client} ¿Me pueden asesorar por favor?`;
+            return `https://wa.me/56912345678?text=${encodeURIComponent(msg)}`;
         },
         
         getServiceCatKey(srv) {
@@ -957,13 +1201,13 @@ function bookingWizard() {
 
             // High-value optional upsell extras catalog with icons & descriptions
             const defaultCatalog = [
-                { id: '01M06WPBK06DYS7N06FFNRVHH7', name: 'Sellado Cerámico de Cristales', icon: '🪟', description: 'Efecto lluvia extrema y anti-manchas de agua en parabrisas y vidrios', price: 30000, slug: 'sellado-cristales' },
-                { id: '01M06WPBK4E25PP45ZQEFTGJM9', name: 'Sellado Cerámico de Llantas', icon: '🛞', description: 'Protección cerámica en caras de llantas contra polvo de freno', price: 25000, slug: 'sellado-llantas' },
-                { id: '01kwfafhqvgbvc2xpxwaa99jh1', name: 'Limpieza de Motor', icon: '⚙️', description: 'Desengrase técnico a vapor y sellado protector de gomas y plásticos', price: 20000, slug: 'limpieza-motor' },
-                { id: '01kwfafhqwvbrtm1wd9mvykkna', name: 'Tratamiento de Cuero', icon: '💺', description: 'Nutrición profunda e hidrofobia protectora para tapicería en cuero', price: 18000, slug: 'tratamiento-cuero' },
-                { id: '01kwfafhqxg2b3dnrrgjtw8fxa', name: 'Desinfección con Ozono', icon: '💨', description: 'Eliminación 99.9% de bacterias, ácaros y malos olores en el habitáculo', price: 15000, slug: 'eliminacion-olores' },
-                { id: '01kwfafhqt2q2pthjs450m95re', name: 'Pulido de Focos', icon: '💡', description: 'Eliminación de opacidad, amarillamiento y sellador UV en ópticos', price: 20000, slug: 'pulido-focos' },
-                { id: '01kwfafhqyt3y2y4b075cdbf68', name: 'Protección Plástica', icon: '🛡️', description: 'Restauración de tono original y protección UV para molduras exteriores', price: 12000, slug: 'proteccion-plastica' }
+                { id: '01M06WPBK06DYS7N06FFNRVHH7', name: 'Sellado Cerámico de Cristales', image: '/assets/images/extras/sellado-cristales.jpg', icon: '🪟', description: 'Efecto lluvia extrema y anti-manchas de agua en parabrisas y vidrios', price: 30000, slug: 'sellado-cristales' },
+                { id: '01M06WPBK4E25PP45ZQEFTGJM9', name: 'Sellado Cerámico de Llantas', image: '/assets/images/extras/sellado-llantas.jpg', icon: '🛞', description: 'Protección cerámica en caras de llantas contra polvo de freno', price: 25000, slug: 'sellado-llantas' },
+                { id: '01kwfafhqvgbvc2xpxwaa99jh1', name: 'Limpieza de Motor', image: '/assets/images/extras/limpieza-motor.jpg', icon: '⚙️', description: 'Desengrase técnico a vapor y sellado protector de gomas y plásticos', price: 20000, slug: 'limpieza-motor' },
+                { id: '01kwfafhqwvbrtm1wd9mvykkna', name: 'Tratamiento de Cuero', image: '/assets/images/extras/tratamiento-cuero.jpg', icon: '💺', description: 'Nutrición profunda e hidrofobia protectora para tapicería en cuero', price: 18000, slug: 'tratamiento-cuero' },
+                { id: '01kwfafhqxg2b3dnrrgjtw8fxa', name: 'Desinfección con Ozono', image: '/assets/images/extras/eliminacion-olores.jpg', icon: '💨', description: 'Eliminación 99.9% de bacterias, ácaros y malos olores en el habitáculo', price: 15000, slug: 'eliminacion-olores' },
+                { id: '01kwfafhqt2q2pthjs450m95re', name: 'Pulido de Focos', image: '/assets/images/extras/pulido-focos.jpg', icon: '💡', description: 'Eliminación de opacidad, amarillamiento y sellador UV en ópticos', price: 20000, slug: 'pulido-focos' },
+                { id: '01kwfafhqyt3y2y4b075cdbf68', name: 'Protección Plástica', image: '/assets/images/extras/proteccion-plastica.jpg', icon: '🛡️', description: 'Restauración de tono original y protección UV para molduras exteriores', price: 12000, slug: 'proteccion-plastica' }
             ];
 
             // Match real database extras from allExtrasList
@@ -976,26 +1220,36 @@ function bookingWizard() {
                             id: dbMatch.id, 
                             name: dbMatch.name || ex.name,
                             price: parseInt(dbMatch.price) || ex.price,
-                            description: dbMatch.description || ex.description
+                            description: dbMatch.description || ex.description,
+                            image: ex.image
                         };
                     }
                 }
                 return ex;
             });
 
+            // Extract all included extras from service configuration
+            const includedInService = (srv.extras || [])
+                .filter(ex => ex.pivot && (ex.pivot.is_included == 1 || ex.pivot.is_courtesy == 1 || ex.pivot.is_required == 1))
+                .map(ex => ((ex.slug || '') + ' ' + (ex.name || '')).toLowerCase());
+
             // Prevent offering an extra if it is already part of the chosen service package
-            const isMotorIncluded = srvName.includes('detailing completo') || srvName.includes('completo');
-            const isCueroIncluded = srvName.includes('detailing interior') || srvName.includes('interior') || srvName.includes('completo');
-            const isFocosIncluded = srvName.includes('focos') || srvName.includes('restauración');
-            const isCristalesIncluded = srvName.includes('nivel 3') || srvName.includes('crystal serum ultra') || srvName.includes('exoshield');
-            const isLlantasIncluded = srvName.includes('nivel 3') || srvName.includes('crystal serum ultra');
+            const isMotorIncluded = srvName.includes('detailing completo') || srvName.includes('completo') || includedInService.some(s => s.includes('motor'));
+            const isCueroIncluded = srvName.includes('detailing interior') || srvName.includes('interior') || srvName.includes('completo') || includedInService.some(s => s.includes('cuero'));
+            const isOzonoIncluded = srvName.includes('detailing interior') || srvName.includes('interior') || srvName.includes('completo') || includedInService.some(s => s.includes('olor') || s.includes('ozono'));
+            const isFocosIncluded = srvName.includes('focos') || srvName.includes('restauración') || includedInService.some(s => s.includes('foco'));
+            const isCristalesIncluded = srvName.includes('nivel 1') || srvName.includes('nivel 2') || srvName.includes('nivel 3') || srvName.includes('crystal serum ultra') || srvName.includes('exoshield') || srvCat === 'especiales' || includedInService.some(s => s.includes('cristal') || s.includes('parabrisas') || s.includes('vidrio'));
+            const isLlantasIncluded = srvName.includes('nivel 2') || srvName.includes('nivel 3') || srvName.includes('crystal serum ultra') || includedInService.some(s => s.includes('llanta'));
+            const isPlasticaIncluded = srvName.includes('nivel 1') || srvName.includes('nivel 2') || srvName.includes('nivel 3') || srvName.includes('completo') || srvName.includes('avanzado') || includedInService.some(s => s.includes('plástico') || s.includes('plastico'));
 
             return list.filter(e => {
                 if (e.slug === 'limpieza-motor' && isMotorIncluded) return false;
                 if (e.slug === 'tratamiento-cuero' && isCueroIncluded) return false;
+                if (e.slug === 'eliminacion-olores' && isOzonoIncluded) return false;
                 if (e.slug === 'pulido-focos' && isFocosIncluded) return false;
                 if (e.slug === 'sellado-cristales' && isCristalesIncluded) return false;
                 if (e.slug === 'sellado-llantas' && isLlantasIncluded) return false;
+                if (e.slug === 'proteccion-plastica' && isPlasticaIncluded) return false;
                 return true;
             });
         },

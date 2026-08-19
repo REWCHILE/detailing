@@ -50,6 +50,7 @@ Route::middleware(['auth', 'role:ADMIN'])->group(function () {
     Route::get('/admin', [AdminController::class, 'index'])->name('admin.dashboard');
     Route::get('/admin/calendario', [AdminController::class, 'calendario'])->name('admin.calendario');
     Route::get('/admin/citas', [AdminController::class, 'citasIndex'])->name('admin.citas');
+    Route::get('/admin/leads', [AdminController::class, 'leadsIndex'])->name('admin.leads');
     Route::get('/admin/clientes', [\App\Http\Controllers\AdminController::class, 'clientesIndex'])->name('admin.clientes');
 
     // Analíticas
@@ -64,6 +65,8 @@ Route::middleware(['auth', 'role:ADMIN'])->group(function () {
     Route::post('/api/admin/bookings', [AdminController::class, 'storeBooking']);
     Route::put('/api/admin/bookings/{id}/status', [AdminController::class, 'updateBookingStatus']);
     Route::delete('/api/admin/bookings/{id}', [AdminController::class, 'deleteBooking']);
+    Route::post('/api/admin/leads/{id}/status', [AdminController::class, 'updateLeadStatus']);
+    Route::delete('/api/admin/leads/{id}', [AdminController::class, 'deleteLead']);
 
     // Catalog Services
     Route::get('/admin/servicios', [AdminCatalogController::class, 'servicesIndex'])->name('admin.servicios');
