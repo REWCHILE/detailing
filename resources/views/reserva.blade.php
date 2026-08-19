@@ -744,19 +744,29 @@
                 <!-- Badge -->
                 <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-brand/15 border border-brand/40 text-brand text-[11px] font-black uppercase tracking-widest mb-3">
                     <span>⚡</span>
-                    <span>Asesoría Técnica en 1 Clic</span>
+                    <span x-text="selectedService ? 'Asesoría Técnica en 1 Clic' : '¿Buscas Asesoría Personalizada?'"></span>
                 </span>
 
                 <!-- Title -->
                 <h3 class="font-display italic font-black text-2xl sm:text-3xl text-white uppercase tracking-tight leading-tight">
-                    ¿Tienes dudas con tu <span class="text-brand" x-text="selectedService ? selectedService.name : 'Cotización'"></span>?
+                    <template x-if="selectedService">
+                        <span>¿Tienes dudas con tu <span class="text-brand" x-text="selectedService.name"></span>?</span>
+                    </template>
+                    <template x-if="!selectedService">
+                        <span>¿Tienes dudas para elegir tu <span class="text-brand">Servicio de Detailing</span>?</span>
+                    </template>
                 </h3>
 
                 <p class="text-xs sm:text-sm text-white/70 mt-2.5 leading-relaxed font-medium">
-                    No te preocupes por los tecnicismos. Nuestro equipo en Chicureo te asesora directamente por WhatsApp para resolver dudas sobre pintura, tiempos y disponibilidad.
+                    <template x-if="selectedService">
+                        <span>No te preocupes por los tecnicismos. Nuestro equipo especializado en Chicureo te asesora al instante por WhatsApp para resolver dudas sobre tiempos, durabilidad y disponibilidad.</span>
+                    </template>
+                    <template x-if="!selectedService">
+                        <span>No te preocupes por los tecnicismos. Cuéntanos qué necesita tu vehículo y nuestro equipo técnico en Chicureo te recomendará el tratamiento ideal al instante por WhatsApp.</span>
+                    </template>
                 </p>
 
-                <!-- Summary Snapshot Card -->
+                <!-- Summary Snapshot Card (When service is selected) -->
                 <template x-if="selectedService">
                     <div class="my-5 p-4 rounded-2xl bg-zinc-900/90 border border-white/10 flex items-center justify-between text-left">
                         <div class="min-w-0 flex-1 pr-2">
@@ -771,7 +781,7 @@
                 </template>
 
                 <!-- Action Buttons -->
-                <div class="space-y-3 pt-2">
+                <div class="space-y-3 pt-4">
                     <a 
                         :href="getExitWhatsAppUrl()" 
                         target="_blank"
@@ -963,32 +973,42 @@ function bookingWizard() {
         },
 
         setupExitIntent() {
-            const handleMouseLeave = (e) => {
-                if (e.clientY <= 25) {
-                    if (this.selectedService && !this.isSubmitting && !sessionStorage.getItem('hcd_exit_shown')) {
-                        sessionStorage.setItem('hcd_exit_shown', 'true');
+            let lastTriggerTime = 0;
+            const handleExitIntent = (e) => {
+                // If cursor moves to the top of the window (attempting to close tab / switch tabs / URL bar)
+                const isLeavingTop = (e.clientY <= 30) || (e.type === 'mouseleave' && e.clientY <= 50) || (!e.relatedTarget && e.clientY <= 30);
+                
+                if (isLeavingTop && !this.isSubmitting && !this.showExitModal) {
+                    const now = Date.now();
+                    // Cooldown of 20 seconds between dismissals
+                    if (now - lastTriggerTime > 20000) {
+                        lastTriggerTime = now;
                         this.showExitModal = true;
                     }
                 }
             };
-            document.addEventListener('mouseleave', handleMouseLeave);
 
-            // Inactivity timer on step 2 (after 45s without submitting)
+            document.addEventListener('mouseleave', handleExitIntent);
+            document.addEventListener('mouseout', handleExitIntent);
+
+            // Inactivity timer on step 2 (after 40s without submitting)
             setTimeout(() => {
-                if (this.currentStep === 2 && this.selectedService && !this.isSubmitting && !sessionStorage.getItem('hcd_exit_shown')) {
-                    sessionStorage.setItem('hcd_exit_shown', 'true');
+                if (this.currentStep === 2 && !this.isSubmitting && !this.showExitModal && (Date.now() - lastTriggerTime > 20000)) {
+                    lastTriggerTime = Date.now();
                     this.showExitModal = true;
                 }
-            }, 45000);
+            }, 40000);
         },
 
         getExitWhatsAppUrl() {
+            const rawPhone = '{{ preg_replace("/[^0-9]/", "", $businessProfile->phone ?? "+56912345678") }}';
+            const phone = rawPhone.length >= 8 ? rawPhone : '56912345678';
             const srvName = this.selectedService ? this.selectedService.name : 'un servicio de detailing';
             const vtName = this.selectedVehicle ? ` (${this.selectedVehicle.name})` : '';
             const total = this.getTotalPrice() > 0 ? ` [Presupuesto estimado: ${this.formatCLP(this.getTotalPrice())}]` : '';
             const client = this.name ? ` Mi nombre es ${this.name}.` : '';
             const msg = `Hola High Contrast Detailing! Estoy en el cotizador web revisando ${srvName}${vtName}${total}.${client} ¿Me pueden asesorar por favor?`;
-            return `https://wa.me/56912345678?text=${encodeURIComponent(msg)}`;
+            return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
         },
         
         getServiceCatKey(srv) {
