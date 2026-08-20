@@ -750,12 +750,32 @@
                 <button 
                     type="button" 
                     @click="showExitModal = false" 
-                    class="absolute top-5 right-5 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white/70 hover:text-white flex items-center justify-center transition-colors cursor-pointer"
+                    class="absolute top-5 right-5 z-20 w-9 h-9 rounded-full bg-black/60 backdrop-blur-md hover:bg-white/20 text-white/70 hover:text-white flex items-center justify-center transition-colors cursor-pointer border border-white/10"
                 >
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
+
+                <!-- Dynamic High-End Video Header (Coherent with the selected service) -->
+                <div class="relative w-full h-44 sm:h-52 rounded-2xl overflow-hidden mb-5 border border-brand/40 shadow-2xl bg-black group">
+                    <video 
+                        :src="getPopupVideo()" 
+                        autoplay 
+                        loop 
+                        muted 
+                        playsinline 
+                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    ></video>
+                    <!-- Gradient overlay on video for smooth modal blend -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/30 to-transparent pointer-events-none"></div>
+                    
+                    <!-- Live Service Badge -->
+                    <div class="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/75 backdrop-blur-md border border-brand/60 text-white text-[10px] font-black uppercase tracking-widest flex items-center gap-2 shadow-xl">
+                        <span class="w-2 h-2 rounded-full bg-brand animate-ping"></span>
+                        <span class="text-brand font-bold" x-text="selectedService ? selectedService.name : 'Detailing Center'"></span>
+                    </div>
+                </div>
 
                 <!-- Badge -->
                 <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-brand/15 border border-brand/40 text-brand text-[11px] font-black uppercase tracking-widest mb-3">
@@ -786,8 +806,9 @@
                 <template x-if="selectedService">
                     <div class="my-5 p-4 rounded-2xl bg-zinc-900/90 border border-white/10 flex items-center justify-between text-left">
                         <div class="min-w-0 flex-1 pr-2">
-                            <span class="text-[10px] font-extrabold uppercase tracking-wider text-brand block" x-text="selectedVehicle ? selectedVehicle.name : 'Vehículo'"></span>
+                            <span class="text-[10px] font-extrabold uppercase tracking-wider text-brand block">SERVICIO SELECCIONADO</span>
                             <p class="text-sm font-bold text-white truncate" x-text="selectedService.name"></p>
+                            <span x-show="selectedVehicle" class="text-[11px] text-white/70 block mt-0.5" x-text="'Categoría: ' + (selectedVehicle ? selectedVehicle.name : '')"></span>
                         </div>
                         <div class="text-right shrink-0">
                             <span class="text-[10px] text-white/40 uppercase block">Total</span>
@@ -1486,11 +1507,31 @@ function bookingWizard() {
             if (sSlug.includes('nivel-3') || sName.includes('nivel 3') || sName.includes('nueve')) {
                 return masterExtras.filter(e => ['tratamiento-ozono', 'eliminador-olores', 'limpieza-motor'].includes(e.slug));
             }
-            if (sSlug.includes('exoshield') || sName.includes('exoshield')) {
-                return masterExtras.filter(e => ['limpieza-motor', 'tratamiento-ozono', 'eliminador-olores', 'ceramico-vidrios'].includes(e.slug));
-            }
-
             return masterExtras.slice(0, 3);
+        },
+
+        getPopupVideo() {
+            if (!this.selectedService) return '/assets/videos/hero-gtechniq.mp4';
+            const sSlug = (this.selectedService.slug || '').toLowerCase();
+            const sName = (this.selectedService.name || '').toLowerCase();
+            const sCat = this.getServiceCatKey(this.selectedService);
+
+            if (sSlug.includes('exoshield') || sName.includes('exoshield') || sCat === 'especiales') {
+                return '/assets/videos/exoshield-web.mp4';
+            }
+            if (sCat === 'ceramico' || sSlug.includes('nivel') || sName.includes('protección') || sName.includes('proteccion')) {
+                return '/assets/videos/sellado-ceramico-aplicacion.mp4';
+            }
+            if (sCat === 'pulido' || sSlug.includes('pulido') || sSlug.includes('etapa') || sName.includes('corrección') || sName.includes('correcion')) {
+                return '/assets/videos/pulido-rupes.mp4';
+            }
+            if (sSlug.includes('avanzado') || sName.includes('avanzado')) {
+                return '/assets/videos/lavado-avanzado.mp4';
+            }
+            if (sSlug.includes('interior') || sName.includes('interior')) {
+                return '/assets/videos/detailing-terminacion.mp4';
+            }
+            return '/assets/videos/lavado-premium.mp4';
         },
 
         getServiceLevelTitle(srv, index) {
