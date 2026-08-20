@@ -1225,12 +1225,12 @@ function bookingWizard() {
 
                 return [
                     {
-                        id: grandesVt.id,
-                        slug: 'exo-xxl',
-                        name: 'XXL',
-                        description: 'Camionetas, Pickups & Autos Altos (F-150 Raptor, RAM, Silverado)',
-                        image: '/assets/images/vehicles/vehicle_exo_xxl.png',
-                        price_multiplier: grandesVt.price_multiplier || '1.00'
+                        id: autosVt.id,
+                        slug: 'exo-electricos',
+                        name: 'Eléctricos',
+                        description: 'Vehículos Eléctricos, Híbridos & Compactos (Tesla, BYD, Fit)',
+                        image: '/assets/images/vehicles/vehicle_exo_electricos.png',
+                        price_multiplier: autosVt.price_multiplier || '1.00'
                     },
                     {
                         id: medianosVt.id,
@@ -1241,12 +1241,12 @@ function bookingWizard() {
                         price_multiplier: medianosVt.price_multiplier || '1.00'
                     },
                     {
-                        id: autosVt.id,
-                        slug: 'exo-electricos',
-                        name: 'Eléctricos',
-                        description: 'Vehículos Eléctricos, Híbridos & Compactos (Tesla, BYD, Fit)',
-                        image: '/assets/images/vehicles/vehicle_exo_electricos.png',
-                        price_multiplier: autosVt.price_multiplier || '1.00'
+                        id: grandesVt.id,
+                        slug: 'exo-xxl',
+                        name: 'XXL',
+                        description: 'Camionetas, Pickups & Autos Altos (F-150 Raptor, RAM, Silverado)',
+                        image: '/assets/images/vehicles/vehicle_exo_xxl.png',
+                        price_multiplier: grandesVt.price_multiplier || '1.00'
                     }
                 ];
             }
