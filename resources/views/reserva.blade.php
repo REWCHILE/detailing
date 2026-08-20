@@ -1363,62 +1363,134 @@ function bookingWizard() {
         get availableExtras() {
             if (!this.selectedService) return [];
             const srv = this.selectedService;
-            const srvName = (srv.name || '').toLowerCase();
-            const srvCat = this.getServiceCatKey(srv);
+            const sSlug = (srv.slug || '').toLowerCase();
+            const sName = (srv.name || '').toLowerCase();
 
-            // High-value optional upsell extras catalog with icons & descriptions
-            const defaultCatalog = [
-                { id: '01M06WPBK06DYS7N06FFNRVHH7', name: 'Sellado Cerámico de Cristales', image: '/assets/images/extras/sellado-cristales.jpg', icon: '🪟', description: 'Efecto lluvia extrema y anti-manchas de agua en parabrisas y vidrios', price: 30000, slug: 'sellado-cristales' },
-                { id: '01M06WPBK4E25PP45ZQEFTGJM9', name: 'Sellado Cerámico de Llantas', image: '/assets/images/extras/sellado-llantas.jpg', icon: '🛞', description: 'Protección cerámica en caras de llantas contra polvo de freno', price: 25000, slug: 'sellado-llantas' },
-                { id: '01kwfafhqvgbvc2xpxwaa99jh1', name: 'Limpieza de Motor', image: '/assets/images/extras/limpieza-motor.jpg', icon: '⚙️', description: 'Desengrase técnico a vapor y sellado protector de gomas y plásticos', price: 20000, slug: 'limpieza-motor' },
-                { id: '01kwfafhqwvbrtm1wd9mvykkna', name: 'Tratamiento de Cuero', image: '/assets/images/extras/tratamiento-cuero.jpg', icon: '💺', description: 'Nutrición profunda e hidrofobia protectora para tapicería en cuero', price: 18000, slug: 'tratamiento-cuero' },
-                { id: '01kwfafhqxg2b3dnrrgjtw8fxa', name: 'Desinfección con Ozono', image: '/assets/images/extras/eliminacion-olores.jpg', icon: '💨', description: 'Eliminación 99.9% de bacterias, ácaros y malos olores en el habitáculo', price: 15000, slug: 'eliminacion-olores' },
-                { id: '01kwfafhqt2q2pthjs450m95re', name: 'Pulido de Focos', image: '/assets/images/extras/pulido-focos.jpg', icon: '💡', description: 'Eliminación de opacidad, amarillamiento y sellador UV en ópticos', price: 20000, slug: 'pulido-focos' },
-                { id: '01kwfafhqyt3y2y4b075cdbf68', name: 'Protección Plástica', image: '/assets/images/extras/proteccion-plastica.jpg', icon: '🛡️', description: 'Restauración de tono original y protección UV para molduras exteriores', price: 12000, slug: 'proteccion-plastica' }
+            // Official extras catalog with José's exact prices and images
+            const masterExtras = [
+                {
+                    slug: 'limpieza-motor',
+                    name: 'Lavado de Motor',
+                    price: 25000,
+                    description: 'Desengrase técnico a vapor y sellado protector de gomas y plásticos.',
+                    image: '/assets/images/extras/limpieza-motor.jpg',
+                    icon: '⚙️'
+                },
+                {
+                    slug: 'pulido-focos',
+                    name: 'Pulido de focos (delanteros y traseros)',
+                    price: 40000,
+                    description: 'Eliminación de opacidad, micro-rayas y sellado UV cerámico en focos.',
+                    image: '/assets/images/extras/pulido-focos.jpg',
+                    icon: '💡'
+                },
+                {
+                    slug: 'tratamiento-ozono',
+                    name: 'Tratamiento Ozono',
+                    price: 25000,
+                    description: 'Desinfección profunda y esterilización del habitáculo mediante gas ozono (O3).',
+                    image: '/assets/images/extras/eliminacion-olores.jpg',
+                    icon: '💨'
+                },
+                {
+                    slug: 'eliminador-olores',
+                    name: 'Eliminador de olores',
+                    price: 18000,
+                    description: 'Tratamiento bactericida y neutralizador de olores en el habitáculo.',
+                    image: '/assets/images/extras/eliminacion-olores.jpg',
+                    icon: '✨'
+                },
+                {
+                    slug: 'ceramico-neumaticos',
+                    name: 'Protección cerámico en neumáticos',
+                    price: 60000,
+                    description: 'Protección cerámica para caras de llantas y neumáticos contra polvo de freno.',
+                    image: '/assets/images/extras/sellado-llantas.jpg',
+                    icon: '🛞'
+                },
+                {
+                    slug: 'ceramico-vidrios',
+                    name: 'Protección cerámico en todos los vidrios',
+                    price: 60000,
+                    description: 'Sellado cerámico hidrofóbico en parabrisas, luneta y ventanas ($15.000 por vidrio).',
+                    image: '/assets/images/extras/sellado-cristales.jpg',
+                    icon: '🪟'
+                },
+                {
+                    slug: 'ceramico-cueros',
+                    name: 'Protección con cerámico en cueros',
+                    price: 80000,
+                    description: 'Nutrición y sellado cerámico para cuero ($80.000 2 corridas / $110.000 3 corridas).',
+                    image: '/assets/images/extras/tratamiento-cuero.jpg',
+                    icon: '💺'
+                },
+                {
+                    slug: 'ceramico-telas',
+                    name: 'Protección con cerámico en telas',
+                    price: 40000,
+                    description: 'Repelencia hidrofóbica para tapices de tela ($40.000 2 corridas / $50.000 3 corridas).',
+                    image: '/assets/images/extras/tratamiento-cuero.jpg',
+                    icon: '🛡️'
+                },
+                {
+                    slug: 'lavado-tapiz',
+                    name: 'Lavado de tapiz',
+                    price: 35000,
+                    description: 'Lavado y extracción profunda de tapices de tela o alfombras.',
+                    image: '/assets/images/extras/tratamiento-cuero.jpg',
+                    icon: '🧼'
+                }
             ];
 
-            // Match real database extras from allExtrasList
-            let list = defaultCatalog.map(ex => {
-                if (this.allExtrasList && this.allExtrasList.length > 0) {
-                    const dbMatch = this.allExtrasList.find(e => e.slug === ex.slug);
-                    if (dbMatch) {
-                        return { 
-                            ...ex, 
-                            id: dbMatch.id, 
-                            name: dbMatch.name || ex.name,
-                            price: parseInt(dbMatch.price) || ex.price,
-                            description: dbMatch.description || ex.description,
-                            image: ex.image
+            // 1. If service has linked extras in DB with price > 0, return those enriched
+            if (srv.extras && Array.isArray(srv.extras) && srv.extras.length > 0) {
+                const paidFromDb = srv.extras.filter(ex => {
+                    const isInc = (ex.pivot && (ex.pivot.is_included == 1 || ex.pivot.is_courtesy == 1 || ex.pivot.is_required == 1)) || parseInt(ex.price) === 0;
+                    return !isInc && parseInt(ex.price) > 0;
+                });
+                if (paidFromDb.length > 0) {
+                    return paidFromDb.map(ex => {
+                        const m = masterExtras.find(me => me.slug === ex.slug || me.name.toLowerCase().includes(ex.name.toLowerCase()) || ex.name.toLowerCase().includes(me.name.toLowerCase())) || {};
+                        return {
+                            id: ex.id,
+                            slug: ex.slug || m.slug || 'extra',
+                            name: ex.name || m.name,
+                            price: parseInt(ex.price) || m.price || 0,
+                            description: ex.description || m.description || '',
+                            image: m.image || '/assets/images/extras/tratamiento-cuero.jpg',
+                            icon: m.icon || '✨'
                         };
-                    }
+                    });
                 }
-                return ex;
-            });
+            }
 
-            // Extract all included extras from service configuration
-            const includedInService = (srv.extras || [])
-                .filter(ex => ex.pivot && (ex.pivot.is_included == 1 || ex.pivot.is_courtesy == 1 || ex.pivot.is_required == 1))
-                .map(ex => ((ex.slug || '') + ' ' + (ex.name || '')).toLowerCase());
+            // 2. Strict mapping per José's rules:
+            if (sSlug.includes('interior') || sName.includes('interior')) {
+                return masterExtras.filter(e => ['ceramico-cueros', 'ceramico-telas'].includes(e.slug));
+            }
+            if (sSlug.includes('lavado') || sName.includes('lavado')) {
+                return masterExtras.filter(e => ['limpieza-motor', 'tratamiento-ozono', 'eliminador-olores'].includes(e.slug));
+            }
+            if (sSlug.includes('multi') || sName.includes('multi')) {
+                return masterExtras.filter(e => ['limpieza-motor'].includes(e.slug));
+            }
+            if (sSlug.includes('servicio-de-pulido') || sSlug.includes('una-etapa') || sName.includes('un paso') || sName.includes('pulido')) {
+                return masterExtras.filter(e => ['pulido-focos', 'limpieza-motor'].includes(e.slug));
+            }
+            if (sSlug.includes('nivel-1') || sName.includes('nivel 1') || sName.includes('dos')) {
+                return masterExtras.filter(e => ['ceramico-vidrios', 'ceramico-neumaticos', 'lavado-tapiz', 'tratamiento-ozono', 'eliminador-olores', 'limpieza-motor'].includes(e.slug));
+            }
+            if (sSlug.includes('nivel-2') || sName.includes('nivel 2') || sName.includes('cinco')) {
+                return masterExtras.filter(e => ['ceramico-vidrios', 'ceramico-neumaticos', 'tratamiento-ozono', 'eliminador-olores', 'limpieza-motor'].includes(e.slug));
+            }
+            if (sSlug.includes('nivel-3') || sName.includes('nivel 3') || sName.includes('nueve')) {
+                return masterExtras.filter(e => ['tratamiento-ozono', 'eliminador-olores', 'limpieza-motor'].includes(e.slug));
+            }
+            if (sSlug.includes('exoshield') || sName.includes('exoshield')) {
+                return masterExtras.filter(e => ['limpieza-motor', 'tratamiento-ozono', 'eliminador-olores', 'ceramico-vidrios'].includes(e.slug));
+            }
 
-            // Prevent offering an extra if it is already part of the chosen service package
-            const isMotorIncluded = srvName.includes('detailing completo') || srvName.includes('completo') || includedInService.some(s => s.includes('motor'));
-            const isCueroIncluded = srvName.includes('detailing interior') || srvName.includes('interior') || srvName.includes('completo') || includedInService.some(s => s.includes('cuero'));
-            const isOzonoIncluded = srvName.includes('detailing interior') || srvName.includes('interior') || srvName.includes('completo') || includedInService.some(s => s.includes('olor') || s.includes('ozono'));
-            const isFocosIncluded = srvName.includes('focos') || srvName.includes('restauración') || includedInService.some(s => s.includes('foco'));
-            const isCristalesIncluded = srvName.includes('nivel 1') || srvName.includes('nivel 2') || srvName.includes('nivel 3') || srvName.includes('crystal serum ultra') || srvName.includes('exoshield') || srvCat === 'especiales' || includedInService.some(s => s.includes('cristal') || s.includes('parabrisas') || s.includes('vidrio'));
-            const isLlantasIncluded = srvName.includes('nivel 2') || srvName.includes('nivel 3') || srvName.includes('crystal serum ultra') || includedInService.some(s => s.includes('llanta'));
-            const isPlasticaIncluded = srvName.includes('nivel 1') || srvName.includes('nivel 2') || srvName.includes('nivel 3') || srvName.includes('completo') || srvName.includes('avanzado') || includedInService.some(s => s.includes('plástico') || s.includes('plastico'));
-
-            return list.filter(e => {
-                if (e.slug === 'limpieza-motor' && isMotorIncluded) return false;
-                if (e.slug === 'tratamiento-cuero' && isCueroIncluded) return false;
-                if (e.slug === 'eliminacion-olores' && isOzonoIncluded) return false;
-                if (e.slug === 'pulido-focos' && isFocosIncluded) return false;
-                if (e.slug === 'sellado-cristales' && isCristalesIncluded) return false;
-                if (e.slug === 'sellado-llantas' && isLlantasIncluded) return false;
-                if (e.slug === 'proteccion-plastica' && isPlasticaIncluded) return false;
-                return true;
-            });
+            return masterExtras.slice(0, 3);
         },
 
         getServiceLevelTitle(srv, index) {
