@@ -183,8 +183,7 @@
     }" 
     @scroll.window="isScrolled = {{ $forceSolidNav ? 'true' : 'window.pageYOffset > 50' }}"
     :class="isScrolled ? 'bg-white/90 dark:bg-[#111111]/95 border-b border-black/5 dark:border-white/5 py-3 shadow-sm backdrop-blur-md' : 'bg-transparent py-5'"
-    class="fixed left-0 right-0 top-0 z-[60] transition-all duration-500"
-    style="z-index: 99999 !important;">
+    class="fixed left-0 right-0 top-0 z-40 transition-all duration-500">
         <div class="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 flex items-center justify-between">
             <!-- Brand Logo -->
             <a href="/" class="group flex items-center gap-3">

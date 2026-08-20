@@ -721,7 +721,7 @@
 
         </div>
 
-        <!-- EXIT INTENT RETENTION MODAL (OPCIÓN C) -->
+        <!-- EXIT INTENT RETENTION MODAL -->
         <div 
             x-show="showExitModal" 
             x-transition:enter="transition ease-out duration-300"
@@ -730,8 +730,8 @@
             x-transition:leave="transition ease-in duration-200"
             x-transition:leave-start="opacity-100"
             x-transition:leave-end="opacity-0"
-            class="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl select-none"
-            style="display: none;"
+            class="fixed inset-0 z-[999999] flex items-center justify-center p-3 sm:p-6 bg-black/90 backdrop-blur-2xl overflow-y-auto select-none"
+            style="display: none; z-index: 999999 !important;"
             @keydown.escape.window="showExitModal = false"
         >
             <!-- Modal Box -->
@@ -740,7 +740,7 @@
                 x-transition:enter="transition ease-out duration-300"
                 x-transition:enter-start="opacity-0 scale-90 translate-y-4"
                 x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-                class="relative w-full max-w-lg rounded-[2.5rem] bg-zinc-950 border-2 border-brand/50 p-6 sm:p-8 md:p-10 shadow-[0_0_50px_rgba(251,44,107,0.35)] overflow-hidden text-center"
+                class="relative w-full max-w-lg max-h-[90vh] flex flex-col my-auto rounded-[2rem] sm:rounded-[2.5rem] bg-zinc-950 border-2 border-brand/50 p-5 sm:p-7 md:p-8 shadow-[0_0_60px_rgba(251,44,107,0.4)] overflow-y-auto text-center custom-scrollbar"
             >
                 <!-- Glow Effect -->
                 <div class="absolute -top-24 -left-24 w-48 h-48 bg-brand/30 rounded-full blur-3xl pointer-events-none"></div>
@@ -750,7 +750,7 @@
                 <button 
                     type="button" 
                     @click="showExitModal = false" 
-                    class="absolute top-5 right-5 z-20 w-9 h-9 rounded-full bg-black/60 backdrop-blur-md hover:bg-white/20 text-white/70 hover:text-white flex items-center justify-center transition-colors cursor-pointer border border-white/10"
+                    class="absolute top-4 right-4 z-30 w-9 h-9 rounded-full bg-black/70 backdrop-blur-md hover:bg-white/20 text-white/70 hover:text-white flex items-center justify-center transition-colors cursor-pointer border border-white/15 shadow-lg"
                 >
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -758,7 +758,7 @@
                 </button>
 
                 <!-- Dynamic High-End Video Header (Coherent with the selected service) -->
-                <div class="relative w-full h-44 sm:h-52 rounded-2xl overflow-hidden mb-5 border border-brand/40 shadow-2xl bg-black group">
+                <div class="relative w-full h-36 sm:h-44 md:h-48 rounded-xl sm:rounded-2xl overflow-hidden mb-4 shrink-0 border border-brand/40 shadow-2xl bg-black group">
                     <video 
                         :src="getPopupVideo()" 
                         autoplay 
@@ -771,20 +771,22 @@
                     <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/30 to-transparent pointer-events-none"></div>
                     
                     <!-- Live Service Badge -->
-                    <div class="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/75 backdrop-blur-md border border-brand/60 text-white text-[10px] font-black uppercase tracking-widest flex items-center gap-2 shadow-xl">
+                    <div class="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/80 backdrop-blur-md border border-brand/60 text-white text-[10px] font-black uppercase tracking-widest flex items-center gap-2 shadow-xl">
                         <span class="w-2 h-2 rounded-full bg-brand animate-ping"></span>
-                        <span class="text-brand font-bold" x-text="selectedService ? selectedService.name : 'Detailing Center'"></span>
+                        <span class="text-brand font-bold truncate max-w-[200px]" x-text="selectedService ? selectedService.name : 'Detailing Center'"></span>
                     </div>
                 </div>
 
                 <!-- Badge -->
-                <span class="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-brand/15 border border-brand/40 text-brand text-[11px] font-black uppercase tracking-widest mb-3">
-                    <span>⚡</span>
-                    <span x-text="selectedService ? 'Asesoría Técnica en 1 Clic' : '¿Buscas Asesoría Personalizada?'"></span>
-                </span>
+                <div class="mb-2 shrink-0">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand/15 border border-brand/40 text-brand text-[10px] sm:text-[11px] font-black uppercase tracking-widest">
+                        <span>⚡</span>
+                        <span x-text="selectedService ? 'Asesoría Técnica en 1 Clic' : '¿Buscas Asesoría Personalizada?'"></span>
+                    </span>
+                </div>
 
                 <!-- Title -->
-                <h3 class="font-display italic font-black text-2xl sm:text-3xl text-white uppercase tracking-tight leading-tight">
+                <h3 class="font-display italic font-black text-xl sm:text-2xl md:text-3xl text-white uppercase tracking-tight leading-snug shrink-0">
                     <template x-if="selectedService">
                         <span>¿Tienes dudas con tu <span class="text-brand" x-text="selectedService.name"></span>?</span>
                     </template>
@@ -793,7 +795,7 @@
                     </template>
                 </h3>
 
-                <p class="text-xs sm:text-sm text-white/70 mt-2.5 leading-relaxed font-medium">
+                <p class="text-xs sm:text-sm text-white/70 mt-2 leading-relaxed font-medium shrink-0">
                     <template x-if="selectedService">
                         <span>No te preocupes por los tecnicismos. Nuestro equipo especializado en Chicureo te asesora al instante por WhatsApp para resolver dudas sobre tiempos, durabilidad y disponibilidad.</span>
                     </template>
@@ -804,15 +806,15 @@
 
                 <!-- Summary Snapshot Card (When service is selected) -->
                 <template x-if="selectedService">
-                    <div class="my-5 p-4 rounded-2xl bg-zinc-900/90 border border-white/10 flex items-center justify-between text-left">
+                    <div class="my-4 p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-zinc-900/90 border border-white/10 flex items-center justify-between text-left shrink-0">
                         <div class="min-w-0 flex-1 pr-2">
                             <span class="text-[10px] font-extrabold uppercase tracking-wider text-brand block">SERVICIO SELECCIONADO</span>
-                            <p class="text-sm font-bold text-white truncate" x-text="selectedService.name"></p>
-                            <span x-show="selectedVehicle" class="text-[11px] text-white/70 block mt-0.5" x-text="'Categoría: ' + (selectedVehicle ? selectedVehicle.name : '')"></span>
+                            <p class="text-xs sm:text-sm font-bold text-white truncate" x-text="selectedService.name"></p>
+                            <span x-show="selectedVehicle" class="text-[10px] sm:text-[11px] text-white/70 block mt-0.5" x-text="'Categoría: ' + (selectedVehicle ? selectedVehicle.name : '')"></span>
                         </div>
                         <div class="text-right shrink-0">
                             <span class="text-[10px] text-white/40 uppercase block">Total</span>
-                            <span class="text-brand font-display font-black text-lg" x-text="formatCLP(getTotalPrice())"></span>
+                            <span class="text-brand font-display font-black text-base sm:text-lg" x-text="formatCLP(getTotalPrice())"></span>
                         </div>
                     </div>
                 </template>
