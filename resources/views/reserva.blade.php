@@ -1265,17 +1265,17 @@ function bookingWizard() {
                     if (s.includes('motorizado') || s.includes('mediano') || s.includes('suv') || s.includes('qashqai')) {
                         return '/assets/images/vehicles/vehicle_exo_motorizados.png';
                     }
-                    if (s.includes('electrico') || s.includes('eléctrico') || s.includes('auto') || s.includes('compacto') || s.includes('fit')) {
+                    if (s.includes('electrico') || s.includes('eléctrico') || s.includes('auto') || s.includes('peque') || s.includes('compacto') || s.includes('fit')) {
                         return '/assets/images/vehicles/vehicle_exo_electricos.png';
                     }
                 }
                 if (s.includes('grande') || s.includes('camioneta') || s.includes('pickup')) {
-                    return '/assets/images/vehicles/vehicle_grandes.jpg';
+                    return '/assets/images/vehicles/vehicle_grandes.png';
                 }
                 if (s.includes('mediano') || s.includes('suv') || s.includes('crossover')) {
-                    return '/assets/images/vehicles/vehicle_medianos.jpg';
+                    return '/assets/images/vehicles/vehicle_medianos.png';
                 }
-                return '/assets/images/vehicles/vehicle_autos.jpg';
+                return '/assets/images/vehicles/vehicle_autos.png';
             }
             const s = (vt || '').toLowerCase();
             if (this.isExoShieldService(this.selectedService)) {
@@ -1285,25 +1285,28 @@ function bookingWizard() {
                 if (s.includes('motorizado') || s.includes('mediano') || s.includes('suv') || s.includes('qashqai')) {
                     return '/assets/images/vehicles/vehicle_exo_motorizados.png';
                 }
-                if (s.includes('electrico') || s.includes('eléctrico') || s.includes('auto') || s.includes('compacto') || s.includes('fit')) {
+                if (s.includes('electrico') || s.includes('eléctrico') || s.includes('auto') || s.includes('peque') || s.includes('compacto') || s.includes('fit')) {
                     return '/assets/images/vehicles/vehicle_exo_electricos.png';
                 }
             }
             if (s.includes('grande') || s.includes('camioneta') || s.includes('pickup')) {
-                return '/assets/images/vehicles/vehicle_grandes.jpg';
+                return '/assets/images/vehicles/vehicle_grandes.png';
             }
             if (s.includes('mediano') || s.includes('suv') || s.includes('crossover')) {
-                return '/assets/images/vehicles/vehicle_medianos.jpg';
+                return '/assets/images/vehicles/vehicle_medianos.png';
             }
-            return '/assets/images/vehicles/vehicle_autos.jpg';
+            return '/assets/images/vehicles/vehicle_autos.png';
         },
 
         getVehicleIcon(slug) {
             const s = (slug || '').toLowerCase();
             if (s.includes('xxl') || s.includes('grande') || s.includes('pickup')) return '🛻';
             if (s.includes('motorizado') || s.includes('mediano') || s.includes('suv')) return '🚙';
-            if (s.includes('electrico') || s.includes('eléctrico') || s.includes('auto')) return '⚡';
+            if (s.includes('electrico') || s.includes('eléctrico')) return '⚡';
+            if (s.includes('peque') || s.includes('auto')) return '🚗';
             const icons = {
+                pequenos: '🚗',
+                pequeños: '🚗',
                 autos: '🚘',
                 sedan: '🚘',
                 medianos: '🚙',
