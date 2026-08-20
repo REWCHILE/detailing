@@ -388,7 +388,7 @@
                         </h4>
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-                            <template x-for="vt in vehicleTypes" :key="vt.id">
+                            <template x-for="vt in displayedVehicleTypes" :key="vt.id + '_' + (isExoShieldService(selectedService) ? 'exo' : 'std')">
                                 <button 
                                     type="button"
                                     @click="selectVehicle(vt)"
@@ -406,7 +406,7 @@
                                              :class="selectedVehicle && selectedVehicle.id === vt.id 
                                                 ? 'border-brand ring-2 ring-brand/40 shadow-[0_0_20px_rgba(251,44,107,0.5)]' 
                                                 : 'border-white/10 group-hover:border-brand/40'">
-                                            <img :src="getVehicleImage(vt.slug)" :alt="vt.name" class="w-full h-full object-cover rounded-xl transition-transform duration-500 group-hover:scale-110">
+                                            <img :src="getVehicleImage(vt)" :alt="vt.name" class="w-full h-full object-cover rounded-xl transition-transform duration-500 group-hover:scale-110">
                                         </div>
 
                                         <!-- Selected Check Circle -->
@@ -1211,8 +1211,84 @@ function bookingWizard() {
             </svg>`;
         },
 
-        getVehicleImage(slug) {
-            const s = (slug || '').toLowerCase();
+        isExoShieldService(srv) {
+            if (!srv) return false;
+            const text = ((srv.name || '') + ' ' + (srv.slug || '') + ' ' + (srv.short_description || '') + ' ' + (srv.category || '')).toLowerCase();
+            return text.includes('exoshield') || text.includes('parabrisas') || text.includes('especiales');
+        },
+
+        get displayedVehicleTypes() {
+            if (this.isExoShieldService(this.selectedService)) {
+                const grandesVt = this.vehicleTypes.find(v => (v.slug || '').includes('grande')) || (this.vehicleTypes[2] || { id: '01kwfafhqner0c3yfszs31vmy5', slug: 'grandes', price_multiplier: '1.00' });
+                const medianosVt = this.vehicleTypes.find(v => (v.slug || '').includes('mediano')) || (this.vehicleTypes[1] || { id: '01kwfafhqner0c3yfszs31vmy4', slug: 'medianos', price_multiplier: '1.00' });
+                const autosVt = this.vehicleTypes.find(v => (v.slug || '').includes('auto')) || (this.vehicleTypes[0] || { id: '01kwfafhqmnm9fmc4b6vsq0ghq', slug: 'autos', price_multiplier: '1.00' });
+
+                return [
+                    {
+                        id: grandesVt.id,
+                        slug: 'exo-xxl',
+                        name: 'XXL',
+                        description: 'Camionetas, Pickups & Autos Altos (F-150 Raptor, RAM, Silverado)',
+                        image: '/assets/images/vehicles/vehicle_exo_xxl.png',
+                        price_multiplier: grandesVt.price_multiplier || '1.00'
+                    },
+                    {
+                        id: medianosVt.id,
+                        slug: 'exo-motorizados',
+                        name: 'Motorizados',
+                        description: 'SUVs, Crossovers & Sedanes (Qashqai, RAV4, Tucson, Sedanes)',
+                        image: '/assets/images/vehicles/vehicle_exo_motorizados.png',
+                        price_multiplier: medianosVt.price_multiplier || '1.00'
+                    },
+                    {
+                        id: autosVt.id,
+                        slug: 'exo-electricos',
+                        name: 'Eléctricos',
+                        description: 'Vehículos Eléctricos, Híbridos & Compactos (Tesla, BYD, Fit)',
+                        image: '/assets/images/vehicles/vehicle_exo_electricos.png',
+                        price_multiplier: autosVt.price_multiplier || '1.00'
+                    }
+                ];
+            }
+
+            return this.vehicleTypes;
+        },
+
+        getVehicleImage(vt) {
+            if (typeof vt === 'object' && vt !== null) {
+                if (vt.image) return vt.image;
+                const s = (vt.slug || vt.name || '').toLowerCase();
+                if (this.isExoShieldService(this.selectedService)) {
+                    if (s.includes('xxl') || s.includes('grande') || s.includes('pickup') || s.includes('raptor')) {
+                        return '/assets/images/vehicles/vehicle_exo_xxl.png';
+                    }
+                    if (s.includes('motorizado') || s.includes('mediano') || s.includes('suv') || s.includes('qashqai')) {
+                        return '/assets/images/vehicles/vehicle_exo_motorizados.png';
+                    }
+                    if (s.includes('electrico') || s.includes('eléctrico') || s.includes('auto') || s.includes('compacto') || s.includes('fit')) {
+                        return '/assets/images/vehicles/vehicle_exo_electricos.png';
+                    }
+                }
+                if (s.includes('grande') || s.includes('camioneta') || s.includes('pickup')) {
+                    return '/assets/images/vehicles/vehicle_grandes.jpg';
+                }
+                if (s.includes('mediano') || s.includes('suv') || s.includes('crossover')) {
+                    return '/assets/images/vehicles/vehicle_medianos.jpg';
+                }
+                return '/assets/images/vehicles/vehicle_autos.jpg';
+            }
+            const s = (vt || '').toLowerCase();
+            if (this.isExoShieldService(this.selectedService)) {
+                if (s.includes('xxl') || s.includes('grande') || s.includes('pickup') || s.includes('raptor')) {
+                    return '/assets/images/vehicles/vehicle_exo_xxl.png';
+                }
+                if (s.includes('motorizado') || s.includes('mediano') || s.includes('suv') || s.includes('qashqai')) {
+                    return '/assets/images/vehicles/vehicle_exo_motorizados.png';
+                }
+                if (s.includes('electrico') || s.includes('eléctrico') || s.includes('auto') || s.includes('compacto') || s.includes('fit')) {
+                    return '/assets/images/vehicles/vehicle_exo_electricos.png';
+                }
+            }
             if (s.includes('grande') || s.includes('camioneta') || s.includes('pickup')) {
                 return '/assets/images/vehicles/vehicle_grandes.jpg';
             }
@@ -1223,6 +1299,10 @@ function bookingWizard() {
         },
 
         getVehicleIcon(slug) {
+            const s = (slug || '').toLowerCase();
+            if (s.includes('xxl') || s.includes('grande') || s.includes('pickup')) return '🛻';
+            if (s.includes('motorizado') || s.includes('mediano') || s.includes('suv')) return '🚙';
+            if (s.includes('electrico') || s.includes('eléctrico') || s.includes('auto')) return '⚡';
             const icons = {
                 autos: '🚘',
                 sedan: '🚘',
@@ -1234,7 +1314,7 @@ function bookingWizard() {
                 deportivo: '🏎️',
                 moto: '🏍️'
             };
-            return icons[slug] || '🚗';
+            return icons[s] || '🚗';
         },
 
         openDetailsModal(srv) {
@@ -1534,6 +1614,8 @@ function bookingWizard() {
         },
 
         selectService(srv) {
+            const wasExo = this.isExoShieldService(this.selectedService);
+            const isExo = this.isExoShieldService(srv);
             this.selectedService = srv;
             this.selectedExtras = [];
             if (srv && srv.extras) {
@@ -1542,6 +1624,10 @@ function bookingWizard() {
                         this.selectedExtras.push(extra);
                     }
                 });
+            }
+            if (this.selectedVehicle && wasExo !== isExo) {
+                const matched = this.displayedVehicleTypes.find(v => v.id === this.selectedVehicle.id) || this.displayedVehicleTypes[0];
+                if (matched) this.selectedVehicle = matched;
             }
             this.maxStepReached = Math.max(this.maxStepReached, 2);
             this.saveDraftLead(1);
