@@ -401,12 +401,12 @@
                                     <div x-show="selectedVehicle && selectedVehicle.id === vt.id" class="absolute -top-12 -right-12 w-32 h-32 bg-brand/30 rounded-full blur-3xl pointer-events-none"></div>
 
                                     <!-- Top Row: 3D Artwork Image & Checkbox -->
-                                    <div class="flex items-center justify-between gap-3 mb-3">
-                                        <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden bg-black p-1 border transition-all duration-300 shrink-0 shadow-lg"
+                                    <div class="flex items-start justify-between gap-3 mb-4">
+                                        <div class="w-28 h-28 sm:w-36 sm:h-36 rounded-2xl overflow-hidden bg-black/60 p-1 border transition-all duration-300 shrink-0 shadow-xl"
                                              :class="selectedVehicle && selectedVehicle.id === vt.id 
-                                                ? 'border-brand ring-2 ring-brand/40 shadow-[0_0_20px_rgba(251,44,107,0.5)]' 
+                                                ? 'border-brand ring-2 ring-brand/40 shadow-[0_0_25px_rgba(251,44,107,0.5)]' 
                                                 : 'border-white/10 group-hover:border-brand/40'">
-                                            <img :src="getVehicleImage(vt)" :alt="vt.name" class="w-full h-full object-cover rounded-xl transition-transform duration-500 group-hover:scale-110">
+                                            <img :src="getVehicleImage(vt)" :alt="vt.name" class="w-full h-full object-cover rounded-xl transition-transform duration-500 group-hover:scale-105">
                                         </div>
 
                                         <!-- Selected Check Circle -->
@@ -730,7 +730,7 @@
             x-transition:leave="transition ease-in duration-200"
             x-transition:leave-start="opacity-100"
             x-transition:leave-end="opacity-0"
-            class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl select-none"
+            class="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/85 backdrop-blur-xl select-none"
             style="display: none;"
             @keydown.escape.window="showExitModal = false"
         >
