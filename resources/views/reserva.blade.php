@@ -387,49 +387,58 @@
                             <span>Selecciona la Categoría / Tamaño de tu Vehículo *</span>
                         </h4>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-5">
                             <template x-for="vt in displayedVehicleTypes" :key="vt.id + '_' + (isExoShieldService(selectedService) ? 'exo' : 'std')">
                                 <button 
                                     type="button"
                                     @click="selectVehicle(vt)"
-                                    class="relative rounded-[2rem] border-2 transition-all duration-300 text-left p-4 sm:p-5 flex flex-col justify-between cursor-pointer group select-none overflow-hidden"
+                                    class="relative rounded-[2.2rem] sm:rounded-[2.5rem] border-2 transition-all duration-300 text-left flex flex-col justify-between cursor-pointer group select-none overflow-hidden"
                                     :class="selectedVehicle && selectedVehicle.id === vt.id
                                         ? 'border-brand bg-zinc-950 shadow-2xl shadow-brand/40 ring-2 ring-brand/50 scale-[1.02]'
-                                        : 'border-white/15 bg-zinc-950/80 hover:border-brand/50 hover:bg-zinc-900'"
+                                        : 'border-white/15 bg-zinc-950/90 hover:border-brand/60 hover:bg-zinc-900 hover:scale-[1.01]'"
                                 >
                                     <!-- Ambient Glow when selected -->
-                                    <div x-show="selectedVehicle && selectedVehicle.id === vt.id" class="absolute -top-12 -right-12 w-32 h-32 bg-brand/30 rounded-full blur-3xl pointer-events-none"></div>
+                                    <div x-show="selectedVehicle && selectedVehicle.id === vt.id" class="absolute -top-12 -right-12 w-44 h-44 bg-brand/30 rounded-full blur-3xl pointer-events-none z-10"></div>
 
-                                    <!-- Top Row: 3D Artwork Image & Checkbox -->
-                                    <div class="flex items-start justify-between gap-3 mb-4">
-                                        <div class="w-28 h-28 sm:w-36 sm:h-36 rounded-2xl overflow-hidden bg-black/60 p-1 border transition-all duration-300 shrink-0 shadow-xl"
-                                             :class="selectedVehicle && selectedVehicle.id === vt.id 
-                                                ? 'border-brand ring-2 ring-brand/40 shadow-[0_0_25px_rgba(251,44,107,0.5)]' 
-                                                : 'border-white/10 group-hover:border-brand/40'">
-                                            <img :src="getVehicleImage(vt)" :alt="vt.name" class="w-full h-full object-cover rounded-xl transition-transform duration-500 group-hover:scale-105">
-                                        </div>
+                                    <!-- Card Header Image: Full width top showcase banner -->
+                                    <div class="relative w-full aspect-[4/3] sm:h-60 md:h-64 overflow-hidden bg-black/95 shrink-0 border-b border-white/10">
+                                        <img 
+                                            :src="getVehicleImage(vt)" 
+                                            :alt="vt.name" 
+                                            class="w-full h-full object-cover object-center group-hover:scale-108 transition-transform duration-700 ease-out"
+                                        >
+                                        
+                                        <!-- Gradient overlay for cinematic depth -->
+                                        <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/20 to-black/20 pointer-events-none"></div>
 
-                                        <!-- Selected Check Circle -->
-                                        <div class="w-7 h-7 rounded-full flex items-center justify-center transition-all duration-300"
-                                             :class="selectedVehicle && selectedVehicle.id === vt.id ? 'bg-brand text-white shadow-lg shadow-brand/60' : 'bg-white/5 text-transparent border border-white/20 group-hover:border-brand/50'">
+                                        <!-- Selected Check Circle Floating Badge (Top Right) -->
+                                        <div 
+                                            class="absolute top-4 right-4 z-20 w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-md transition-all duration-300 shadow-lg"
+                                            :class="selectedVehicle && selectedVehicle.id === vt.id 
+                                                ? 'bg-brand text-white shadow-brand/60 scale-110 ring-2 ring-white/20' 
+                                                : 'bg-black/60 text-transparent border border-white/30 group-hover:border-brand/60'"
+                                        >
                                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                                                 <polyline points="20 6 9 17 4 12"/>
                                             </svg>
                                         </div>
                                     </div>
 
-                                    <div>
-                                        <h5 class="font-display italic font-black text-white text-lg sm:text-xl tracking-tight mb-1 transition-colors"
-                                            :class="selectedVehicle && selectedVehicle.id === vt.id ? 'text-brand' : 'text-white group-hover:text-brand'"
-                                            x-text="vt.name"></h5>
-                                        <p class="text-white/50 text-xs line-clamp-2" x-text="vt.description"></p>
-                                    </div>
-                                    
-                                    <div class="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs font-bold">
-                                        <span class="uppercase tracking-wider transition-colors"
-                                              :class="selectedVehicle && selectedVehicle.id === vt.id ? 'text-brand font-black' : 'text-white/40 group-hover:text-brand'"
-                                              x-text="selectedVehicle && selectedVehicle.id === vt.id ? '✓ SELECCIONADO' : 'ELEGIR'"></span>
-                                        <span class="text-white/90 font-mono font-black text-xs sm:text-sm" x-text="selectedService ? formatCLP(getAdjustedPriceForVehicle(selectedService, vt)) : ''"></span>
+                                    <!-- Card Body Content -->
+                                    <div class="p-5 sm:p-6 flex flex-col justify-between flex-1">
+                                        <div>
+                                            <h5 class="font-display italic font-black text-white text-xl sm:text-2xl tracking-tight mb-1.5 transition-colors"
+                                                :class="selectedVehicle && selectedVehicle.id === vt.id ? 'text-brand' : 'text-white group-hover:text-brand'"
+                                                x-text="vt.name"></h5>
+                                            <p class="text-white/60 text-xs sm:text-sm line-clamp-2 leading-relaxed" x-text="vt.description"></p>
+                                        </div>
+                                        
+                                        <div class="mt-4 pt-3.5 border-t border-white/10 flex items-center justify-between text-xs sm:text-sm font-bold">
+                                            <span class="uppercase tracking-wider transition-colors"
+                                                  :class="selectedVehicle && selectedVehicle.id === vt.id ? 'text-brand font-black' : 'text-white/40 group-hover:text-brand'"
+                                                  x-text="selectedVehicle && selectedVehicle.id === vt.id ? '✓ SELECCIONADO' : 'ELEGIR'"></span>
+                                            <span class="text-brand font-mono font-black text-sm sm:text-base" x-text="selectedService ? formatCLP(getAdjustedPriceForVehicle(selectedService, vt)) : ''"></span>
+                                        </div>
                                     </div>
                                 </button>
                             </template>
@@ -721,7 +730,7 @@
 
         </div>
 
-        <!-- EXIT INTENT RETENTION MODAL -->
+        <!-- EXIT INTENT RETENTION MODAL (NON-INVASIVE: 1 TIME PER SESSION ONLY) -->
         <template x-teleport="body">
             <div 
                 x-show="showExitModal" 
@@ -733,11 +742,11 @@
                 x-transition:leave-end="opacity-0"
                 class="fixed inset-0 z-[999999] flex items-center justify-center p-3 sm:p-6 bg-black/90 backdrop-blur-2xl select-none"
                 style="display: none; z-index: 999999 !important;"
-                @keydown.escape.window="showExitModal = false"
+                @keydown.escape.window="dismissExitModal()"
             >
                 <!-- Modal Box -->
                 <div 
-                    @click.away="showExitModal = false"
+                    @click.away="dismissExitModal()"
                     x-transition:enter="transition ease-out duration-300"
                     x-transition:enter-start="opacity-0 scale-90 translate-y-4"
                     x-transition:enter-end="opacity-100 scale-100 translate-y-0"
@@ -750,7 +759,7 @@
                     <!-- Close Button -->
                     <button 
                         type="button" 
-                        @click="showExitModal = false" 
+                        @click="dismissExitModal()" 
                         class="absolute top-4 right-4 z-30 w-9 h-9 rounded-full bg-black/70 backdrop-blur-md hover:bg-white/20 text-white/70 hover:text-white flex items-center justify-center transition-colors cursor-pointer border border-white/15 shadow-lg"
                     >
                         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -759,76 +768,58 @@
                     </button>
 
                     <!-- Inner Content Box (Compact Height, Fits Perfectly & Zero Visible Scrollbars) -->
-                    <div class="p-5 sm:p-6 overflow-y-auto overflow-x-hidden scrollbar-none flex-1 relative z-10">
-
-                        <!-- Dynamic High-End Video Header (Coherent with the selected service) -->
-                        <div class="relative w-full h-28 sm:h-32 md:h-36 rounded-xl sm:rounded-2xl overflow-hidden mb-3 shrink-0 border border-brand/40 shadow-2xl bg-black group">
+                    <div class="p-6 sm:p-8 flex flex-col items-center justify-center text-center relative z-10 w-full overflow-hidden">
+                        
+                        <!-- Top Floating Video Badge (Cinematic Luxury Detailing Preview) -->
+                        <div class="relative w-full h-36 sm:h-40 rounded-2xl overflow-hidden mb-4 border border-brand/40 shadow-inner bg-black shrink-0">
                             <video 
-                                :src="getPopupVideo()" 
                                 autoplay 
                                 loop 
                                 muted 
                                 playsinline 
-                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                            ></video>
-                            <!-- Gradient overlay on video for smooth modal blend -->
-                            <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/30 to-transparent pointer-events-none"></div>
+                                class="w-full h-full object-cover opacity-80 pointer-events-none scale-105"
+                            >
+                                <source :src="getPopupVideo()" type="video/mp4">
+                            </video>
                             
-                            <!-- Live Service Badge -->
-                            <div class="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/80 backdrop-blur-md border border-brand/60 text-white text-[10px] font-black uppercase tracking-widest flex items-center gap-2 shadow-xl">
-                                <span class="w-2 h-2 rounded-full bg-brand animate-ping"></span>
-                                <span class="text-brand font-bold truncate max-w-[200px]" x-text="selectedService ? selectedService.name : 'Detailing Center'"></span>
+                            <!-- Gradient overlay on video for smooth modal blend -->
+                            <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent"></div>
+
+                            <!-- Exclusive Deal Badge on Video -->
+                            <div class="absolute top-3 left-3 bg-brand text-white text-[10px] font-black uppercase px-3 py-1 rounded-full shadow-lg flex items-center gap-1.5 tracking-wider border border-white/20">
+                                <span>⚡</span>
+                                <span>ASESORÍA EXCLUSIVA</span>
                             </div>
                         </div>
 
-                        <!-- Badge -->
-                        <div class="mb-1.5 shrink-0">
-                            <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-brand/15 border border-brand/40 text-brand text-[10px] sm:text-[11px] font-black uppercase tracking-widest">
-                                <span>⚡</span>
-                                <span x-text="selectedService ? 'Asesoría Técnica en 1 Clic' : '¿Buscas Asesoría Personalizada?'"></span>
-                            </span>
-                        </div>
-
-                        <!-- Title -->
-                        <h3 class="font-display italic font-black text-lg sm:text-xl md:text-2xl text-white uppercase tracking-tight leading-snug shrink-0 break-words">
-                            <template x-if="selectedService">
-                                <span>¿Tienes dudas con tu <span class="text-brand" x-text="selectedService.name"></span>?</span>
-                            </template>
-                            <template x-if="!selectedService">
-                                <span>¿Tienes dudas para elegir tu <span class="text-brand">Servicio de Detailing</span>?</span>
-                            </template>
+                        <!-- Main Modal Heading -->
+                        <h3 class="font-display font-black text-xl sm:text-2xl text-white uppercase tracking-tight mb-1.5 leading-tight">
+                            ¿TIENES DUDAS CON TU <span class="text-gradient">COTIZACIÓN?</span>
                         </h3>
 
-                        <p class="text-xs sm:text-sm text-white/70 mt-1.5 leading-relaxed font-medium shrink-0">
-                            <template x-if="selectedService">
-                                <span>No te preocupes por los tecnicismos. Nuestro equipo especializado en Chicureo te asesora al instante por WhatsApp para resolver dudas sobre tiempos, durabilidad y disponibilidad.</span>
-                            </template>
-                            <template x-if="!selectedService">
-                                <span>No te preocupes por los tecnicismos. Cuéntanos qué necesita tu vehículo y nuestro equipo técnico en Chicureo te recomendará el tratamiento ideal al instante por WhatsApp.</span>
-                            </template>
+                        <!-- Subtitle with dynamic service reference -->
+                        <p class="text-xs sm:text-sm text-white/75 leading-relaxed max-w-sm mb-4">
+                            Un especialista de <strong class="text-brand">High Contrast</strong> puede asesorarte directamente para elegir el mejor tratamiento para tu auto.
                         </p>
 
-                        <!-- Summary Snapshot Card (When service is selected) -->
-                        <template x-if="selectedService">
-                            <div class="my-3 p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-zinc-900/90 border border-white/10 flex items-center justify-between text-left shrink-0">
-                                <div class="min-w-0 flex-1 pr-2">
-                                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-brand block">SERVICIO SELECCIONADO</span>
-                                    <p class="text-xs sm:text-sm font-bold text-white truncate" x-text="selectedService.name"></p>
-                                    <span x-show="selectedVehicle" class="text-[10px] sm:text-[11px] text-white/70 block mt-0.5" x-text="'Categoría: ' + (selectedVehicle ? selectedVehicle.name : '')"></span>
-                                </div>
-                                <div class="text-right shrink-0">
-                                    <span class="text-[10px] text-white/40 uppercase block">Total</span>
-                                    <span class="text-brand font-display font-black text-base sm:text-lg" x-text="formatCLP(getTotalPrice())"></span>
-                                </div>
+                        <!-- Live Quote Summary Pill -->
+                        <div class="w-full p-3.5 rounded-2xl bg-zinc-900/90 border border-white/10 mb-4 flex items-center justify-between text-left">
+                            <div class="min-w-0 pr-2">
+                                <span class="text-[10px] uppercase font-bold tracking-wider text-white/40 block">Servicio Seleccionado</span>
+                                <span class="font-display font-bold text-xs sm:text-sm text-white truncate block" x-text="selectedService ? selectedService.name : 'Tratamiento Detailing'"></span>
                             </div>
-                        </template>
+                            <div class="text-right shrink-0">
+                                <span class="text-[10px] uppercase font-bold tracking-wider text-white/40 block">Presupuesto</span>
+                                <span class="font-display font-black text-sm sm:text-base text-brand" x-text="formatCLP(getTotalPrice())"></span>
+                            </div>
+                        </div>
 
                         <!-- Action Buttons -->
-                        <div class="space-y-2.5 pt-3">
+                        <div class="space-y-2.5 pt-1 w-full">
                             <a 
                                 :href="getExitWhatsAppUrl()" 
                                 target="_blank"
-                                @click="showExitModal = false"
+                                @click="dismissExitModal()"
                                 class="w-full py-3.5 px-5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-display italic font-black text-xs sm:text-sm uppercase tracking-wider shadow-lg shadow-emerald-600/40 flex items-center justify-center gap-2.5 transition-all hover:scale-[1.02]"
                             >
                                 <svg class="w-4 h-4 sm:w-5 sm:h-5 fill-current" viewBox="0 0 24 24">
@@ -839,7 +830,7 @@
 
                             <button 
                                 type="button" 
-                                @click="showExitModal = false; scrollToTop()" 
+                                @click="dismissExitModal(); scrollToTop()" 
                                 class="w-full py-2.5 px-5 rounded-full border border-white/20 text-white/70 hover:text-white hover:border-white/40 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
                             >
                                 Prefiero continuar cotizando online
@@ -1022,32 +1013,39 @@ function bookingWizard() {
             this.setupExitIntent();
         },
 
+        dismissExitModal() {
+            this.showExitModal = false;
+            try {
+                sessionStorage.setItem('hcd_exit_modal_dismissed', '1');
+            } catch (e) {}
+        },
+
         setupExitIntent() {
-            let lastTriggerTime = 0;
+            // Option 1: Strict & Non-Invasive Exit-Intent (Max 1 time per browser session)
             const handleExitIntent = (e) => {
-                // If cursor moves to the top of the window (attempting to close tab / switch tabs / URL bar)
-                const isLeavingTop = (e.clientY <= 30) || (e.type === 'mouseleave' && e.clientY <= 50) || (!e.relatedTarget && e.clientY <= 30);
-                
-                if (isLeavingTop && !this.isSubmitting && !this.showExitModal) {
-                    const now = Date.now();
-                    // Cooldown of 20 seconds between dismissals
-                    if (now - lastTriggerTime > 20000) {
-                        lastTriggerTime = now;
-                        this.showExitModal = true;
+                // Check if already shown or dismissed in this browser session
+                try {
+                    if (sessionStorage.getItem('hcd_exit_modal_dismissed') === '1') {
+                        return;
                     }
+                } catch (err) {}
+
+                // Only trigger if user is on step 2, has selected a service, and is not currently submitting
+                if (this.currentStep !== 2 || !this.selectedService || this.isSubmitting || this.showExitModal) {
+                    return;
+                }
+
+                // Strictly detect when cursor leaves through the top of the browser window (closing tab, URL bar)
+                if (e.clientY <= 0) {
+                    try {
+                        sessionStorage.setItem('hcd_exit_modal_dismissed', '1');
+                    } catch (err) {}
+                    this.showExitModal = true;
                 }
             };
 
+            // Only listen to mouseleave at the document level (never mouseout to avoid false positives with navbar/buttons)
             document.addEventListener('mouseleave', handleExitIntent);
-            document.addEventListener('mouseout', handleExitIntent);
-
-            // Inactivity timer on step 2 (after 40s without submitting)
-            setTimeout(() => {
-                if (this.currentStep === 2 && !this.isSubmitting && !this.showExitModal && (Date.now() - lastTriggerTime > 20000)) {
-                    lastTriggerTime = Date.now();
-                    this.showExitModal = true;
-                }
-            }, 40000);
         },
 
         getExitWhatsAppUrl() {
@@ -1423,7 +1421,7 @@ function bookingWizard() {
                     name: 'Tratamiento Ozono',
                     price: 25000,
                     description: 'Desinfección profunda y esterilización del habitáculo mediante gas ozono (O3).',
-                    image: '/assets/images/extras/eliminacion-olores.jpg',
+                    image: '/assets/images/extras/tratamiento-ozono.jpg',
                     icon: '💨'
                 },
                 {
@@ -1463,7 +1461,7 @@ function bookingWizard() {
                     name: 'Protección con cerámico en telas',
                     price: 40000,
                     description: 'Repelencia hidrofóbica para tapices de tela ($40.000 2 corridas / $50.000 3 corridas).',
-                    image: '/assets/images/extras/tratamiento-cuero.jpg',
+                    image: '/assets/images/extras/proteccion-plastica.jpg',
                     icon: '🛡️'
                 },
                 {
