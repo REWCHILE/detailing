@@ -318,7 +318,7 @@
                             </div>
 
                             <!-- Styled Bullet Points List with Inner Scrollbar (Never overflows outer boundaries) -->
-                            <div class="p-6 sm:p-8 overflow-y-auto flex-1 custom-scrollbar">
+                            <div class="p-6 sm:p-8 overflow-y-auto overflow-x-hidden flex-1 custom-scrollbar">
                                 <ul class="space-y-3.5 text-left">
                                     <template x-for="(point, pIdx) in getServiceDetailPoints(modalServiceDetails)" :key="pIdx">
                                         <li class="flex items-start gap-3.5 p-3.5 rounded-2xl bg-black/50 border border-white/10 hover:border-brand/40 transition-colors">
@@ -722,128 +722,134 @@
         </div>
 
         <!-- EXIT INTENT RETENTION MODAL -->
-        <div 
-            x-show="showExitModal" 
-            x-transition:enter="transition ease-out duration-300"
-            x-transition:enter-start="opacity-0"
-            x-transition:enter-end="opacity-100"
-            x-transition:leave="transition ease-in duration-200"
-            x-transition:leave-start="opacity-100"
-            x-transition:leave-end="opacity-0"
-            class="fixed inset-0 z-[999999] flex items-center justify-center p-3 sm:p-6 bg-black/90 backdrop-blur-2xl overflow-y-auto select-none"
-            style="display: none; z-index: 999999 !important;"
-            @keydown.escape.window="showExitModal = false"
-        >
-            <!-- Modal Box -->
+        <template x-teleport="body">
             <div 
-                @click.away="showExitModal = false"
+                x-show="showExitModal" 
                 x-transition:enter="transition ease-out duration-300"
-                x-transition:enter-start="opacity-0 scale-90 translate-y-4"
-                x-transition:enter-end="opacity-100 scale-100 translate-y-0"
-                class="relative w-full max-w-lg max-h-[90vh] flex flex-col my-auto rounded-[2rem] sm:rounded-[2.5rem] bg-zinc-950 border-2 border-brand/50 p-5 sm:p-7 md:p-8 shadow-[0_0_60px_rgba(251,44,107,0.4)] overflow-y-auto text-center custom-scrollbar"
+                x-transition:enter-start="opacity-0"
+                x-transition:enter-end="opacity-100"
+                x-transition:leave="transition ease-in duration-200"
+                x-transition:leave-start="opacity-100"
+                x-transition:leave-end="opacity-0"
+                class="fixed inset-0 z-[999999] flex items-center justify-center p-3 sm:p-6 bg-black/90 backdrop-blur-2xl select-none"
+                style="display: none; z-index: 999999 !important;"
+                @keydown.escape.window="showExitModal = false"
             >
-                <!-- Glow Effect -->
-                <div class="absolute -top-24 -left-24 w-48 h-48 bg-brand/30 rounded-full blur-3xl pointer-events-none"></div>
-                <div class="absolute -bottom-24 -right-24 w-48 h-48 bg-brand/20 rounded-full blur-3xl pointer-events-none"></div>
-
-                <!-- Close Button -->
-                <button 
-                    type="button" 
-                    @click="showExitModal = false" 
-                    class="absolute top-4 right-4 z-30 w-9 h-9 rounded-full bg-black/70 backdrop-blur-md hover:bg-white/20 text-white/70 hover:text-white flex items-center justify-center transition-colors cursor-pointer border border-white/15 shadow-lg"
+                <!-- Modal Box -->
+                <div 
+                    @click.away="showExitModal = false"
+                    x-transition:enter="transition ease-out duration-300"
+                    x-transition:enter-start="opacity-0 scale-90 translate-y-4"
+                    x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                    class="relative w-full max-w-lg max-h-[90vh] flex flex-col my-auto rounded-[2rem] sm:rounded-[2.5rem] bg-zinc-950 border-2 border-brand/50 shadow-[0_0_60px_rgba(251,44,107,0.4)] overflow-hidden text-center"
                 >
-                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                </button>
+                    <!-- Glow Effect (Clipped by outer overflow-hidden) -->
+                    <div class="absolute -top-24 -left-24 w-48 h-48 bg-brand/30 rounded-full blur-3xl pointer-events-none z-0"></div>
+                    <div class="absolute -bottom-24 -right-24 w-48 h-48 bg-brand/20 rounded-full blur-3xl pointer-events-none z-0"></div>
 
-                <!-- Dynamic High-End Video Header (Coherent with the selected service) -->
-                <div class="relative w-full h-36 sm:h-44 md:h-48 rounded-xl sm:rounded-2xl overflow-hidden mb-4 shrink-0 border border-brand/40 shadow-2xl bg-black group">
-                    <video 
-                        :src="getPopupVideo()" 
-                        autoplay 
-                        loop 
-                        muted 
-                        playsinline 
-                        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    ></video>
-                    <!-- Gradient overlay on video for smooth modal blend -->
-                    <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/30 to-transparent pointer-events-none"></div>
-                    
-                    <!-- Live Service Badge -->
-                    <div class="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/80 backdrop-blur-md border border-brand/60 text-white text-[10px] font-black uppercase tracking-widest flex items-center gap-2 shadow-xl">
-                        <span class="w-2 h-2 rounded-full bg-brand animate-ping"></span>
-                        <span class="text-brand font-bold truncate max-w-[200px]" x-text="selectedService ? selectedService.name : 'Detailing Center'"></span>
-                    </div>
-                </div>
-
-                <!-- Badge -->
-                <div class="mb-2 shrink-0">
-                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-brand/15 border border-brand/40 text-brand text-[10px] sm:text-[11px] font-black uppercase tracking-widest">
-                        <span>⚡</span>
-                        <span x-text="selectedService ? 'Asesoría Técnica en 1 Clic' : '¿Buscas Asesoría Personalizada?'"></span>
-                    </span>
-                </div>
-
-                <!-- Title -->
-                <h3 class="font-display italic font-black text-xl sm:text-2xl md:text-3xl text-white uppercase tracking-tight leading-snug shrink-0">
-                    <template x-if="selectedService">
-                        <span>¿Tienes dudas con tu <span class="text-brand" x-text="selectedService.name"></span>?</span>
-                    </template>
-                    <template x-if="!selectedService">
-                        <span>¿Tienes dudas para elegir tu <span class="text-brand">Servicio de Detailing</span>?</span>
-                    </template>
-                </h3>
-
-                <p class="text-xs sm:text-sm text-white/70 mt-2 leading-relaxed font-medium shrink-0">
-                    <template x-if="selectedService">
-                        <span>No te preocupes por los tecnicismos. Nuestro equipo especializado en Chicureo te asesora al instante por WhatsApp para resolver dudas sobre tiempos, durabilidad y disponibilidad.</span>
-                    </template>
-                    <template x-if="!selectedService">
-                        <span>No te preocupes por los tecnicismos. Cuéntanos qué necesita tu vehículo y nuestro equipo técnico en Chicureo te recomendará el tratamiento ideal al instante por WhatsApp.</span>
-                    </template>
-                </p>
-
-                <!-- Summary Snapshot Card (When service is selected) -->
-                <template x-if="selectedService">
-                    <div class="my-4 p-3.5 sm:p-4 rounded-xl sm:rounded-2xl bg-zinc-900/90 border border-white/10 flex items-center justify-between text-left shrink-0">
-                        <div class="min-w-0 flex-1 pr-2">
-                            <span class="text-[10px] font-extrabold uppercase tracking-wider text-brand block">SERVICIO SELECCIONADO</span>
-                            <p class="text-xs sm:text-sm font-bold text-white truncate" x-text="selectedService.name"></p>
-                            <span x-show="selectedVehicle" class="text-[10px] sm:text-[11px] text-white/70 block mt-0.5" x-text="'Categoría: ' + (selectedVehicle ? selectedVehicle.name : '')"></span>
-                        </div>
-                        <div class="text-right shrink-0">
-                            <span class="text-[10px] text-white/40 uppercase block">Total</span>
-                            <span class="text-brand font-display font-black text-base sm:text-lg" x-text="formatCLP(getTotalPrice())"></span>
-                        </div>
-                    </div>
-                </template>
-
-                <!-- Action Buttons -->
-                <div class="space-y-3 pt-4">
-                    <a 
-                        :href="getExitWhatsAppUrl()" 
-                        target="_blank"
-                        @click="showExitModal = false"
-                        class="w-full py-4 px-6 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-display italic font-black text-sm uppercase tracking-wider shadow-lg shadow-emerald-600/40 flex items-center justify-center gap-2.5 transition-all hover:scale-[1.02]"
-                    >
-                        <svg class="w-5 h-5 fill-current" viewBox="0 0 24 24">
-                            <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.993.585 1.771.884 2.802.884l.006.001c3.18 0 5.767-2.586 5.768-5.766 0-3.18-2.587-5.772-5.78-5.772zm3.393 8.245c-.144.405-.837.774-1.17.824-.312.045-.694.073-1.905-.429-1.547-.643-2.534-2.213-2.61-2.316-.076-.103-.625-.833-.625-1.59 0-.756.397-1.127.538-1.282.14-.156.307-.195.41-.195.102 0 .205.001.294.005.093.004.218-.035.34.258.125.297.424 1.036.46 1.112.038.077.063.167.013.268-.052.102-.078.166-.155.257-.078.09-.163.2-.234.269-.078.077-.16.16-.068.318.092.158.408.672.875 1.088.6.536 1.106.702 1.264.78.158.077.25-.067.34-.171.092-.104.394-.462.499-.619.104-.157.208-.13.348-.078.14.052.888.419 1.04.496.152.078.254.116.29.181.037.065.037.377-.107.782z"/>
-                        </svg>
-                        <span>HABLAR CON UN ASESOR POR WHATSAPP</span>
-                    </a>
-
+                    <!-- Close Button -->
                     <button 
                         type="button" 
-                        @click="showExitModal = false; scrollToTop()" 
-                        class="w-full py-3 px-6 rounded-full border border-white/20 text-white/70 hover:text-white hover:border-white/40 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
+                        @click="showExitModal = false" 
+                        class="absolute top-4 right-4 z-30 w-9 h-9 rounded-full bg-black/70 backdrop-blur-md hover:bg-white/20 text-white/70 hover:text-white flex items-center justify-center transition-colors cursor-pointer border border-white/15 shadow-lg"
                     >
-                        Prefiero continuar cotizando online
+                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
                     </button>
-                </div>
 
+                    <!-- Inner Content Box (Compact Height, Fits Perfectly & Zero Visible Scrollbars) -->
+                    <div class="p-5 sm:p-6 overflow-y-auto overflow-x-hidden scrollbar-none flex-1 relative z-10">
+
+                        <!-- Dynamic High-End Video Header (Coherent with the selected service) -->
+                        <div class="relative w-full h-28 sm:h-32 md:h-36 rounded-xl sm:rounded-2xl overflow-hidden mb-3 shrink-0 border border-brand/40 shadow-2xl bg-black group">
+                            <video 
+                                :src="getPopupVideo()" 
+                                autoplay 
+                                loop 
+                                muted 
+                                playsinline 
+                                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                            ></video>
+                            <!-- Gradient overlay on video for smooth modal blend -->
+                            <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/30 to-transparent pointer-events-none"></div>
+                            
+                            <!-- Live Service Badge -->
+                            <div class="absolute top-3 left-3 px-3 py-1 rounded-full bg-black/80 backdrop-blur-md border border-brand/60 text-white text-[10px] font-black uppercase tracking-widest flex items-center gap-2 shadow-xl">
+                                <span class="w-2 h-2 rounded-full bg-brand animate-ping"></span>
+                                <span class="text-brand font-bold truncate max-w-[200px]" x-text="selectedService ? selectedService.name : 'Detailing Center'"></span>
+                            </div>
+                        </div>
+
+                        <!-- Badge -->
+                        <div class="mb-1.5 shrink-0">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-brand/15 border border-brand/40 text-brand text-[10px] sm:text-[11px] font-black uppercase tracking-widest">
+                                <span>⚡</span>
+                                <span x-text="selectedService ? 'Asesoría Técnica en 1 Clic' : '¿Buscas Asesoría Personalizada?'"></span>
+                            </span>
+                        </div>
+
+                        <!-- Title -->
+                        <h3 class="font-display italic font-black text-lg sm:text-xl md:text-2xl text-white uppercase tracking-tight leading-snug shrink-0 break-words">
+                            <template x-if="selectedService">
+                                <span>¿Tienes dudas con tu <span class="text-brand" x-text="selectedService.name"></span>?</span>
+                            </template>
+                            <template x-if="!selectedService">
+                                <span>¿Tienes dudas para elegir tu <span class="text-brand">Servicio de Detailing</span>?</span>
+                            </template>
+                        </h3>
+
+                        <p class="text-xs sm:text-sm text-white/70 mt-1.5 leading-relaxed font-medium shrink-0">
+                            <template x-if="selectedService">
+                                <span>No te preocupes por los tecnicismos. Nuestro equipo especializado en Chicureo te asesora al instante por WhatsApp para resolver dudas sobre tiempos, durabilidad y disponibilidad.</span>
+                            </template>
+                            <template x-if="!selectedService">
+                                <span>No te preocupes por los tecnicismos. Cuéntanos qué necesita tu vehículo y nuestro equipo técnico en Chicureo te recomendará el tratamiento ideal al instante por WhatsApp.</span>
+                            </template>
+                        </p>
+
+                        <!-- Summary Snapshot Card (When service is selected) -->
+                        <template x-if="selectedService">
+                            <div class="my-3 p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-zinc-900/90 border border-white/10 flex items-center justify-between text-left shrink-0">
+                                <div class="min-w-0 flex-1 pr-2">
+                                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-brand block">SERVICIO SELECCIONADO</span>
+                                    <p class="text-xs sm:text-sm font-bold text-white truncate" x-text="selectedService.name"></p>
+                                    <span x-show="selectedVehicle" class="text-[10px] sm:text-[11px] text-white/70 block mt-0.5" x-text="'Categoría: ' + (selectedVehicle ? selectedVehicle.name : '')"></span>
+                                </div>
+                                <div class="text-right shrink-0">
+                                    <span class="text-[10px] text-white/40 uppercase block">Total</span>
+                                    <span class="text-brand font-display font-black text-base sm:text-lg" x-text="formatCLP(getTotalPrice())"></span>
+                                </div>
+                            </div>
+                        </template>
+
+                        <!-- Action Buttons -->
+                        <div class="space-y-2.5 pt-3">
+                            <a 
+                                :href="getExitWhatsAppUrl()" 
+                                target="_blank"
+                                @click="showExitModal = false"
+                                class="w-full py-3.5 px-5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white font-display italic font-black text-xs sm:text-sm uppercase tracking-wider shadow-lg shadow-emerald-600/40 flex items-center justify-center gap-2.5 transition-all hover:scale-[1.02]"
+                            >
+                                <svg class="w-4 h-4 sm:w-5 sm:h-5 fill-current" viewBox="0 0 24 24">
+                                    <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.993.585 1.771.884 2.802.884l.006.001c3.18 0 5.767-2.586 5.768-5.766 0-3.18-2.587-5.772-5.78-5.772zm3.393 8.245c-.144.405-.837.774-1.17.824-.312.045-.694.073-1.905-.429-1.547-.643-2.534-2.213-2.61-2.316-.076-.103-.625-.833-.625-1.59 0-.756.397-1.127.538-1.282.14-.156.307-.195.41-.195.102 0 .205.001.294.005.093.004.218-.035.34.258.125.297.424 1.036.46 1.112.038.077.063.167.013.268-.052.102-.078.166-.155.257-.078.09-.163.2-.234.269-.078.077-.16.16-.068.318.092.158.408.672.875 1.088.6.536 1.106.702 1.264.78.158.077.25-.067.34-.171.092-.104.394-.462.499-.619.104-.157.208-.13.348-.078.14.052.888.419 1.04.496.152.078.254.116.29.181.037.065.037.377-.107.782z"/>
+                                </svg>
+                                <span>HABLAR CON UN ASESOR POR WHATSAPP</span>
+                            </a>
+
+                            <button 
+                                type="button" 
+                                @click="showExitModal = false; scrollToTop()" 
+                                class="w-full py-2.5 px-5 rounded-full border border-white/20 text-white/70 hover:text-white hover:border-white/40 text-xs font-bold uppercase tracking-wider transition-all cursor-pointer"
+                            >
+                                Prefiero continuar cotizando online
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
             </div>
-        </div>
+        </template>
 
     </div>
 </main>
@@ -854,6 +860,11 @@
     .scrollbar-none::-webkit-scrollbar { display: none; }
     .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
     .html-content { line-height: 1.5; }
+    .custom-scrollbar::-webkit-scrollbar { width: 5px; height: 5px; }
+    .custom-scrollbar::-webkit-scrollbar-track { background: rgba(0, 0, 0, 0.2); border-radius: 9999px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(251, 44, 107, 0.35); border-radius: 9999px; }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(251, 44, 107, 0.7); }
+    .custom-scrollbar { scrollbar-width: thin; scrollbar-color: rgba(251, 44, 107, 0.35) transparent; }
 </style>
 @endsection
 
@@ -1252,7 +1263,7 @@ function bookingWizard() {
                         slug: 'exo-electricos',
                         name: 'Eléctricos',
                         description: 'Vehículos Eléctricos, Híbridos & Compactos (Tesla, BYD, Fit)',
-                        image: '/assets/images/vehicles/vehicle_exo_electricos.png',
+                        image: '/assets/images/vehicles/vehicle_gt_electricos.jpg',
                         price_multiplier: autosVt.price_multiplier || '1.00'
                     },
                     {
@@ -1260,7 +1271,7 @@ function bookingWizard() {
                         slug: 'exo-motorizados',
                         name: 'Motorizados',
                         description: 'SUVs, Crossovers & Sedanes (Qashqai, RAV4, Tucson, Sedanes)',
-                        image: '/assets/images/vehicles/vehicle_exo_motorizados.png',
+                        image: '/assets/images/vehicles/vehicle_gt_motorizados.jpg',
                         price_multiplier: medianosVt.price_multiplier || '1.00'
                     },
                     {
@@ -1268,7 +1279,7 @@ function bookingWizard() {
                         slug: 'exo-xxl',
                         name: 'XXL',
                         description: 'Camionetas, Pickups & Autos Altos (F-150 Raptor, RAM, Silverado)',
-                        image: '/assets/images/vehicles/vehicle_exo_xxl.png',
+                        image: '/assets/images/vehicles/vehicle_gt_xxl.jpg',
                         price_multiplier: grandesVt.price_multiplier || '1.00'
                     }
                 ];
@@ -1283,42 +1294,42 @@ function bookingWizard() {
                 const s = (vt.slug || vt.name || '').toLowerCase();
                 if (this.isExoShieldService(this.selectedService)) {
                     if (s.includes('xxl') || s.includes('grande') || s.includes('pickup') || s.includes('raptor')) {
-                        return '/assets/images/vehicles/vehicle_exo_xxl.png';
+                        return '/assets/images/vehicles/vehicle_gt_xxl.jpg';
                     }
                     if (s.includes('motorizado') || s.includes('mediano') || s.includes('suv') || s.includes('qashqai')) {
-                        return '/assets/images/vehicles/vehicle_exo_motorizados.png';
+                        return '/assets/images/vehicles/vehicle_gt_motorizados.jpg';
                     }
                     if (s.includes('electrico') || s.includes('eléctrico') || s.includes('auto') || s.includes('peque') || s.includes('compacto') || s.includes('fit')) {
-                        return '/assets/images/vehicles/vehicle_exo_electricos.png';
+                        return '/assets/images/vehicles/vehicle_gt_electricos.jpg';
                     }
                 }
                 if (s.includes('grande') || s.includes('camioneta') || s.includes('pickup')) {
-                    return '/assets/images/vehicles/vehicle_grandes.png';
+                    return '/assets/images/vehicles/vehicle_gt_grandes.jpg';
                 }
                 if (s.includes('mediano') || s.includes('suv') || s.includes('crossover')) {
-                    return '/assets/images/vehicles/vehicle_medianos.png';
+                    return '/assets/images/vehicles/vehicle_gt_medianos.jpg';
                 }
-                return '/assets/images/vehicles/vehicle_autos.png';
+                return '/assets/images/vehicles/vehicle_gt_autos.jpg';
             }
             const s = (vt || '').toLowerCase();
             if (this.isExoShieldService(this.selectedService)) {
                 if (s.includes('xxl') || s.includes('grande') || s.includes('pickup') || s.includes('raptor')) {
-                    return '/assets/images/vehicles/vehicle_exo_xxl.png';
+                    return '/assets/images/vehicles/vehicle_gt_xxl.jpg';
                 }
                 if (s.includes('motorizado') || s.includes('mediano') || s.includes('suv') || s.includes('qashqai')) {
-                    return '/assets/images/vehicles/vehicle_exo_motorizados.png';
+                    return '/assets/images/vehicles/vehicle_gt_motorizados.jpg';
                 }
                 if (s.includes('electrico') || s.includes('eléctrico') || s.includes('auto') || s.includes('peque') || s.includes('compacto') || s.includes('fit')) {
-                    return '/assets/images/vehicles/vehicle_exo_electricos.png';
+                    return '/assets/images/vehicles/vehicle_gt_electricos.jpg';
                 }
             }
             if (s.includes('grande') || s.includes('camioneta') || s.includes('pickup')) {
-                return '/assets/images/vehicles/vehicle_grandes.png';
+                return '/assets/images/vehicles/vehicle_gt_grandes.jpg';
             }
             if (s.includes('mediano') || s.includes('suv') || s.includes('crossover')) {
-                return '/assets/images/vehicles/vehicle_medianos.png';
+                return '/assets/images/vehicles/vehicle_gt_medianos.jpg';
             }
-            return '/assets/images/vehicles/vehicle_autos.png';
+            return '/assets/images/vehicles/vehicle_gt_autos.jpg';
         },
 
         getVehicleIcon(slug) {
