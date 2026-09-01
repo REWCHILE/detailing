@@ -119,9 +119,8 @@
                                             <img :src="cat.image || '/assets/images/cotizador_banner.png'" :alt="cat.name" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out z-0">
                                         </template>
                                         
-                                        <!-- Top Clear for Video Brilliance, Deep Dark Gradient at Bottom for Text Legibility -->
-                                        <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/85 via-50% to-transparent z-10 pointer-events-none"></div>
-                                        <div class="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/30 z-10 pointer-events-none"></div>
+                                        <!-- Soft bottom-only gradient: 100% clear video, soft fade behind text -->
+                                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 via-25% to-transparent z-10 pointer-events-none"></div>
 
                                         <!-- Bottom Row: Title in Pink, Full Description & CTA Button -->
                                         <div class="relative z-20 pt-4">
@@ -208,9 +207,8 @@
                                                 >
                                             </template>
                                             
-                                            <!-- Top Clear for Video Brilliance, Deep Dark Gradient at Bottom for Text Legibility -->
-                                            <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/85 via-50% to-transparent z-10 pointer-events-none"></div>
-                                            <div class="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/30 z-10 pointer-events-none"></div>
+                                            <!-- Soft bottom-only gradient: 100% clear video, soft fade behind text -->
+                                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 via-25% to-transparent z-10 pointer-events-none"></div>
                                         </div>
 
                                         <!-- Bottom Row: Title, Description, Price & Action Buttons -->
