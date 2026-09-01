@@ -10,7 +10,7 @@
     <section class="relative min-h-screen flex items-center justify-center overflow-hidden bg-[#0A0A0A]">
         <div class="absolute inset-0 bg-[#0A0A0A]">
             <video autoplay muted loop playsinline class="w-full h-full object-cover opacity-50">
-                <source src="/assets/videos/pulido-correccion.mp4" type="video/mp4">
+                <source src="/assets/videos/bmwblanco-horizontal.mp4" type="video/mp4">
             </video>
             <div class="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/80 via-transparent to-[#0A0A0A]"></div>
             <div class="absolute inset-0 bg-gradient-to-r from-[#0A0A0A]/60 via-transparent to-[#0A0A0A]/60"></div>
@@ -29,7 +29,7 @@
                     Eliminamos el 95% de los rayones, devolvemos la profundidad al color y entregamos un acabado espejo espectacular. Pulido profesional con tecnología de corte avanzada.
                 </p>
                 <div class="flex flex-col sm:flex-row items-center justify-center gap-6">
-                    <a href="/reserva" class="px-12 py-5 bg-brand hover:bg-brand-dark text-white font-bold rounded-full text-lg transition-all shadow-xl shadow-brand/30 hover:scale-105">
+                    <a href="/reserva?category=pulido" class="px-12 py-5 bg-brand hover:bg-brand-dark text-white font-bold rounded-full text-lg transition-all shadow-xl shadow-brand/30 hover:scale-105">
                         Agendar Evaluación
                     </a>
                     <a href="#precios" class="px-12 py-5 border border-white/20 hover:border-brand/40 text-white font-semibold rounded-full text-lg transition-all backdrop-blur-sm">
@@ -57,18 +57,20 @@
                             Nuestro proceso de <strong>pulido automotriz profesional</strong> utiliza polimentos abrasivos de alta tecnología que nivelan microscópicamente el barniz, eliminando los rayones de forma definitiva en lugar de solo rellenarlos con cera.
                         </p>
                         <p>
-                            Si buscas **eliminar rayones de auto** de forma segura, realizamos una medición técnica del espesor de laca (PTG) para asegurar que el trabajo no comprometa la integridad de la pintura a largo plazo.
+                            Si buscas <strong>eliminar rayones de auto</strong> de forma segura, realizamos una medición técnica del espesor de laca (PTG) para asegurar que el trabajo no comprometa la integridad de la pintura a largo plazo.
                         </p>
                     </div>
                 </div>
-                <div class="relative aspect-video rounded-[3rem] overflow-hidden border border-white/10 group bg-black transition-colors">
-                    <video autoplay muted loop playsinline class="w-full h-full object-cover opacity-90">
+                <div class="relative w-full h-[500px] min-h-[500px] rounded-[36px] overflow-hidden border border-black/10 dark:border-white/10 shadow-2xl relative group bg-surface-800" style="height: 500px; min-height: 500px;">
+                    <video autoplay muted loop playsinline class="w-full h-full object-cover opacity-90 group-hover:scale-105 transition-transform duration-700">
                         <source src="/assets/videos/pulido-correccion-2.mp4" type="video/mp4">
                     </video>
-                    <!-- Image overlay mock -->
-                    <div class="absolute inset-x-0 bottom-0 p-8 bg-black/80 border-t border-white/10 backdrop-blur-md">
-                        <p class="text-white font-bold mb-1 transition-colors">Corrección Multi-Etapa</p>
-                        <p class="text-white/60 text-xs uppercase tracking-widest transition-colors">Eliminación de defectos severos</p>
+                    <!-- Bottom Dark Vignette Gradient -->
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-transparent pointer-events-none"></div>
+                    <!-- Overlay info badge -->
+                    <div class="absolute inset-x-0 bottom-0 p-8 z-10">
+                        <p class="text-white font-display font-black text-2xl mb-1">Corrección Multi-Etapa</p>
+                        <p class="text-white/70 text-xs font-bold uppercase tracking-widest">Eliminación de defectos severos</p>
                     </div>
                 </div>
             </div>
@@ -104,7 +106,7 @@
     </section>
 
     <!-- Section: Corrección de Pintura (Particles White) -->
-    <section class="section-padding bg-gray-50 dark:bg-surface-800 relative overflow-hidden transition-colors border-b border-black/5 dark:border-white/5 duration-300">
+    <section id="correccion-pintura" class="section-padding bg-gray-50 dark:bg-surface-800 relative overflow-hidden transition-colors border-b border-black/5 dark:border-white/5 duration-300">
         <x-interactive-particles density="120" color="#ffffff" class="opacity-10" />
         <div class="container-custom relative z-10">
             <div class="text-center mb-20">
@@ -148,92 +150,241 @@
             </div>
 
             @php
-                $categoryServices = $services->where('category', 'correccion')->sortBy('display_order');
+                if (!function_exists('parseServiceFeatures')) {
+                    function parseServiceFeatures($longDesc) {
+                        if (empty($longDesc)) return [];
+                        $text = preg_replace('/<(br|p|li|div)[^>]*>/i', "\n", $longDesc);
+                        $text = strip_tags($text);
+                        $lines = preg_split('/[\r\n]+/', $text);
+                        $features = [];
+                        foreach ($lines as $line) {
+                            $clean = trim($line);
+                            $clean = preg_replace('/^[-•*]\s*/u', '', $clean);
+                            if (!empty($clean)) {
+                                $features[] = $clean;
+                            }
+                        }
+                        return $features;
+                    }
+                }
+
+                $categoryServices = \App\Models\Service::with('vehicleTypes')
+                    ->whereIn('category', ['pulido', 'correccion'])
+                    ->where('is_active', true)
+                    ->where('slug', '!=', 'restauracion-de-focos')
+                    ->orderBy('display_order')
+                    ->take(3)
+                    ->get();
+                
+                $servicesData = $categoryServices->map(function($s) {
+                    $features = parseServiceFeatures($s->long_description);
+                    $vPrices = [];
+                    foreach($s->vehicleTypes as $vt) {
+                        $vPrices[] = [
+                            'name' => $vt->name,
+                            'slug' => $vt->slug,
+                            'price' => (int)$vt->pivot->price,
+                        ];
+                    }
+                    $minPrice = !empty($vPrices) ? min(array_column($vPrices, 'price')) : (int)$s->base_price;
+                    return [
+                        'id' => $s->id,
+                        'name' => $s->name,
+                        'slug' => $s->slug,
+                        'min_price' => $minPrice,
+                        'features' => array_values($features),
+                        'vehicle_prices' => $vPrices,
+                    ];
+                });
             @endphp
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                @foreach($categoryServices as $srv)
-                    <div class="relative flex flex-col h-full bg-white border {{ $srv->is_featured ? 'border-brand shadow-2xl shadow-brand/10 scale-[1.02]' : 'border-slate-100' }} rounded-[40px] p-8 md:p-10 transition-all duration-500 hover:border-brand hover:shadow-lg group">
-                        @if($srv->is_featured)
-                            <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-brand text-white text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full z-10">
-                                Destacado
+            <div x-data="{
+                modalService: null,
+                services: @js($servicesData->values()),
+                openModal(slug) {
+                    this.modalService = this.services.find(s => s.slug === slug) || null;
+                },
+                closeModal() {
+                    this.modalService = null;
+                },
+                formatCLP(val) {
+                    return '$' + (val || 0).toLocaleString('es-CL');
+                }
+            }">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto items-stretch justify-center">
+                    @foreach($categoryServices as $srv)
+                        @php
+                            $srvVideo = '/assets/videos/pulido-rupes.mp4';
+                            $slug = $srv->slug;
+                            if (str_contains($slug, 'multi-etapa')) {
+                                $srvVideo = '/assets/videos/pulido-correccion-2.mp4';
+                            } elseif (str_contains($slug, 'una-etapa') || str_contains($slug, 'un-paso')) {
+                                $srvVideo = '/assets/videos/pulido-correccion.mp4';
+                            } elseif (str_contains($slug, 'focos')) {
+                                $srvVideo = '/assets/videos/correcion-pintura-1080p.mp4';
+                            }
+                            $minPrice = $srv->vehicleTypes->min('pivot.price') ?? $srv->base_price;
+                        @endphp
+                        <div style="height: 600px; min-height: 600px;" class="relative flex flex-col justify-between h-[600px] rounded-[40px] overflow-hidden p-8 sm:p-9 md:p-10 transition-all duration-500 group border-2 border-white/15 hover:border-brand/70 hover:shadow-2xl hover:scale-[1.015] bg-zinc-950 shadow-2xl">
+                            <!-- Panoramic Video Background with Dark Tint and Cinematic Vignettes -->
+                            <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+                                <video autoplay loop muted playsinline class="w-full h-full object-cover opacity-60 group-hover:opacity-80 group-hover:scale-105 transition-all duration-700">
+                                    <source src="{{ $srvVideo }}" type="video/mp4">
+                                </video>
+                                <div class="absolute inset-0 bg-black/45 pointer-events-none z-10"></div>
+                                <div class="absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-black/90 via-black/50 to-transparent pointer-events-none z-10"></div>
+                                <div class="absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-black/95 via-black/75 to-transparent pointer-events-none z-10"></div>
                             </div>
-                        @endif
 
-                        <div class="mb-8">
-                            <div class="w-14 h-14 rounded-2xl bg-brand/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-brand"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <!-- Top Area: Centered Title in Pure White -->
+                            <div class="relative z-20 text-center w-full">
+                                <h3 class="font-display font-black text-xl sm:text-2xl text-white uppercase tracking-tight drop-shadow-[0_4px_16px_rgba(0,0,0,1)] leading-tight text-center">
+                                    {{ $srv->name }}
+                                </h3>
                             </div>
-                            <span class="text-brand text-xs font-bold uppercase tracking-widest mb-2 block">
-                                {{ $srv->duration_minutes }} MINUTOS
-                            </span>
-                            <h3 class="text-2xl font-display font-bold text-slate-900 mb-4">
-                                {{ $srv->name }}
-                            </h3>
-                            <p class="text-slate-500 text-sm leading-relaxed min-h-[3rem] html-content">
-                                {!! $srv->short_description !!}
-                            </p>
-                        </div>
 
-                        <div class="space-y-3 mb-8">
-                            @foreach($vehicleTypes as $vt)
-                                <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100 transition-colors">
-                                    <div class="flex items-center gap-3">
-                                        <span class="text-xl leading-none">{{ $vt->emoji ?? '🚗' }}</span>
-                                        <span class="text-xs text-slate-600 font-semibold">{{ $vt->name }}</span>
-                                    </div>
-                                    <span class="text-base font-display font-bold text-slate-900">
-                                        @if($onlinePaymentsActive)
-                                            ${{ number_format($srv->getPriceForVehicleType($vt->id), 0, ',', '.') }}
-                                        @else
-                                            Cotizar
-                                        @endif
+                            <!-- Middle Spacer to let the video shine -->
+                            <div class="flex-grow pointer-events-none"></div>
+
+                            <!-- Bottom Area: Starting Price & Action Buttons -->
+                            <div class="relative z-20 pt-4">
+                                <!-- Price Display -->
+                                <div class="flex items-baseline gap-2 mb-6">
+                                    <span class="text-white/60 text-xs sm:text-sm font-bold uppercase tracking-wider">Desde</span>
+                                    <span class="font-display font-black text-3xl sm:text-4xl md:text-5xl text-white drop-shadow-[0_2px_12px_rgba(0,0,0,1)]">
+                                        ${{ number_format($minPrice, 0, ',', '.') }}
                                     </span>
                                 </div>
-                            @endforeach
-                        </div>
 
-                        <div class="flex-grow text-slate-700">
-                            @php
-                                preg_match_all('/<(p|li)[^>]*>(.*?)<\/\1>/s', $srv->long_description, $matches);
-                                $features = !empty($matches[2]) ? array_filter(array_map('trim', $matches[2])) : [];
-                                if (empty($features)) {
-                                    $features = array_filter(array_map('trim', explode("\n", $srv->long_description)));
-                                }
-                            @endphp
-                            <ul class="space-y-4 mb-8">
-                                @foreach($features as $feature)
-                                    @if(str_contains(strtolower($feature), 'todo lo incluido'))
-                                        <li class="relative flex items-start gap-3 text-sm p-3 rounded-lg bg-brand/5 border border-brand/20 text-brand font-bold mb-4 group/tooltip cursor-help">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-brand mt-0.5 shrink-0"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                                            <span class="transition-colors border-b border-dashed border-brand/40 pb-0.5 html-content">{!! $feature !!}</span>
-                                            
-                                            <!-- Tooltip -->
-                                            <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-64 p-4 bg-white dark:bg-surface-900 border border-black/10 dark:border-white/10 rounded-xl shadow-2xl opacity-0 invisible group-hover/tooltip:opacity-100 group-hover/tooltip:visible transition-all duration-300 z-50 text-left">
-                                                <div class="text-[10px] font-black text-black dark:text-white uppercase tracking-widest mb-2 border-b border-black/5 dark:border-white/5 pb-2">Características Nivel Anterior:</div>
-                                                <div class="text-xs text-black/60 dark:text-white/60">Incluye todas las características del nivel anterior.</div>
-                                                <!-- Triangle Pointer -->
-                                                <div class="absolute top-full left-1/2 -translate-x-1/2 -mt-[1px] border-8 border-transparent border-t-white dark:border-t-surface-900"></div>
-                                            </div>
-                                        </li>
-                                    @else
-                                        <li class="flex items-start gap-3 text-sm font-medium text-slate-700">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-brand mt-1 shrink-0"><polyline points="20 6 9 17 4 12"/></svg>
-                                            <span class="html-content">{!! $feature !!}</span>
-                                        </li>
-                                    @endif
-                                @endforeach
-                            </ul>
-                        </div>
+                                <!-- Action Buttons: Details + Agendar CTA -->
+                                <div class="flex items-center justify-between gap-3 pt-4 border-t border-white/15">
+                                    <button 
+                                        type="button" 
+                                        @click="openModal('{{ $srv->slug }}')"
+                                        class="px-5 py-3 rounded-full bg-black/80 hover:bg-zinc-900 border border-white/20 hover:border-brand/60 text-white hover:text-brand text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-200 backdrop-blur-md shadow-lg flex items-center gap-2 group/btn cursor-pointer"
+                                    >
+                                        <span>Detalles</span>
+                                        <svg class="w-4 h-4 text-brand group-hover/btn:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                                    </button>
 
-                        <a
-                            href="/reserva?service={{ $srv->slug }}"
-                            class="w-full py-5 rounded-2xl font-bold transition-all duration-300 text-sm tracking-wider uppercase text-center {{ $srv->is_featured ? 'bg-brand text-white shadow-lg shadow-brand/30 hover:bg-brand-dark hover:scale-[1.02]' : 'bg-slate-100 text-slate-800 hover:bg-slate-200 border border-slate-200 hover:border-brand/40' }}"
+                                    <a 
+                                        href="/reserva?category=pulido&service={{ $srv->slug }}"
+                                        class="flex items-center gap-2 text-xs sm:text-sm font-black uppercase tracking-wider text-brand group/cta hover:text-white transition-colors shrink-0"
+                                    >
+                                        <span>Agendar</span>
+                                        <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-brand text-white flex items-center justify-center group-hover/cta:scale-110 shadow-xl shadow-brand/40 transition-transform duration-300">
+                                            <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                <!-- MODAL DE DETALLES DEL SERVICIO PULIDO / CORRECCIÓN -->
+                <template x-teleport="body">
+                    <div 
+                        x-show="modalService" 
+                        x-transition:enter="transition ease-out duration-300"
+                        x-transition:enter-start="opacity-0"
+                        x-transition:enter-end="opacity-100"
+                        x-transition:leave="transition ease-in duration-200"
+                        x-transition:leave-start="opacity-100"
+                        x-transition:leave-end="opacity-0"
+                        class="fixed inset-0 z-[99999] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-6"
+                        style="display: none;"
+                    >
+                        <div 
+                            @click.away="closeModal()"
+                            x-show="modalService"
+                            x-transition:enter="transition ease-out duration-300 transform"
+                            x-transition:enter-start="opacity-0 scale-95 translate-y-4"
+                            x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                            x-transition:leave="transition ease-in duration-200 transform"
+                            x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                            x-transition:leave-end="opacity-0 scale-95 translate-y-4"
+                            class="bg-zinc-900 border-2 border-white/20 rounded-[2.5rem] max-w-2xl w-full shadow-2xl relative text-white max-h-[88vh] flex flex-col my-auto overflow-hidden"
                         >
-                            Solicitar este nivel
-                        </a>
+                            <!-- Header -->
+                            <div class="p-6 sm:p-8 pb-4 border-b border-white/10 shrink-0 relative text-center">
+                                <button 
+                                    type="button" 
+                                    @click="closeModal()"
+                                    class="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 hover:bg-brand text-white flex items-center justify-center transition-all shadow-md cursor-pointer"
+                                >
+                                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                                </button>
+
+                                <h3 class="text-brand font-display font-black text-2xl sm:text-3xl mb-1 uppercase tracking-tight">
+                                    Detalles del servicio
+                                </h3>
+                                <h4 class="text-white/90 font-display font-bold text-base sm:text-lg" x-text="modalService ? modalService.name : ''"></h4>
+                            </div>
+
+                            <!-- Content with inner scroll -->
+                            <div class="p-6 sm:p-8 overflow-y-auto overflow-x-hidden flex-1 custom-scrollbar space-y-6">
+                                <!-- Vehicle Price Breakdown Table -->
+                                <template x-if="modalService && modalService.vehicle_prices && modalService.vehicle_prices.length > 0">
+                                    <div>
+                                        <h5 class="text-xs font-bold text-white/50 uppercase tracking-widest mb-3">Precios por Tamaño de Vehículo</h5>
+                                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                            <template x-for="vp in modalService.vehicle_prices" :key="vp.name">
+                                                <div class="p-3.5 rounded-2xl bg-black/50 border border-white/10 text-center">
+                                                    <span class="text-xs text-white/70 block font-semibold mb-1" x-text="vp.name"></span>
+                                                    <span class="font-display font-black text-lg text-white" x-text="formatCLP(vp.price)"></span>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+
+                                <!-- Features List -->
+                                <div>
+                                    <h5 class="text-xs font-bold text-white/50 uppercase tracking-widest mb-3">Incluye Cobertura & Procedimiento</h5>
+                                    <ul class="space-y-3 text-left">
+                                        <template x-for="(point, pIdx) in (modalService ? modalService.features : [])" :key="pIdx">
+                                            <li class="flex items-start gap-3.5 p-3.5 rounded-2xl bg-black/50 border border-white/10 hover:border-brand/40 transition-colors">
+                                                <div class="w-5 h-5 rounded-full bg-brand/20 border border-brand/60 text-brand flex items-center justify-center shrink-0 mt-0.5 text-xs font-black shadow-[0_0_8px_rgba(251,44,107,0.4)]">
+                                                    <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5">
+                                                        <polyline points="20 6 9 17 4 12"/>
+                                                    </svg>
+                                                </div>
+                                                <span class="font-sans text-sm sm:text-base text-white/95 leading-relaxed font-medium html-content" x-html="point"></span>
+                                            </li>
+                                        </template>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <!-- Footer -->
+                            <div class="p-6 sm:p-8 pt-4 border-t border-white/15 shrink-0 bg-zinc-900 flex flex-col sm:flex-row items-center justify-between gap-4">
+                                <div class="text-center sm:text-left">
+                                    <span class="text-xs uppercase tracking-wider text-white/50 block font-bold">Desde</span>
+                                    <span class="text-white font-display font-black text-2xl sm:text-3xl md:text-4xl" x-text="modalService ? formatCLP(modalService.min_price) : '$0'"></span>
+                                </div>
+
+                                <div class="flex items-center gap-3 w-full sm:w-auto">
+                                    <button 
+                                        type="button" 
+                                        @click="closeModal()"
+                                        class="px-6 py-3.5 rounded-full font-bold text-sm uppercase tracking-wider bg-zinc-800 hover:bg-zinc-700 text-white/80 hover:text-white border border-white/20 transition-all duration-300 w-1/2 sm:w-auto text-center cursor-pointer"
+                                    >
+                                        Cerrar
+                                    </button>
+
+                                    <a 
+                                        :href="'/reserva?category=pulido&service=' + (modalService ? modalService.slug : '')"
+                                        class="px-8 py-3.5 rounded-full font-display font-black text-sm uppercase tracking-wider bg-brand hover:bg-brand-dark text-white shadow-xl shadow-brand/40 transition-all duration-300 w-1/2 sm:w-auto text-center cursor-pointer flex items-center justify-center gap-2"
+                                    >
+                                        <span>AGENDAR</span>
+                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                @endforeach
+                </template>
             </div>
 
             <div class="mt-16 text-center">
@@ -353,7 +504,7 @@
                     </p>
 
                     <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-6">
-                        <a href="/reserva" class="w-full sm:w-auto px-8 py-4 bg-brand hover:bg-brand-dark text-white font-semibold rounded-2xl text-lg transition-all duration-300 shadow-lg shadow-brand/30 hover:shadow-brand/50 flex items-center justify-center gap-2 hover:scale-[1.02]">
+                        <a href="/reserva?category=pulido" class="w-full sm:w-auto px-8 py-4 bg-brand hover:bg-brand-dark text-white font-semibold rounded-2xl text-lg transition-all duration-300 shadow-lg shadow-brand/30 hover:shadow-brand/50 flex items-center justify-center gap-2 hover:scale-[1.02]">
                             <span>Cotizar Pulido Ahora</span>
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                         </a>

@@ -49,6 +49,7 @@ public/assets/images/galeria/
 scratch/
 *.zip
 *.sql
+wetransfer_*
 storage/framework/views/*
 !storage/framework/views/.gitignore
 

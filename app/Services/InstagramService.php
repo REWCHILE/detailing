@@ -39,9 +39,10 @@ class InstagramService
                                 // Best quality thumbnail or display URL
                                 $imageUrl = $item['image_versions2']['candidates'][0]['url'] ?? $item['display_url'] ?? $item['thumbnail_src'] ?? $item['thumbnail_url'] ?? null;
                                 
-                                // Extract caption
-                                $caption = $item['caption']['text'] ?? $item['edge_media_to_caption']['edges'][0]['node']['text'] ?? '';
-                                $title = strlen($caption) > 40 ? substr($caption, 0, 40) . '...' : $caption;
+                                // Extract caption safely with multibyte support
+                                $rawCaption = $item['caption']['text'] ?? $item['edge_media_to_caption']['edges'][0]['node']['text'] ?? '';
+                                $cleanCaption = mb_convert_encoding($rawCaption, 'UTF-8', 'UTF-8');
+                                $title = mb_strlen($cleanCaption, 'UTF-8') > 40 ? mb_substr($cleanCaption, 0, 40, 'UTF-8') . '...' : $cleanCaption;
 
                                 $isVideo = (isset($item['is_video']) && $item['is_video']) || !empty($item['video_versions']);
                                 $videoUrl = $item['video_versions'][0]['url'] ?? null;
@@ -51,7 +52,7 @@ class InstagramService
                                     'link' => 'https://instagram.com/p/' . ($item['code'] ?? $item['shortcode'] ?? ''),
                                     'title' => $title ?: 'Instagram Post',
                                     'label' => 'Instagram',
-                                    'is_video' => $isVideo,
+                                    'is_video' => (bool)$isVideo,
                                     'video_url' => $videoUrl,
                                 ];
                             })->filter(function($item) {

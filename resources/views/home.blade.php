@@ -14,11 +14,11 @@
     if ($activeSlides->isEmpty()) {
         $activeSlides = collect([
             (object)[
-                'title' => 'HIGH',
-                'title_gradient' => 'CONTRAST',
+                'title' => 'HIGH CONTRAST',
+                'title_gradient' => 'DETAILING CENTER',
                 'subtitle' => 'El estándar más alto en detallado automotriz. Protección, brillo y perfección absoluta.',
                 'media_type' => 'video',
-                'media_path' => '/assets/videos/hero-banner.mp4',
+                'media_path' => '/assets/videos/primervideo.home.mp4',
                 'button_primary_text' => 'Cotiza tu servicio',
                 'button_primary_url' => '/reserva',
                 'button_secondary_text' => 'Explorar servicios',
@@ -29,9 +29,9 @@
                 'title_gradient' => 'CERÁMICO',
                 'subtitle' => 'Protección molecular extrema con tecnología Gtechniq Platinum. Hasta 9 años de brillo permanente.',
                 'media_type' => 'video',
-                'media_path' => '/assets/videos/hero-gtechniq.mp4',
+                'media_path' => '/assets/videos/bmw-horizontal.mp4',
                 'button_primary_text' => 'Cotizar Sellado',
-                'button_primary_url' => '/reserva?category=ceramico&service=nivel-1-proteccion-dos-anos',
+                'button_primary_url' => '/reserva?category=ceramico',
                 'button_secondary_text' => 'Saber más',
                 'button_secondary_url' => '/sellado-ceramico',
             ],
@@ -42,7 +42,7 @@
                 'media_type' => 'video',
                 'media_path' => '/assets/videos/exoshield-web.mp4',
                 'button_primary_text' => 'Cotizar ExoShield',
-                'button_primary_url' => '/reserva?category=especiales&service=proteccion-exoshield',
+                'button_primary_url' => '/reserva?category=especiales',
                 'button_secondary_text' => 'Ver Blindaje',
                 'button_secondary_url' => '/proteccion-parabrisas-santiago',
             ],
@@ -51,9 +51,9 @@
                 'title_gradient' => 'PINTURA',
                 'subtitle' => 'Restauración artesanal mediante pulido técnico multi-etapa, eliminando micro-rayas y hologramas.',
                 'media_type' => 'video',
-                'media_path' => '/assets/videos/pulido-correccion.mp4',
+                'media_path' => '/assets/videos/bmwblanco-horizontal.mp4',
                 'button_primary_text' => 'Cotizar Pulido',
-                'button_primary_url' => '/reserva?category=pulido&service=servicio-de-pulido',
+                'button_primary_url' => '/reserva?category=pulido',
                 'button_secondary_text' => 'Ver Detalles',
                 'button_secondary_url' => '/pulido-de-autos-santiago',
             ],
@@ -64,7 +64,7 @@
                 'media_type' => 'video',
                 'media_path' => '/assets/videos/lavado-premium.mp4',
                 'button_primary_text' => 'Cotizar Detallado',
-                'button_primary_url' => '/reserva?category=limpieza&service=paquete-lavado',
+                'button_primary_url' => '/reserva?category=limpieza',
                 'button_secondary_text' => 'Ver Servicios',
                 'button_secondary_url' => '/limpieza-y-detallado',
             ]
@@ -119,9 +119,8 @@ style="min-height: 100vh; min-height: 100dvh;">
              <div class="absolute inset-0 bg-[#0A0A0A] overflow-hidden">
                  @if($slide->media_type === 'video')
                      <video autoplay muted loop playsinline preload="auto" 
-                            x-init="if ('{{ $slide->media_path }}'.includes('gtechniq')) { $el.currentTime = 20; $el.addEventListener('loadedmetadata', () => { $el.currentTime = 20; }); $el.addEventListener('timeupdate', () => { if ($el.currentTime < 18) $el.currentTime = 20; }); }"
                             class="w-full h-full object-cover opacity-85 md:opacity-90 animate-slow-zoom">
-                         <source src="{{ asset($slide->media_path) . (str_contains($slide->media_path, 'gtechniq') ? '#t=20' : '') }}" type="video/mp4">
+                         <source src="{{ asset($slide->media_path) }}" type="video/mp4">
                      </video>
                  @else
                      <img src="{{ asset($slide->media_path) }}" class="w-full h-full object-cover opacity-85 md:opacity-90 animate-slow-zoom" alt="slide bg">
@@ -162,27 +161,6 @@ style="min-height: 100vh; min-height: 100dvh;">
                                   @endif
                               </h2>
                           @endif
-
-                         <p class="text-xs sm:text-sm md:text-base text-white/90 max-w-lg mb-6 leading-relaxed font-normal text-left drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
-                             {{ $slide->subtitle }}
-                         </p>
-
-                         <div class="flex flex-row items-center justify-start gap-3">
-                             @if($slide->button_primary_text)
-                                 <a href="{{ $slide->button_primary_url }}" class="flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 bg-brand hover:bg-brand-dark text-white font-semibold rounded-full text-xs sm:text-sm transition-all duration-300 shadow-lg shadow-brand/30 hover:scale-105">
-                                     <!-- Calendar Icon -->
-                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                                     <span>{{ $slide->button_primary_text }}</span>
-                                 </a>
-                             @endif
-                             @if($slide->button_secondary_text)
-                                 <a href="{{ $slide->button_secondary_url }}" class="flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 border border-white/30 hover:border-brand/60 hover:bg-white/10 text-white font-semibold rounded-full text-xs sm:text-sm transition-all duration-300 backdrop-blur-md">
-                                     <!-- Explore Grid Icon -->
-                                     <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white/80 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
-                                     <span>{{ $slide->button_secondary_text }}</span>
-                                 </a>
-                             @endif
-                         </div>
                      </div>
                  </div>
              </div>
@@ -230,7 +208,7 @@ style="min-height: 100vh; min-height: 100dvh;">
     <!-- Background Video (White BMW Studio Correction in Full Screen) -->
     <div class="absolute inset-0 bg-[#0A0A0A] overflow-hidden">
         <video autoplay muted loop playsinline preload="auto" class="w-full h-full object-cover opacity-85 md:opacity-90 animate-slow-zoom">
-            <source src="/assets/videos/pulido-correccion-2.mp4" type="video/mp4">
+            <source src="/assets/videos/bmwblanco-horizontal.mp4" type="video/mp4">
         </video>
         <!-- Dark Gradient Overlay Focused on the Right Side for Maximum Legibility -->
         <div class="absolute inset-y-0 right-0 bg-gradient-to-l from-[#0A0A0A] via-[#0A0A0A]/90 to-transparent z-10 w-full md:w-3/4 lg:w-3/5"></div>
@@ -240,68 +218,240 @@ style="min-height: 100vh; min-height: 100dvh;">
     <!-- Floating orb on right side -->
     <div class="absolute top-1/3 right-10 w-80 h-80 bg-brand/20 rounded-full blur-[130px] opacity-60 pointer-events-none z-10"></div>
 
-    <!-- Content Container (Middle-Right Aligned) -->
+    <!-- Content Container (Right-Aligned) -->
     <div class="absolute inset-0 z-20 flex items-center justify-end pointer-events-none">
         <div class="w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16 pointer-events-auto flex justify-end">
-            <div class="max-w-sm sm:max-w-md md:max-w-xl text-right ml-auto pt-12 md:pt-0">
-                
-                <!-- Badge (Right aligned) -->
-                <div class="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-brand/20 border border-brand/40 text-white text-[10px] sm:text-xs font-bold uppercase tracking-widest mb-4 backdrop-blur-md">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m12 3-1.912 5.886L4 9l4.912.863L12 15l1.912-5.137L20 9l-4.912-.114z"/></svg>
-                    <span>Demostración en Taller • 4K Studio</span>
-                </div>
-
-                <!-- Headline (Right aligned) -->
-                <h2 class="font-display text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-[0.95] tracking-tight uppercase mb-3 text-right drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]">
-                    CORRECCIÓN
-                    <span class="block text-gradient mt-0.5">MULTI-ETAPA</span>
+            <div class="text-right">
+                <!-- Headline -->
+                <h2 class="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-[0.95] tracking-tight uppercase mb-6 drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]">
+                    CORRECCIÓN DE
+                    <span class="block text-gradient mt-0.5">PINTURA</span>
                 </h2>
 
-                <!-- Subtitle (Right aligned) -->
-                <p class="text-xs sm:text-sm md:text-base text-white/90 max-w-lg mb-6 leading-relaxed font-normal text-right ml-auto drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]">
-                    Nivelación microscópica de barniz mediante pulido técnico multi-etapa. Eliminamos hasta un 95% de micro-rayas (swirls) y marcas severas sin comprometer la laca original.
-                </p>
-
-                <!-- Technical Specs Cards (Right aligned) -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
-                    <div class="p-4 rounded-2xl bg-black/60 border border-white/15 backdrop-blur-md text-right">
-                        <span class="text-[10px] font-mono text-brand font-bold uppercase tracking-wider block mb-1">Medición Digital PTG</span>
-                        <p class="text-xs text-white/80 font-medium">Diagnóstico de espesor en micrones antes de intervenir.</p>
-                    </div>
-                    <div class="p-4 rounded-2xl bg-black/60 border border-white/15 backdrop-blur-md text-right">
-                        <span class="text-[10px] font-mono text-brand font-bold uppercase tracking-wider block mb-1">Acreditación Oficial</span>
-                        <p class="text-xs text-white/80 font-medium">Estándar internacional Gtechniq & ExoShield.</p>
-                    </div>
-                </div>
-
-                <!-- CTA Action Buttons (Right aligned) -->
-                <div class="flex flex-row items-center justify-end gap-3">
-                    <a href="/reserva?category=pulido" class="flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 bg-brand hover:bg-brand-dark text-white font-semibold rounded-full text-xs sm:text-sm transition-all duration-300 shadow-lg shadow-brand/30 hover:scale-105">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
-                        <span>Cotizar Corrección</span>
-                    </a>
-                    <a href="/pulido-de-autos-santiago" class="flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 border border-white/30 hover:border-brand/60 hover:bg-white/10 text-white font-semibold rounded-full text-xs sm:text-sm transition-all duration-300 backdrop-blur-md">
-                        <span>Ver Técnica</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-white/80 group-hover:text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m9 18 6-6-6-6"/></svg>
-                    </a>
-                </div>
+                <!-- Explorar Link -->
+                <a href="/pulido-de-autos-santiago#correccion-pintura" class="inline-flex items-center gap-2 text-white/80 hover:text-brand text-sm sm:text-base font-semibold uppercase tracking-widest transition-all duration-300 group">
+                    <span>Explorar</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m9 18 6-6-6-6"/></svg>
+                </a>
             </div>
         </div>
     </div>
 </section>
 
 
+<!-- Full-Screen Image Showcase: Lavado Detallado (Left-Aligned Column) -->
+<section id="lavado-detallado" class="hero-fullscreen relative w-full overflow-hidden bg-[#0A0A0A]" style="min-height: 100vh; min-height: 100dvh;">
+    <!-- Background Image (Lavado Detallado in Full Screen) -->
+    <div class="absolute inset-0 bg-[#0A0A0A] overflow-hidden">
+        <picture>
+            <source srcset="{{ asset('assets/images/home/lavado.webp') }}" type="image/webp">
+            <img src="{{ asset('assets/images/home/lavado.jpg') }}" 
+                 alt="High Contrast Detailing - Lavado y Detallado" 
+                 class="w-full h-full object-cover object-[75%_center] md:object-[70%_center] opacity-85 md:opacity-90 animate-slow-zoom">
+        </picture>
+        <!-- Dark Gradient Overlay Focused on the Left Side for Maximum Legibility -->
+        <div class="absolute inset-y-0 left-0 bg-gradient-to-r from-[#0A0A0A] via-[#0A0A0A]/90 to-transparent z-10 w-full md:w-3/4 lg:w-3/5"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/70 via-transparent to-[#0A0A0A]/90 z-10"></div>
+    </div>
+
+    <!-- Floating orb on left side -->
+    <div class="absolute top-1/3 left-10 w-80 h-80 bg-brand/20 rounded-full blur-[130px] opacity-60 pointer-events-none z-10"></div>
+
+    <!-- Content Container (Left-Aligned) -->
+    <div class="absolute inset-0 z-20 flex items-center justify-start pointer-events-none">
+        <div class="w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16 pointer-events-auto flex justify-start">
+            <div class="text-left">
+                <!-- Headline -->
+                <h2 class="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-[0.95] tracking-tight uppercase mb-6 drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]">
+                    LAVADO &
+                    <span class="block text-gradient mt-0.5">DETALLADO</span>
+                </h2>
+
+                <!-- Explorar Link -->
+                <a href="/limpieza-y-detallado" class="inline-flex items-center gap-2 text-white/80 hover:text-brand text-sm sm:text-base font-semibold uppercase tracking-widest transition-all duration-300 group">
+                    <span>Explorar</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m9 18 6-6-6-6"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Full-Screen Image Showcase: Sellado Cerámico (Right-Aligned Column) -->
+<section id="sellado-ceramico-home" class="hero-fullscreen relative w-full overflow-hidden bg-[#0A0A0A]" style="min-height: 100vh; min-height: 100dvh;">
+    <!-- Background Image (Sellado Cerámico 3 BMWs in Full Screen) -->
+    <div class="absolute inset-0 bg-[#0A0A0A] overflow-hidden">
+        <picture>
+            <source srcset="{{ asset('assets/images/home/ceramico.webp') }}" type="image/webp">
+            <img src="{{ asset('assets/images/home/ceramico.jpg') }}" 
+                 alt="High Contrast Detailing - Sellado Cerámico" 
+                 class="w-full h-full object-cover object-[25%_center] md:object-[30%_center] opacity-85 md:opacity-90 animate-slow-zoom">
+        </picture>
+        <!-- Dark Gradient Overlay Focused on the Right Side for Maximum Legibility -->
+        <div class="absolute inset-y-0 right-0 bg-gradient-to-l from-[#0A0A0A] via-[#0A0A0A]/90 to-transparent z-10 w-full md:w-3/4 lg:w-3/5"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/70 via-transparent to-[#0A0A0A]/90 z-10"></div>
+    </div>
+
+    <!-- Floating orb on right side -->
+    <div class="absolute top-1/3 right-10 w-80 h-80 bg-brand/20 rounded-full blur-[130px] opacity-60 pointer-events-none z-10"></div>
+
+    <!-- Content Container (Right-Aligned) -->
+    <div class="absolute inset-0 z-20 flex items-center justify-end pointer-events-none">
+        <div class="w-full max-w-7xl mx-auto px-6 md:px-12 lg:px-16 pointer-events-auto flex justify-end">
+            <div class="text-right">
+                <!-- Headline -->
+                <h2 class="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white leading-[0.95] tracking-tight uppercase mb-6 drop-shadow-[0_4px_16px_rgba(0,0,0,0.9)]">
+                    SELLADO &
+                    <span class="block text-gradient mt-0.5">CERÁMICO</span>
+                </h2>
+
+                <!-- Explorar Link -->
+                <a href="/sellado-ceramico" class="inline-flex items-center gap-2 text-white/80 hover:text-brand text-sm sm:text-base font-semibold uppercase tracking-widest transition-all duration-300 group">
+                    <span>Explorar</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 transform group-hover:translate-x-1 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m9 18 6-6-6-6"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- Full-Screen Image Section: Nuestra Historia (Left-Aligned) -->
+<section class="hero-fullscreen relative w-full overflow-hidden bg-[#0A0A0A]" style="min-height: 100vh; min-height: 100dvh;">
+    <!-- Background Image -->
+    <div class="absolute inset-0 bg-[#0A0A0A] overflow-hidden">
+        <picture>
+            <source srcset="{{ asset('assets/images/home/nuestra-historia.webp') }}" type="image/webp">
+            <img src="{{ asset('assets/images/home/nuestra-historia.jpg') }}" 
+                 alt="High Contrast Detailing - Nuestra Historia" 
+                 class="w-full h-full object-cover object-[65%_center] md:object-[60%_center] opacity-90 animate-slow-zoom">
+        </picture>
+        <!-- Subtle ambient vignette to preserve José and the workshop brightness -->
+        <div class="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-transparent z-10 w-full md:w-1/2"></div>
+        <div class="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/40 via-transparent to-[#0A0A0A]/70 z-10"></div>
+    </div>
+
+    <!-- Floating orb left (very soft) -->
+    <div class="absolute top-1/3 left-6 w-72 h-72 bg-brand/10 rounded-full blur-[120px] opacity-40 pointer-events-none z-10"></div>
+
+    <!-- Content Container (Anchored to the Left at the Red X position) -->
+    <div class="absolute inset-0 z-20 flex items-center justify-start pointer-events-none">
+        <div class="w-full px-6 md:px-10 lg:px-12 pointer-events-auto flex justify-start">
+            <div class="relative w-full max-w-md lg:max-w-lg p-6 sm:p-8 md:p-9 rounded-3xl bg-black/40 backdrop-blur-xl border border-white/20 shadow-[0_25px_60px_rgba(0,0,0,0.6)] text-left" style="transform: translateY(40px);">
+                <!-- Subtle internal glass highlight -->
+                <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent rounded-t-3xl pointer-events-none"></div>
+
+                <!-- Headline (Refined size, solid vibrant pink, no stroke artifacts) -->
+                <h2 class="font-display text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold leading-[1.08] tracking-tight uppercase mb-6">
+                    <span class="block text-white" style="text-shadow: 0 3px 14px rgba(0,0,0,0.95);">SOMOS MÁS QUE UN TALLER DE DETAILING,</span>
+                    <span class="block mt-2" style="color: #FB2C6B; text-shadow: 0 3px 14px rgba(0,0,0,0.95);">
+                        SOMOS APASIONADOS POR LOS AUTOMÓVILES
+                    </span>
+                </h2>
+
+                <!-- Action Button -->
+                <a href="/nosotros" class="inline-flex items-center gap-3 px-6 py-3 sm:px-7 sm:py-3.5 rounded-2xl bg-black/50 hover:bg-brand text-white text-xs sm:text-sm font-bold uppercase tracking-wider border border-white/30 hover:border-brand transition-all duration-300 group shadow-xl hover:shadow-brand/25 backdrop-blur-md">
+                    <span>Nuestra Historia</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 sm:w-5 sm:h-5 transform group-hover:translate-x-1.5 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m9 18 6-6-6-6"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+@php
+    $showcaseCards = [
+        [
+            'number' => '01',
+            'badge' => 'Limpieza & Detallado',
+            'title' => '160°C Desinfección',
+            'video' => '/assets/videos/lavado-premium.mp4',
+            'url' => '/limpieza-y-detallado'
+        ],
+        [
+            'number' => '02',
+            'badge' => 'Ceramic Coating',
+            'title' => '9H Platinum',
+            'video' => '/assets/videos/bmw-horizontal.mp4',
+            'url' => '/sellado-ceramico'
+        ],
+        [
+            'number' => '03',
+            'badge' => 'Corrección de Pintura',
+            'title' => '95% Rayas Elim.',
+            'video' => '/assets/videos/bmwblanco-horizontal.mp4',
+            'url' => '/pulido-de-autos-santiago'
+        ],
+        [
+            'number' => '04',
+            'badge' => 'Protección ExoShield',
+            'title' => '6x Más Resistente',
+            'video' => '/assets/videos/2.mp4',
+            'url' => '/proteccion-parabrisas-santiago'
+        ]
+    ];
+@endphp
+
 <!-- Interactive EVOKN-Style Horizontal Scroll Showcase Section -->
 <section id="experiencia-evokn" 
          x-data="{
-             scrollLeft() { $refs.slider.scrollBy({ left: -400, behavior: 'smooth' }) },
-             scrollRight() { $refs.slider.scrollBy({ left: 400, behavior: 'smooth' }) },
+             singleSetWidth: 0,
+             isResetting: false,
+             initCarousel() {
+                 this.$nextTick(() => {
+                     const el = this.$refs.slider;
+                     if (!el || el.children.length < 5) return;
+                     const firstCard = el.children[0];
+                     const fifthCard = el.children[4];
+                     if (firstCard && fifthCard) {
+                         this.singleSetWidth = fifthCard.offsetLeft - firstCard.offsetLeft;
+                     } else {
+                         this.singleSetWidth = el.scrollWidth / 3;
+                     }
+                     el.scrollLeft = this.singleSetWidth;
+                 });
+             },
+             checkBounds() {
+                 if (this.isResetting) return;
+                 const el = this.$refs.slider;
+                 if (!el || !this.singleSetWidth) return;
+                 if (el.scrollLeft >= this.singleSetWidth * 2) {
+                     this.isResetting = true;
+                     el.scrollLeft -= this.singleSetWidth;
+                     setTimeout(() => { this.isResetting = false; }, 50);
+                 } else if (el.scrollLeft < this.singleSetWidth * 0.4) {
+                     this.isResetting = true;
+                     el.scrollLeft += this.singleSetWidth;
+                     setTimeout(() => { this.isResetting = false; }, 50);
+                 }
+             },
+             scrollLeft() {
+                 const el = this.$refs.slider;
+                 if (!el) return;
+                 this.checkBounds();
+                 const cardWidth = el.children[0]?.offsetWidth || 380;
+                 const step = cardWidth + 24;
+                 el.scrollBy({ left: -step, behavior: 'smooth' });
+             },
+             scrollRight() {
+                 const el = this.$refs.slider;
+                 if (!el) return;
+                 this.checkBounds();
+                 const cardWidth = el.children[0]?.offsetWidth || 380;
+                 const step = cardWidth + 24;
+                 el.scrollBy({ left: step, behavior: 'smooth' });
+             },
              handleWheel(e) {
                  if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-                     $refs.slider.scrollLeft += e.deltaY * 1.5;
+                     this.$refs.slider.scrollLeft += e.deltaY * 1.2;
+                     this.checkBounds();
                  }
              }
          }"
+         x-init="initCarousel()"
+         @resize.window.debounce.200ms="initCarousel()"
          class="py-24 md:py-32 relative overflow-hidden bg-white dark:bg-[#0A0A0A] transition-colors duration-300">
     <!-- Glow accent -->
     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-brand/10 dark:bg-brand/15 rounded-full blur-[160px] pointer-events-none"></div>
@@ -338,141 +488,34 @@ style="min-height: 100vh; min-height: 100dvh;">
             </div>
         </div>
 
-        <!-- EVOKN Horizontal Scroll Track -->
+        <!-- EVOKN Horizontal Scroll Track (Infinite Cloned Loop) -->
         <div x-ref="slider" 
+             @scroll.debounce.150ms="checkBounds()"
              @wheel.passive="handleWheel($event)"
              class="flex gap-6 overflow-x-auto scrollbar-none py-4 snap-x snap-mandatory cursor-grab active:cursor-grabbing select-none -mx-4 px-4 sm:mx-0 sm:px-0">
             
-            <!-- Card 1: Gtechniq Ceramic Coating -->
-            <div class="w-[300px] sm:w-[380px] h-[480px] shrink-0 snap-start rounded-[2.5rem] overflow-hidden relative group shadow-2xl border border-black/10 dark:border-white/10 transition-all duration-500 hover:scale-[1.02] hover:border-brand/50">
-                <video autoplay muted loop playsinline class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                    <source src="/assets/videos/hero-gtechniq.mp4" type="video/mp4">
-                </video>
-                <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent"></div>
-                
-                <!-- Badge & Stats overlay -->
-                <div class="absolute inset-0 p-8 flex flex-col justify-between z-10">
-                    <div class="flex items-center justify-between">
-                        <span class="px-4 py-1.5 rounded-full bg-brand text-white text-[10px] font-bold uppercase tracking-widest shadow-lg">Gtechniq Certified</span>
-                        <span class="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white text-xs font-bold">01</span>
-                    </div>
+            @for($set = 0; $set < 3; $set++)
+                @foreach($showcaseCards as $card)
+                    <a href="{{ $card['url'] }}" 
+                       class="w-[300px] sm:w-[380px] h-[480px] shrink-0 snap-start rounded-[2.5rem] overflow-hidden relative group shadow-2xl border border-black/10 dark:border-white/10 transition-all duration-500 hover:scale-[1.02] hover:border-brand/50 block">
+                        <video autoplay muted loop playsinline class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                            <source src="{{ $card['video'] }}" type="video/mp4">
+                        </video>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
+                        
+                        <div class="absolute inset-0 p-8 flex flex-col justify-between z-10">
+                            <div class="flex items-center justify-between">
+                                <span class="px-4 py-1.5 rounded-full bg-brand text-white text-[10px] font-bold uppercase tracking-widest shadow-lg">{{ $card['badge'] }}</span>
+                                <span class="w-8 h-8 rounded-full bg-black/60 border border-white/20 backdrop-blur-md flex items-center justify-center text-white text-xs font-bold shadow-md">{{ $card['number'] }}</span>
+                            </div>
 
-                    <div>
-                        <p class="font-display text-4xl font-extrabold text-white uppercase leading-none mb-2">9H Platinum</p>
-                        <p class="text-white/80 text-xs font-light leading-relaxed mb-4">Acreditados oficiales para aplicación de sellado cerámico permanente con garantía hasta 9 años.</p>
-                        <div class="flex items-center justify-between pt-4 border-t border-white/20">
-                            <span class="text-brand font-bold text-xs uppercase tracking-wider">99% Satisfacción</span>
-                            <a href="/sellado-ceramico" class="w-10 h-10 rounded-full bg-white/10 hover:bg-brand backdrop-blur-md flex items-center justify-center text-white transition-all group-hover:scale-110">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m9 18 6-6-6-6"/></svg>
-                            </a>
+                            <div>
+                                <h3 class="font-display text-3xl sm:text-4xl font-extrabold text-white uppercase leading-tight drop-shadow-[0_4px_16px_rgba(0,0,0,0.8)]">{{ $card['title'] }}</h3>
+                            </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 2: Paint Correction 8K -->
-            <div class="w-[300px] sm:w-[380px] h-[480px] shrink-0 snap-start rounded-[2.5rem] overflow-hidden relative group shadow-2xl border border-black/10 dark:border-white/10 transition-all duration-500 hover:scale-[1.02] hover:border-brand/50">
-                <video autoplay muted loop playsinline class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                    <source src="/assets/videos/pulido-correccion.mp4" type="video/mp4">
-                </video>
-                <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent"></div>
-                
-                <div class="absolute inset-0 p-8 flex flex-col justify-between z-10">
-                    <div class="flex items-center justify-between">
-                        <span class="px-4 py-1.5 rounded-full bg-brand text-white text-[10px] font-bold uppercase tracking-widest shadow-lg">Multi-Etapa</span>
-                        <span class="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white text-xs font-bold">02</span>
-                    </div>
-
-                    <div>
-                        <p class="font-display text-4xl font-extrabold text-white uppercase leading-none mb-2">95% Rayas Elim.</p>
-                        <p class="text-white/80 text-xs font-light leading-relaxed mb-4">Pulido técnico artesanal bajo luces de inspección de espectro solar para restaurar la laca original.</p>
-                        <div class="flex items-center justify-between pt-4 border-t border-white/20">
-                            <span class="text-brand font-bold text-xs uppercase tracking-wider">Acabado Espejo 8K</span>
-                            <a href="/pulido-de-autos-santiago" class="w-10 h-10 rounded-full bg-white/10 hover:bg-brand backdrop-blur-md flex items-center justify-center text-white transition-all group-hover:scale-110">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m9 18 6-6-6-6"/></svg>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 3: ExoShield Windshield Protection -->
-            <div class="w-[300px] sm:w-[380px] h-[480px] shrink-0 snap-start rounded-[2.5rem] overflow-hidden relative group shadow-2xl border border-black/10 dark:border-white/10 transition-all duration-500 hover:scale-[1.02] hover:border-brand/50">
-                <video autoplay muted loop playsinline class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                    <source src="/assets/videos/exoshield-web.mp4" type="video/mp4">
-                </video>
-                <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent"></div>
-                
-                <div class="absolute inset-0 p-8 flex flex-col justify-between z-10">
-                    <div class="flex items-center justify-between">
-                        <span class="px-4 py-1.5 rounded-full bg-brand text-white text-[10px] font-bold uppercase tracking-widest shadow-lg">ExoShield SPRINT</span>
-                        <span class="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white text-xs font-bold">03</span>
-                    </div>
-
-                    <div>
-                        <p class="font-display text-4xl font-extrabold text-white uppercase leading-none mb-2">6x Más Resistente</p>
-                        <p class="text-white/80 text-xs font-light leading-relaxed mb-4">Película protectora nanotecnológica de TPU que previene trizaduras y roturas por impactos de piedras.</p>
-                        <div class="flex items-center justify-between pt-4 border-t border-white/20">
-                            <span class="text-brand font-bold text-xs uppercase tracking-wider">Instalador Autorizado</span>
-                            <a href="/proteccion-parabrisas-santiago" class="w-10 h-10 rounded-full bg-white/10 hover:bg-brand backdrop-blur-md flex items-center justify-center text-white transition-all group-hover:scale-110">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m9 18 6-6-6-6"/></svg>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 4: Interior Vapor Detailing -->
-            <div class="w-[300px] sm:w-[380px] h-[480px] shrink-0 snap-start rounded-[2.5rem] overflow-hidden relative group shadow-2xl border border-black/10 dark:border-white/10 transition-all duration-500 hover:scale-[1.02] hover:border-brand/50">
-                <video autoplay muted loop playsinline class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                    <source src="/assets/videos/lavado-premium.mp4" type="video/mp4">
-                </video>
-                <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent"></div>
-                
-                <div class="absolute inset-0 p-8 flex flex-col justify-between z-10">
-                    <div class="flex items-center justify-between">
-                        <span class="px-4 py-1.5 rounded-full bg-brand text-white text-[10px] font-bold uppercase tracking-widest shadow-lg">Sanitización Vapor</span>
-                        <span class="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white text-xs font-bold">04</span>
-                    </div>
-
-                    <div>
-                        <p class="font-display text-4xl font-extrabold text-white uppercase leading-none mb-2">160°C Desinfección</p>
-                        <p class="text-white/80 text-xs font-light leading-relaxed mb-4">Limpieza profunda a alta presión y vapor seco. Acondicionamiento protector de cuero y eliminación de olores.</p>
-                        <div class="flex items-center justify-between pt-4 border-t border-white/20">
-                            <span class="text-brand font-bold text-xs uppercase tracking-wider">Detallado Interior</span>
-                            <a href="/detailing-interior" class="w-10 h-10 rounded-full bg-white/10 hover:bg-brand backdrop-blur-md flex items-center justify-center text-white transition-all group-hover:scale-110">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m9 18 6-6-6-6"/></svg>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Card 5: 500+ Satisfied Clients -->
-            <div class="w-[300px] sm:w-[380px] h-[480px] shrink-0 snap-start rounded-[2.5rem] overflow-hidden relative group shadow-2xl border border-black/10 dark:border-white/10 transition-all duration-500 hover:scale-[1.02] hover:border-brand/50">
-                <video autoplay muted loop playsinline class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                    <source src="/assets/videos/hero-banner.mp4" type="video/mp4">
-                </video>
-                <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/40 to-transparent"></div>
-                
-                <div class="absolute inset-0 p-8 flex flex-col justify-between z-10">
-                    <div class="flex items-center justify-between">
-                        <span class="px-4 py-1.5 rounded-full bg-brand text-white text-[10px] font-bold uppercase tracking-widest shadow-lg">Confianza Total</span>
-                        <span class="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white text-xs font-bold">05</span>
-                    </div>
-
-                    <div>
-                        <p class="font-display text-4xl font-extrabold text-white uppercase leading-none mb-2">500+ Clientes</p>
-                        <p class="text-white/80 text-xs font-light leading-relaxed mb-4">Los vehículos de más alto estándar en Santiago confían en nuestra precisión y metódico estándar de entrega.</p>
-                        <div class="flex items-center justify-between pt-4 border-t border-white/20">
-                            <span class="text-brand font-bold text-xs uppercase tracking-wider">Chicureo, Colina</span>
-                            <a href="/reserva" class="w-10 h-10 rounded-full bg-white/10 hover:bg-brand backdrop-blur-md flex items-center justify-center text-white transition-all group-hover:scale-110">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="m9 18 6-6-6-6"/></svg>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                    </a>
+                @endforeach
+            @endfor
 
         </div>
     </div>
@@ -480,7 +523,7 @@ style="min-height: 100vh; min-height: 100dvh;">
 
 <!-- Gallery Section -->
 <script>
-    window.instagramFeedData = @json($instagramFeed ?? []);
+    window.instagramFeedData = {!! json_encode($instagramFeed ?? [], JSON_INVALID_UTF8_SUBSTITUTE) ?: '[]' !!};
 </script>
 <section id="galeria" x-data="{ 
     selectedIndex: null, 

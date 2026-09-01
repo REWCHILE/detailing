@@ -32,7 +32,7 @@
                 </p>
                 <div class="flex flex-wrap gap-4 items-center justify-center sm:justify-start">
                     <a 
-                        href="/reserva?service=lavado-premium" 
+                        href="/reserva?category=limpieza" 
                         class="w-full sm:w-auto px-10 py-4 bg-brand text-white font-semibold hover:bg-black dark:hover:bg-white dark:hover:text-black transition-all shadow-lg shadow-brand/20 text-center rounded-full"
                     >
                         Reservar Ahora
@@ -105,7 +105,7 @@
                     </div>
                 </div>
                 
-                <div class="relative aspect-video rounded-[40px] overflow-hidden border border-white/10 group shadow-2xl shadow-brand/5">
+                <div style="height: 500px; min-height: 500px;" class="relative w-full h-[500px] min-h-[500px] rounded-[36px] overflow-hidden border border-black/10 dark:border-white/10 group shadow-2xl shadow-brand/5">
                     <img 
                         src="/assets/images/galeria/Wash.jpg" 
                         alt="Servicio de lavado de autos profesional en Chicureo" 
@@ -134,9 +134,8 @@
                 </p>
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
-                @php
-                    $profile = \App\Models\BusinessProfile::first();
+            @php
+                $profile = \App\Models\BusinessProfile::first();
                     $onlinePaymentsActive = $profile ? ($profile->payment_gateway_enabled || $profile->show_prices) : false;
                     
                     if (!function_exists('getVehicleIcon')) {
@@ -155,83 +154,236 @@
                 @endphp
 
                 @php
-                    $categoryServices = $services->where('category', 'limpieza')->sortBy('display_order');
+                    if (!function_exists('parseServiceFeatures')) {
+                        function parseServiceFeatures($longDesc) {
+                            if (empty($longDesc)) return [];
+                            $text = preg_replace('/<(br|p|li|div)[^>]*>/i', "\n", $longDesc);
+                            $text = strip_tags($text);
+                            $lines = preg_split('/[\r\n]+/', $text);
+                            $features = [];
+                            foreach ($lines as $line) {
+                                $clean = trim($line);
+                                $clean = preg_replace('/^[-•*]\s*/u', '', $clean);
+                                if (!empty($clean)) {
+                                    $features[] = $clean;
+                                }
+                            }
+                            return $features;
+                        }
+                    }
+
+                    $categoryServices = $services->where('category', 'limpieza')->where('is_active', true)->sortBy('display_order')->take(3);
+                    
+                    $servicesData = $categoryServices->map(function($s) {
+                        $features = parseServiceFeatures($s->long_description);
+                        $vPrices = [];
+                        foreach($s->vehicleTypes as $vt) {
+                            $vPrices[] = [
+                                'name' => $vt->name,
+                                'slug' => $vt->slug,
+                                'price' => (int)$vt->pivot->price,
+                            ];
+                        }
+                        $minPrice = !empty($vPrices) ? min(array_column($vPrices, 'price')) : (int)$s->base_price;
+                        return [
+                            'id' => $s->id,
+                            'name' => $s->name,
+                            'slug' => $s->slug,
+                            'min_price' => $minPrice,
+                            'features' => array_values($features),
+                            'vehicle_prices' => $vPrices,
+                        ];
+                    });
                 @endphp
 
-                @foreach($categoryServices as $srv)
-                    <div class="relative flex flex-col h-full bg-gray-50 dark:bg-surface-700/50 border {{ $srv->is_featured ? 'border-brand/40 shadow-2xl shadow-brand/10 dark:shadow-brand/10' : 'border-black/5 dark:border-white/5 shadow-sm dark:shadow-none' }} rounded-[40px] p-8 md:p-10 transition-all duration-500 hover:border-brand/40 group">
-                        @if($srv->is_featured)
-                            <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-brand text-white text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full z-10">
-                                Destacado
-                            </div>
-                        @endif
-
-                        <div class="mb-8">
-                            <span class="text-brand text-xs font-bold uppercase tracking-widest mb-2 block">
-                                @php
-                                    $hours = $srv->duration_minutes / 60;
-                                    $hoursStr = str_replace('.0', '', number_format($hours, 1, '.', ''));
-                                @endphp
-                                {{ $hours >= 1 ? $hoursStr . ' HORA' . ($hours > 1 ? 'S' : '') : $srv->duration_minutes . ' MINUTOS' }}
-                            </span>
-                            <h3 class="text-3xl font-display font-bold text-black dark:text-white mb-4 group-hover:text-brand transition-colors">
-                                {{ $srv->name }}
-                            </h3>
-                            <p class="text-black/60 dark:text-white/50 text-sm leading-relaxed min-h-[3rem] transition-colors html-content">
-                                {!! $srv->short_description !!}
-                            </p>
-                        </div>
-
-                        <div class="space-y-3 mb-8">
-                            @foreach($vehicleTypes as $vt)
-                                <div class="flex items-center justify-between p-3 rounded-2xl bg-white dark:bg-white/[0.03] border border-black/5 dark:border-white/5 shadow-sm dark:shadow-none transition-colors">
-                                    <div class="flex items-center gap-3">
-                                        <span class="text-xl leading-none">{{ $vt->emoji ?? '🚗' }}</span>
-                                        <span class="text-xs text-black/70 dark:text-white/60 font-medium transition-colors">{{ $vt->name }}</span>
-                                    </div>
-                                    <span class="text-base font-display font-bold text-black dark:text-white transition-colors">
-                                        @if($onlinePaymentsActive)
-                                            ${{ number_format($srv->getPriceForVehicleType($vt->id), 0, ',', '.') }}
-                                        @else
-                                            Cotizar
-                                        @endif
-                                    </span>
-                                </div>
-                            @endforeach
-                        </div>
-
-                        <div class="flex-grow text-black/70 dark:text-white/70">
-                            <div class="text-xs font-bold text-black/40 dark:text-white/30 uppercase tracking-widest mb-4 border-b border-black/5 dark:border-white/5 pb-2 transition-colors">
-                                ¿Qué incluye?
-                            </div>
+                <div x-data="{
+                    modalService: null,
+                    services: @js($servicesData->values()),
+                    openModal(slug) {
+                        this.modalService = this.services.find(s => s.slug === slug) || null;
+                    },
+                    closeModal() {
+                        this.modalService = null;
+                    },
+                    formatCLP(val) {
+                        return '$' + (val || 0).toLocaleString('es-CL');
+                    }
+                }">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto items-stretch justify-center">
+                        @foreach($categoryServices as $srv)
                             @php
-                                preg_match_all('/<(p|li)[^>]*>(.*?)<\/\1>/s', $srv->long_description, $matches);
-                                $features = !empty($matches[2]) ? array_filter(array_map('trim', $matches[2])) : [];
-                                if (empty($features)) {
-                                    $features = array_filter(array_map('trim', explode("\n", $srv->long_description)));
+                                $srvVideo = '/assets/videos/lavado-premium.mp4';
+                                $slug = $srv->slug;
+                                if (str_contains($slug, 'avanzado')) {
+                                    $srvVideo = '/assets/videos/lavado-avanzado.mp4';
+                                } elseif (str_contains($slug, 'interior')) {
+                                    $srvVideo = '/assets/videos/detailing-terminacion.mp4';
+                                } elseif (str_contains($slug, 'completo')) {
+                                    $srvVideo = '/assets/videos/pulido-correccion-2.mp4';
                                 }
+                                $minPrice = $srv->vehicleTypes->min('pivot.price') ?? $srv->base_price;
                             @endphp
-                            <ul class="space-y-4 mb-10">
-                                @foreach($features as $feature)
-                                    <li class="flex items-start gap-3">
-                                        <div class="mt-1 w-5 h-5 rounded-full bg-brand/10 flex items-center justify-center shrink-0 group-hover:bg-brand group-hover:text-white transition-colors">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="text-brand group-hover:text-white"><polyline points="20 6 9 17 4 12"/></svg>
-                                        </div>
-                                        <span class="text-sm leading-relaxed html-content">{!! $feature !!}</span>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        </div>
+                            <div style="height: 600px; min-height: 600px;" class="relative flex flex-col justify-between h-[600px] rounded-[40px] overflow-hidden p-8 sm:p-9 md:p-10 transition-all duration-500 group border-2 border-white/15 hover:border-brand/70 hover:shadow-2xl hover:scale-[1.015] bg-zinc-950 shadow-2xl">
+                                <!-- Panoramic Video Background with Dark Tint and Cinematic Vignettes -->
+                                <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+                                    <video autoplay loop muted playsinline class="w-full h-full object-cover opacity-60 group-hover:opacity-80 group-hover:scale-105 transition-all duration-700">
+                                        <source src="{{ $srvVideo }}" type="video/mp4">
+                                    </video>
+                                    <div class="absolute inset-0 bg-black/45 pointer-events-none z-10"></div>
+                                    <div class="absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-black/90 via-black/50 to-transparent pointer-events-none z-10"></div>
+                                    <div class="absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-black/95 via-black/75 to-transparent pointer-events-none z-10"></div>
+                                </div>
 
-                        <a 
-                            href="/reserva?service={{ $srv->slug }}" 
-                            class="w-full block py-4 text-center font-bold uppercase tracking-widest text-xs transition-all duration-300 {{ $srv->is_featured ? 'bg-brand text-white shadow-lg shadow-brand/20 hover:bg-brand-dark' : 'bg-black/5 dark:bg-white/5 text-black dark:text-white hover:bg-brand hover:text-white' }}"
-                        >
-                            Agendar Turno
-                        </a>
+                                <!-- Top Area: Centered Title in Pure White -->
+                                <div class="relative z-20 text-center w-full">
+                                    <h3 class="font-display font-black text-xl sm:text-2xl text-white uppercase tracking-tight drop-shadow-[0_4px_16px_rgba(0,0,0,1)] leading-tight text-center">
+                                        {{ $srv->name }}
+                                    </h3>
+                                </div>
+
+                                <!-- Middle Spacer to let the video shine -->
+                                <div class="flex-grow pointer-events-none"></div>
+
+                                <!-- Bottom Area: Starting Price & Action Buttons -->
+                                <div class="relative z-20 pt-4">
+                                    <!-- Price Display -->
+                                    <div class="flex items-baseline gap-2 mb-6">
+                                        <span class="text-white/60 text-xs sm:text-sm font-bold uppercase tracking-wider">Desde</span>
+                                        <span class="font-display font-black text-3xl sm:text-4xl md:text-5xl text-white drop-shadow-[0_2px_12px_rgba(0,0,0,1)]">
+                                            ${{ number_format($minPrice, 0, ',', '.') }}
+                                        </span>
+                                    </div>
+
+                                    <!-- Action Buttons: Details + Agendar CTA -->
+                                    <div class="flex items-center justify-between gap-3 pt-4 border-t border-white/15">
+                                        <button 
+                                            type="button" 
+                                            @click="openModal('{{ $srv->slug }}')"
+                                            class="px-5 py-3 rounded-full bg-black/80 hover:bg-zinc-900 border border-white/20 hover:border-brand/60 text-white hover:text-brand text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-200 backdrop-blur-md shadow-lg flex items-center gap-2 group/btn cursor-pointer"
+                                        >
+                                            <span>Detalles</span>
+                                            <svg class="w-4 h-4 text-brand group-hover/btn:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                                        </button>
+
+                                        <a 
+                                            href="/reserva?category=limpieza&service={{ $srv->slug }}"
+                                            class="flex items-center gap-2 text-xs sm:text-sm font-black uppercase tracking-wider text-brand group/cta hover:text-white transition-colors shrink-0"
+                                        >
+                                            <span>Agendar</span>
+                                            <div class="w-11 h-11 sm:w-12 sm:h-12 rounded-full bg-brand text-white flex items-center justify-center group-hover/cta:scale-110 shadow-xl shadow-brand/40 transition-transform duration-300">
+                                                <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
                     </div>
-                @endforeach
-            </div>
+
+                    <!-- MODAL DE DETALLES DEL SERVICIO LIMPIEZA -->
+                    <template x-teleport="body">
+                        <div 
+                            x-show="modalService" 
+                            x-transition:enter="transition ease-out duration-300"
+                            x-transition:enter-start="opacity-0"
+                            x-transition:enter-end="opacity-100"
+                            x-transition:leave="transition ease-in duration-200"
+                            x-transition:leave-start="opacity-100"
+                            x-transition:leave-end="opacity-0"
+                            class="fixed inset-0 z-[99999] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-6"
+                            style="display: none;"
+                        >
+                            <div 
+                                @click.away="closeModal()"
+                                x-show="modalService"
+                                x-transition:enter="transition ease-out duration-300 transform"
+                                x-transition:enter-start="opacity-0 scale-95 translate-y-4"
+                                x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                                x-transition:leave="transition ease-in duration-200 transform"
+                                x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                                x-transition:leave-end="opacity-0 scale-95 translate-y-4"
+                                class="bg-zinc-900 border-2 border-white/20 rounded-[2.5rem] max-w-2xl w-full shadow-2xl relative text-white max-h-[88vh] flex flex-col my-auto overflow-hidden"
+                            >
+                                <!-- Header -->
+                                <div class="p-6 sm:p-8 pb-4 border-b border-white/10 shrink-0 relative text-center">
+                                    <button 
+                                        type="button" 
+                                        @click="closeModal()"
+                                        class="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 hover:bg-brand text-white flex items-center justify-center transition-all shadow-md cursor-pointer"
+                                    >
+                                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                                    </button>
+
+                                    <h3 class="text-brand font-display font-black text-2xl sm:text-3xl mb-1 uppercase tracking-tight">
+                                        Detalles del servicio
+                                    </h3>
+                                    <h4 class="text-white/90 font-display font-bold text-base sm:text-lg" x-text="modalService ? modalService.name : ''"></h4>
+                                </div>
+
+                                <!-- Content with inner scroll -->
+                                <div class="p-6 sm:p-8 overflow-y-auto overflow-x-hidden flex-1 custom-scrollbar space-y-6">
+                                    <!-- Vehicle Price Breakdown Table -->
+                                    <template x-if="modalService && modalService.vehicle_prices && modalService.vehicle_prices.length > 0">
+                                        <div>
+                                            <h5 class="text-xs font-bold text-white/50 uppercase tracking-widest mb-3">Precios por Tamaño de Vehículo</h5>
+                                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                                                <template x-for="vp in modalService.vehicle_prices" :key="vp.name">
+                                                    <div class="p-3.5 rounded-2xl bg-black/50 border border-white/10 text-center">
+                                                        <span class="text-xs text-white/70 block font-semibold mb-1" x-text="vp.name"></span>
+                                                        <span class="font-display font-black text-lg text-white" x-text="formatCLP(vp.price)"></span>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </div>
+                                    </template>
+
+                                    <!-- Features List -->
+                                    <div>
+                                        <h5 class="text-xs font-bold text-white/50 uppercase tracking-widest mb-3">Incluye Cobertura & Procedimiento</h5>
+                                        <ul class="space-y-3 text-left">
+                                            <template x-for="(point, pIdx) in (modalService ? modalService.features : [])" :key="pIdx">
+                                                <li class="flex items-start gap-3.5 p-3.5 rounded-2xl bg-black/50 border border-white/10 hover:border-brand/40 transition-colors">
+                                                    <div class="w-5 h-5 rounded-full bg-brand/20 border border-brand/60 text-brand flex items-center justify-center shrink-0 mt-0.5 text-xs font-black shadow-[0_0_8px_rgba(251,44,107,0.4)]">
+                                                        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5">
+                                                            <polyline points="20 6 9 17 4 12"/>
+                                                        </svg>
+                                                    </div>
+                                                    <span class="font-sans text-sm sm:text-base text-white/95 leading-relaxed font-medium html-content" x-html="point"></span>
+                                                </li>
+                                            </template>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <!-- Footer -->
+                                <div class="p-6 sm:p-8 pt-4 border-t border-white/15 shrink-0 bg-zinc-900 flex flex-col sm:flex-row items-center justify-between gap-4">
+                                    <div class="text-center sm:text-left">
+                                        <span class="text-xs uppercase tracking-wider text-white/50 block font-bold">Desde</span>
+                                        <span class="text-white font-display font-black text-2xl sm:text-3xl md:text-4xl" x-text="modalService ? formatCLP(modalService.min_price) : '$0'"></span>
+                                    </div>
+
+                                    <div class="flex items-center gap-3 w-full sm:w-auto">
+                                        <button 
+                                            type="button" 
+                                            @click="closeModal()"
+                                            class="px-6 py-3.5 rounded-full font-bold text-sm uppercase tracking-wider bg-zinc-800 hover:bg-zinc-700 text-white/80 hover:text-white border border-white/20 transition-all duration-300 w-1/2 sm:w-auto text-center cursor-pointer"
+                                        >
+                                            Cerrar
+                                        </button>
+
+                                        <a 
+                                            :href="'/reserva?category=limpieza&service=' + (modalService ? modalService.slug : '')"
+                                            class="px-8 py-3.5 rounded-full font-display font-black text-sm uppercase tracking-wider bg-brand hover:bg-brand-dark text-white shadow-xl shadow-brand/40 transition-all duration-300 w-1/2 sm:w-auto text-center cursor-pointer flex items-center justify-center gap-2"
+                                        >
+                                            <span>AGENDAR</span>
+                                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
 
             <div class="mt-12 p-6 rounded-3xl bg-brand/5 border border-brand/10 flex items-start gap-4 max-w-3xl mx-auto">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-brand shrink-0 mt-0.5"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="16" y2="12"/><line x1="12" x2="12.01" y1="8" y2="8"/></svg>
@@ -345,7 +497,7 @@
                     </p>
 
                     <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-6">
-                        <a href="/reserva" class="w-full sm:w-auto px-8 py-4 bg-brand hover:bg-brand-dark text-white font-semibold rounded-2xl text-lg transition-all duration-300 shadow-lg shadow-brand/30 hover:shadow-brand/50 flex items-center justify-center gap-2 hover:scale-[1.02]">
+                        <a href="/reserva?category=limpieza" class="w-full sm:w-auto px-8 py-4 bg-brand hover:bg-brand-dark text-white font-semibold rounded-2xl text-lg transition-all duration-300 shadow-lg shadow-brand/30 hover:shadow-brand/50 flex items-center justify-center gap-2 hover:scale-[1.02]">
                             <span>Cotizar Limpieza Profunda</span>
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                         </a>

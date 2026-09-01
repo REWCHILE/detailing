@@ -31,8 +31,10 @@ class SecurityHeaders
         // Restrict browser features/APIs
         $response->headers->set('Permissions-Policy', 'camera=(), microphone=(), geolocation=(self), payment=(self)');
 
-        // Content Security Policy — Allow Alpine.js ('unsafe-eval', 'unsafe-inline') and media
-        $response->headers->set('Content-Security-Policy', "default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https: blob:; font-src 'self' data: https:; media-src 'self' data: https: blob:; connect-src 'self' https:;");
+        // Content Security Policy — Only enforce CSP in production (in local dev it blocks Vite dev server & HMR)
+        if (app()->environment('production')) {
+            $response->headers->set('Content-Security-Policy', "default-src 'self' 'unsafe-inline' 'unsafe-eval' https: data: blob:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https:; style-src 'self' 'unsafe-inline' https:; img-src 'self' data: https: blob:; font-src 'self' data: https:; media-src 'self' data: https: blob:; connect-src 'self' https:;");
+        }
 
         // HSTS — only in production over HTTPS
         if (app()->environment('production') && $request->isSecure()) {

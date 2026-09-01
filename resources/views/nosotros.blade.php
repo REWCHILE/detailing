@@ -243,9 +243,9 @@
             <div class="absolute inset-0 bg-gradient-to-br from-brand-dark to-brand opacity-90"></div>
 
             <div class="relative z-10 px-8 py-12 md:px-16 md:py-20">
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-stretch">
                     <!-- Left Column: Content -->
-                    <div class="lg:col-span-7 text-center lg:text-left">
+                    <div class="lg:col-span-7 text-center lg:text-left flex flex-col justify-center">
                         <h2 class="font-display text-4xl md:text-5xl lg:text-6xl font-black text-white mb-6 tracking-tight leading-tight">
                             ¿LISTO PARA LLEVAR TU AUTO <br class="hidden lg:block">AL SIGUIENTE NIVEL?
                         </h2>
@@ -267,9 +267,9 @@
                         </div>
                     </div>
                     
-                    <!-- Right Column: Video Frame -->
-                    <div class="lg:col-span-5 relative group">
-                        <div class="relative aspect-video lg:aspect-[4/3] rounded-[2rem] overflow-hidden border border-white/20 shadow-2xl bg-black transition-all duration-500 hover:scale-[1.01] hover:border-white/40">
+                    <!-- Right Column: Video Frame (Matches Left Text Structure) -->
+                    <div class="lg:col-span-5 relative group flex flex-col">
+                        <div style="min-height: 420px;" class="relative w-full h-full min-h-[380px] lg:min-h-[420px] rounded-[2.5rem] overflow-hidden border border-white/20 shadow-2xl bg-black transition-all duration-500 hover:scale-[1.01] hover:border-white/40 flex-1">
                             <video autoplay muted loop playsinline class="w-full h-full object-cover">
                                 <source src="/assets/videos/2.mp4" type="video/mp4">
                             </video>

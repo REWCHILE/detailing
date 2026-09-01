@@ -153,14 +153,7 @@
     @if($profile && !empty($profile->header_scripts))
         {!! $profile->header_scripts !!}
     @endif
-</head>
-<body class="antialiased bg-gray-50 text-black dark:bg-[#0A0A0A] dark:text-[#F5F5F5] transition-colors duration-300" x-data="{ isMobileOpen: false }">
-    @if($profile && !empty($profile->google_tag_manager_id))
-        <!-- Google Tag Manager (noscript) -->
-        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ $profile->google_tag_manager_id }}"
-        height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-        <!-- End Google Tag Manager (noscript) -->
-    @endif
+
     @php
         $whatsappNumber = preg_replace('/\D/', '', $profile->whatsapp ?? '56912345678');
         $whatsappMsg = urlencode('Hola, me gustaría cotizar un servicio de detailing para mi vehículo.');
@@ -175,6 +168,14 @@
             || request()->is('pulido-de-autos-santiago') 
             || request()->is('proteccion-parabrisas-santiago');
     @endphp
+</head>
+<body class="antialiased bg-gray-50 text-black dark:bg-[#0A0A0A] dark:text-[#F5F5F5] transition-colors duration-300" x-data="{ isMobileOpen: false, mobileServicesOpen: {{ $isServicesActive ? 'true' : 'false' }} }">
+    @if($profile && !empty($profile->google_tag_manager_id))
+        <!-- Google Tag Manager (noscript) -->
+        <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ $profile->google_tag_manager_id }}"
+        height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+        <!-- End Google Tag Manager (noscript) -->
+    @endif
 
     <!-- Navbar -->
     <nav x-data="{ 
@@ -302,13 +303,13 @@
 
     </nav>
 
-    <!-- Mobile Navigation Slide-Over Drawer (Right to Left) -->
+    <!-- Mobile Navigation Slide-Over Drawer (Right to Left - Luxury Edition) -->
     <div x-show="isMobileOpen" 
          class="md:hidden fixed inset-0 z-[99999] overflow-hidden" 
          style="display: none;"
          x-cloak>
         
-        <!-- Backdrop Overlay -->
+        <!-- Backdrop Overlay with Deep Blur -->
         <div x-show="isMobileOpen"
              x-transition:enter="transition-opacity ease-out duration-300"
              x-transition:enter-start="opacity-0"
@@ -317,7 +318,7 @@
              x-transition:leave-start="opacity-100"
              x-transition:leave-end="opacity-0"
              @click="isMobileOpen = false"
-             class="fixed inset-0 bg-black/80 backdrop-blur-md"></div>
+             class="fixed inset-0 bg-black/85 backdrop-blur-md"></div>
 
         <!-- Slide-in Drawer Container -->
         <div x-show="isMobileOpen"
@@ -327,41 +328,65 @@
              x-transition:leave="transform transition ease-in duration-200"
              x-transition:leave-start="translate-x-0"
              x-transition:leave-end="translate-x-full"
-             class="fixed inset-y-0 right-0 w-full max-w-[360px] sm:max-w-sm bg-[#0E0E0E]/98 border-l border-white/10 shadow-2xl backdrop-blur-2xl flex flex-col justify-between overflow-y-auto px-6 py-7 text-center items-center">
+             class="fixed inset-y-0 right-0 w-full max-w-[340px] sm:max-w-sm bg-[#0C0C0C]/98 border-l border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.9)] backdrop-blur-2xl flex flex-col justify-between overflow-y-auto px-6 py-6 text-left">
             
-            <!-- Drawer Header (Close Button & Logo) -->
+            <!-- Drawer Header (Logo & Close Button) -->
             <div class="w-full flex items-center justify-between pb-4 border-b border-white/10">
-                <div class="flex items-center gap-2.5">
-                    <img src="{{ $profile->logo ? asset($profile->logo) : asset('assets/logos/main-logo.png') }}" alt="{{ $profile->business_name ?? 'High Contrast' }}" class="h-8 w-8 object-contain">
-                    <span class="font-display font-bold text-white text-sm tracking-tight">HIGH CONTRAST</span>
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-white/5 border border-white/10 p-1.5 flex items-center justify-center">
+                        <img src="{{ $profile->logo ? asset($profile->logo) : asset('assets/logos/main-logo.png') }}" alt="{{ $profile->business_name ?? 'High Contrast' }}" class="h-full w-full object-contain">
+                    </div>
+                    <div>
+                        <span class="font-display font-black text-white text-sm tracking-tight block leading-tight">HIGH CONTRAST</span>
+                        <span class="text-[9px] uppercase tracking-[0.25em] text-brand font-bold block">Detailing Center</span>
+                    </div>
                 </div>
-                <button @click="isMobileOpen = false" class="p-2 rounded-full bg-white/5 hover:bg-white/10 text-white/70 hover:text-white transition-colors" aria-label="Cerrar menú">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
+                <button @click="isMobileOpen = false" class="w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white/70 hover:text-white flex items-center justify-center transition-colors cursor-pointer" aria-label="Cerrar menú">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
                 </button>
             </div>
 
-            <!-- Drawer Center Content (Centered Navigation) -->
-            <div class="w-full my-auto py-5 flex flex-col items-center justify-center space-y-3.5">
-                <a href="/" @click="isMobileOpen = false" class="w-full py-1.5 font-display text-xl sm:text-2xl font-bold tracking-tight text-white/90 hover:text-brand transition-colors {{ request()->is('/') ? 'text-brand' : '' }}">
-                    Inicio
-                </a>
-                <a href="/nosotros" @click="isMobileOpen = false" class="w-full py-1.5 font-display text-xl sm:text-2xl font-bold tracking-tight text-white/90 hover:text-brand transition-colors {{ request()->is('nosotros') ? 'text-brand' : '' }}">
-                    Nosotros
+            <!-- Drawer Center Content (Left-Aligned Luxury Navigation) -->
+            <div class="w-full py-5 space-y-1 overflow-y-auto">
+                
+                <!-- 1. Inicio Link -->
+                <a href="/" @click="isMobileOpen = false" class="group flex items-center py-2.5 px-3 rounded-2xl transition-all duration-200 {{ request()->is('/') ? 'bg-brand/10 text-brand border border-brand/30' : 'text-white/85 hover:text-white hover:bg-white/5' }}">
+                    <div class="flex items-center gap-3">
+                        <span class="w-1.5 h-1.5 rounded-full {{ request()->is('/') ? 'bg-brand shadow-[0_0_8px_rgba(251,44,107,0.8)]' : 'bg-transparent group-hover:bg-brand/60' }} transition-all"></span>
+                        <span class="font-display text-lg font-bold tracking-tight">Inicio</span>
+                    </div>
                 </a>
 
-                <!-- Services Box (Centered Grid/List) -->
-                <div class="w-full rounded-2xl bg-white/[0.03] border border-white/[0.08] p-3.5 text-center">
-                    <div class="text-[10px] font-bold uppercase tracking-[0.2em] text-brand/80 mb-2.5">Nuestros Servicios</div>
-                    <div class="grid grid-cols-1 gap-1.5">
+                <!-- 2. Servicios Accordion -->
+                <div class="pt-1">
+                    <button 
+                        type="button" 
+                        @click="mobileServicesOpen = !mobileServicesOpen" 
+                        class="w-full group flex items-center justify-between py-2.5 px-3 rounded-2xl transition-all duration-200 cursor-pointer {{ $isServicesActive ? 'bg-brand/10 text-brand border border-brand/30' : 'text-white/85 hover:text-white hover:bg-white/5' }}"
+                    >
+                        <div class="flex items-center gap-3">
+                            <span class="w-1.5 h-1.5 rounded-full {{ $isServicesActive ? 'bg-brand shadow-[0_0_8px_rgba(251,44,107,0.8)]' : 'bg-transparent group-hover:bg-brand/60' }} transition-all"></span>
+                            <span class="font-display text-lg font-bold tracking-tight">Servicios</span>
+                        </div>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform duration-300 {{ $isServicesActive ? 'text-brand' : 'text-white/40' }}" :class="mobileServicesOpen ? 'rotate-180 text-brand' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                    </button>
+
+                    <!-- Collapsible Sub-Services List -->
+                    <div x-show="mobileServicesOpen" x-transition class="pl-4 pr-1 pt-2 pb-1 space-y-1.5">
                         @if(isset($navCategoryOrder))
                             @foreach($navCategoryOrder as $catId)
                                 @if(isset($catDetails[$catId]))
-                                    @php $detail = $catDetails[$catId]; @endphp
-                                    <a href="{{ $detail['url'] }}" @click="isMobileOpen = false" class="flex items-center justify-center gap-2.5 p-2 rounded-xl bg-white/[0.02] hover:bg-white/[0.08] text-white/85 hover:text-brand transition-all text-xs sm:text-sm font-semibold">
-                                        <span class="w-6 h-6 rounded-md flex items-center justify-center shrink-0" style="background-color: {{ $detail['bg_raw'] }}; color: {{ $detail['color_raw'] }}">
-                                            {!! $detail['icon'] !!}
-                                        </span>
-                                        <span>{{ $detail['label'] }}</span>
+                                    @php 
+                                        $detail = $catDetails[$catId]; 
+                                        $isActiveCat = request()->is(ltrim($detail['url'], '/')); 
+                                    @endphp
+                                    <a href="{{ $detail['url'] }}" @click="isMobileOpen = false" class="flex items-center p-2.5 rounded-xl border transition-all duration-200 group {{ $isActiveCat ? 'bg-brand/15 border-brand/40 text-brand shadow-sm' : 'bg-white/[0.03] border-white/5 text-white/80 hover:bg-white/[0.08] hover:border-white/20 hover:text-white' }}">
+                                        <div class="flex items-center gap-3">
+                                            <div class="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 shadow-inner" style="background-color: {{ $detail['bg_raw'] }}; color: {{ $detail['color_raw'] }}">
+                                                {!! $detail['icon'] !!}
+                                            </div>
+                                            <span class="text-xs font-bold tracking-tight">{{ $detail['label'] }}</span>
+                                        </div>
                                     </a>
                                 @endif
                             @endforeach
@@ -369,32 +394,64 @@
                     </div>
                 </div>
 
-                <a href="/#galeria" @click="isMobileOpen = false" class="w-full py-1 font-display text-base font-bold text-white/80 hover:text-brand transition-colors">Galería</a>
-                <a href="/#testimonios" @click="isMobileOpen = false" class="w-full py-1 font-display text-base font-bold text-white/80 hover:text-brand transition-colors">Testimonios</a>
-                <a href="/#faq" @click="isMobileOpen = false" class="w-full py-1 font-display text-base font-bold text-white/80 hover:text-brand transition-colors">Preguntas</a>
+                <!-- 3. Nosotros Link -->
+                <a href="/nosotros" @click="isMobileOpen = false" class="group flex items-center py-2.5 px-3 rounded-2xl transition-all duration-200 {{ request()->is('nosotros') ? 'bg-brand/10 text-brand border border-brand/30' : 'text-white/85 hover:text-white hover:bg-white/5' }}">
+                    <div class="flex items-center gap-3">
+                        <span class="w-1.5 h-1.5 rounded-full {{ request()->is('nosotros') ? 'bg-brand shadow-[0_0_8px_rgba(251,44,107,0.8)]' : 'bg-transparent group-hover:bg-brand/60' }} transition-all"></span>
+                        <span class="font-display text-lg font-bold tracking-tight">Nosotros</span>
+                    </div>
+                </a>
 
-                <!-- Portal Link if authenticated -->
-                @if(auth()->check() && (auth()->user()->isAdmin() || auth()->user()->isStaff()))
-                    <a href="{{ route('admin.dashboard') }}" @click="isMobileOpen = false" class="w-full rounded-full bg-white/10 border border-white/20 px-6 py-2.5 text-center text-xs sm:text-sm font-bold text-white shadow-md flex items-center justify-center gap-2 hover:bg-white/20 transition-all">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-brand"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
-                        Mi portal
+                <!-- Secondary Section (Galería, Testimonios, Preguntas) -->
+                <div class="pt-3 mt-2 border-t border-white/10 space-y-1">
+                    <span class="text-[9px] font-bold uppercase tracking-[0.2em] text-white/30 px-3 block mb-1">Explora el Taller</span>
+                    
+                    <a href="/#galeria" @click="isMobileOpen = false" class="flex items-center py-2 px-3 rounded-xl text-xs font-semibold text-white/70 hover:text-white hover:bg-white/5 transition-colors">
+                        <span>Galería de Trabajos</span>
                     </a>
-                @endif
+                    <a href="/#testimonios" @click="isMobileOpen = false" class="flex items-center py-2 px-3 rounded-xl text-xs font-semibold text-white/70 hover:text-white hover:bg-white/5 transition-colors">
+                        <span>Testimonios de Clientes</span>
+                    </a>
+                    <a href="/#faq" @click="isMobileOpen = false" class="flex items-center py-2 px-3 rounded-xl text-xs font-semibold text-white/70 hover:text-white hover:bg-white/5 transition-colors">
+                        <span>Preguntas Frecuentes</span>
+                    </a>
 
-                <!-- CTA Button -->
-                <a href="/reserva" @click="isMobileOpen = false" class="w-full rounded-full bg-brand hover:bg-brand-dark px-6 py-3 text-center text-sm sm:text-base font-bold text-white shadow-xl shadow-brand/25 transition-all">
-                    Cotiza ahora
-                </a>
+                    <!-- Portal Link if authenticated -->
+                    @if(auth()->check() && (auth()->user()->isAdmin() || auth()->user()->isStaff()))
+                        <a href="{{ route('admin.dashboard') }}" @click="isMobileOpen = false" class="w-full mt-2 rounded-xl bg-white/10 border border-white/20 px-4 py-2.5 text-xs font-bold text-white shadow-md flex items-center justify-between hover:bg-white/20 transition-all">
+                            <div class="flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-brand"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                                <span>Mi Portal de Administración</span>
+                            </div>
+                            <span class="text-[10px] text-brand uppercase font-extrabold">Acceder →</span>
+                        </a>
+                    @endif
+                </div>
             </div>
 
-            <!-- Drawer Footer (Social / Contact Info) -->
-            <div class="w-full pt-3.5 border-t border-white/10 flex flex-col items-center gap-1.5 text-xs text-white/40 font-light">
-                <a href="https://instagram.com/{{ ltrim($profile->instagram ?? 'highcontrastdc', '@') }}" target="_blank" rel="noopener noreferrer" class="text-white/60 hover:text-brand font-medium flex items-center gap-1.5 transition-colors">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-brand"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>
-                    <span>{{ '@' . ltrim($profile->instagram ?? 'highcontrastdc', '@') }}</span>
+            <!-- Drawer Bottom Actions (Fast WhatsApp & Online Booking) -->
+            <div class="w-full pt-4 border-t border-white/10 space-y-2.5 shrink-0">
+                <!-- 1. Main Booking Button -->
+                <a href="/reserva" @click="isMobileOpen = false" class="w-full py-3.5 px-5 rounded-full bg-brand hover:bg-brand-dark text-white font-display italic font-black text-sm uppercase tracking-wider shadow-xl shadow-brand/30 flex items-center justify-center gap-2 transition-all hover:scale-[1.02]">
+                    <span>COTIZAR AHORA</span>
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                 </a>
-                <p class="text-[11px]">© {{ date('Y') }} High Contrast Detailing Center</p>
+
+                <!-- 2. Quick WhatsApp Chat -->
+                <a href="https://wa.me/{{ $whatsappNumber }}?text={{ $whatsappMsg }}" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 rounded-full bg-zinc-900/90 border border-emerald-500/30 hover:border-emerald-500/60 text-emerald-400 font-display font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-md">
+                    <svg class="w-4 h-4 fill-current text-emerald-400 shrink-0" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.993.585 1.771.884 2.802.884l.006.001c3.18 0 5.767-2.586 5.768-5.766 0-3.18-2.587-5.772-5.78-5.772zm3.393 8.245c-.144.405-.837.774-1.17.824-.312.045-.694.073-1.905-.429-1.547-.643-2.534-2.213-2.61-2.316-.076-.103-.625-.833-.625-1.59 0-.756.397-1.127.538-1.282.14-.156.307-.195.41-.195.102 0 .205.001.294.005.093.004.218-.035.34.258.125.297.424 1.036.46 1.112.038.077.063.167.013.268-.052.102-.078.166-.155.257-.078.09-.163.2-.234.269-.078.077-.16.16-.068.318.092.158.408.672.875 1.088.6.536 1.106.702 1.264.78.158.077.25-.067.34-.171.092-.104.394-.462.499-.619.104-.157.208-.13.348-.078.14.052.888.419 1.04.496.152.078.254.116.29.181.037.065.037.377-.107.782z"/></svg>
+                    <span>Hablar por WhatsApp</span>
+                </a>
+
+                <!-- 3. Location & Micro footer -->
+                <div class="pt-2 flex items-center justify-between text-[11px] text-white/40">
+                    <span class="flex items-center gap-1">📍 Chicureo, Colina</span>
+                    <a href="https://instagram.com/{{ ltrim($profile->instagram ?? 'highcontrastdc', '@') }}" target="_blank" rel="noopener noreferrer" class="text-white/60 hover:text-brand transition-colors">
+                        {{ '@' . ltrim($profile->instagram ?? 'highcontrastdc', '@') }}
+                    </a>
+                </div>
             </div>
+
         </div>
     </div>
 

@@ -96,11 +96,11 @@
                                 </p>
                             </div>
 
-                            <div class="grid grid-cols-1 gap-5 mb-8">
+                            <div class="grid grid-cols-1 gap-6 mb-8">
                                 <template x-for="cat in categories" :key="cat.key">
                                     <div 
                                         @click="selectCategory(cat.key)"
-                                        class="relative group rounded-[2.5rem] sm:rounded-[3.2rem] overflow-hidden min-h-[220px] sm:min-h-[260px] md:min-h-[290px] border-2 border-white/20 bg-zinc-950 hover:border-brand hover:shadow-2xl hover:scale-[1.005] cursor-pointer shadow-2xl flex flex-col justify-between p-6 sm:p-8 md:p-10 transition-all duration-300"
+                                        class="relative group rounded-[2.5rem] sm:rounded-[3.2rem] overflow-hidden min-h-[380px] sm:min-h-[280px] md:min-h-[310px] border-2 border-white/20 bg-zinc-950 hover:border-brand hover:shadow-2xl hover:scale-[1.005] cursor-pointer shadow-2xl flex flex-col justify-end p-6 sm:p-8 md:p-10 transition-all duration-300"
                                     >
                                         <!-- Video Background with Autoplay & High Visual Clarity -->
                                         <template x-if="cat.video">
@@ -110,32 +110,32 @@
                                                 muted 
                                                 playsinline 
                                                 :poster="cat.image || '/assets/images/cotizador_banner.png'"
-                                                class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out z-0 opacity-80 group-hover:opacity-95 pointer-events-none"
+                                                class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out z-0 pointer-events-none"
                                             >
                                                 <source :src="cat.video" type="video/mp4">
                                             </video>
                                         </template>
                                         <template x-if="!cat.video">
-                                            <img :src="cat.image || '/assets/images/cotizador_banner.png'" :alt="cat.name" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out z-0 opacity-80 group-hover:opacity-95">
+                                            <img :src="cat.image || '/assets/images/cotizador_banner.png'" :alt="cat.name" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out z-0">
                                         </template>
                                         
-                                        <!-- Cinematic Vignette: Protected text on left, vivid video on center/right -->
-                                        <div class="absolute inset-0 bg-gradient-to-r from-black/95 via-black/65 to-black/15 z-10 pointer-events-none"></div>
-                                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 z-10 pointer-events-none"></div>
+                                        <!-- Top Clear for Video Brilliance, Deep Dark Gradient at Bottom for Text Legibility -->
+                                        <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/85 via-50% to-transparent z-10 pointer-events-none"></div>
+                                        <div class="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/30 z-10 pointer-events-none"></div>
 
-                                        <!-- Bottom Row: Title in Pink, Description & CTA Button -->
-                                        <div class="relative z-20 mt-auto pt-4">
+                                        <!-- Bottom Row: Title in Pink, Full Description & CTA Button -->
+                                        <div class="relative z-20 pt-4">
                                             <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                                                 <div class="max-w-2xl">
                                                     <h4 class="font-display font-black text-2xl sm:text-3xl md:text-4xl text-brand uppercase tracking-tight drop-shadow-[0_4px_12px_rgba(0,0,0,1)] leading-tight mb-2 group-hover:text-brand transition-colors"
                                                         x-text="cat.name"></h4>
-                                                    <p class="text-sm sm:text-base text-white/95 line-clamp-2 drop-shadow-[0_2px_6px_rgba(0,0,0,0.95)] leading-relaxed font-medium"
+                                                    <p class="text-sm sm:text-base text-white/95 drop-shadow-[0_2px_8px_rgba(0,0,0,1)] leading-relaxed font-medium"
                                                        x-text="cat.description"></p>
                                                 </div>
 
                                                 <div class="flex items-center gap-3 text-xs sm:text-sm font-black uppercase tracking-wider text-brand shrink-0">
-                                                    <span>Explorar Servicios</span>
-                                                    <div class="w-9 h-9 sm:w-11 sm:h-11 rounded-full bg-brand text-white flex items-center justify-center transition-all duration-300 shadow-xl shadow-brand/40 group-hover:scale-110">
+                                                    <span class="drop-shadow-[0_2px_6px_rgba(0,0,0,1)]">Explorar Servicios</span>
+                                                    <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-brand text-white flex items-center justify-center transition-all duration-300 shadow-xl shadow-brand/40 group-hover:scale-110">
                                                         <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                                                     </div>
                                                 </div>
@@ -165,12 +165,13 @@
                                       x-text="filteredServices.length + ' Servicios Disponibles'"></span>
                             </div>
 
-                            <div class="mb-8">
+                            <!-- Category Service Header with Proper Bottom Spacing -->
+                            <div class="mb-8 md:mb-10">
                                 <h3 class="font-display font-extrabold text-white text-2xl md:text-3xl uppercase tracking-tight flex items-center gap-2">
                                     <span>Servicios de</span>
                                     <span class="text-brand" x-text="getCategoryTitle(selectedCategory)"></span>
                                 </h3>
-                                <p class="text-white/60 text-sm mt-1">
+                                <p class="text-white/60 text-sm mt-2">
                                     Selecciona el tratamiento específico que deseas cotizar para tu vehículo:
                                 </p>
                             </div>
@@ -180,7 +181,7 @@
                                 <template x-for="(srv, index) in filteredServices" :key="srv.id">
                                     <div 
                                         @click="selectService(srv)"
-                                        class="relative group rounded-[2.5rem] sm:rounded-[3.2rem] overflow-hidden min-h-[220px] sm:min-h-[260px] md:min-h-[290px] border-2 transition-all duration-300 bg-zinc-950 shadow-2xl cursor-pointer flex flex-col justify-between p-6 sm:p-8 md:p-10"
+                                        class="relative group rounded-[2.5rem] sm:rounded-[3.2rem] overflow-hidden min-h-[380px] sm:min-h-[280px] md:min-h-[310px] border-2 transition-all duration-300 bg-zinc-950 shadow-2xl cursor-pointer flex flex-col justify-end p-6 sm:p-8 md:p-10"
                                         :class="selectedService && selectedService.id === srv.id
                                             ? 'border-brand ring-4 ring-brand/40 shadow-2xl shadow-brand/40 scale-[1.005] bg-brand/5'
                                             : 'border-white/20 hover:border-brand/70 hover:shadow-2xl hover:scale-[1.005]'"
@@ -194,7 +195,7 @@
                                                     muted 
                                                     playsinline 
                                                     :poster="getServiceImage(srv) || '/assets/images/cotizador_banner.png'"
-                                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out z-0 opacity-80 group-hover:opacity-95 pointer-events-none"
+                                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out z-0 pointer-events-none"
                                                 >
                                                     <source :src="getServiceVideo(srv)" type="video/mp4">
                                                 </video>
@@ -203,26 +204,29 @@
                                                 <img 
                                                     :src="getServiceImage(srv) || '/assets/images/cotizador_banner.png'" 
                                                     :alt="srv.name" 
-                                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out z-0 opacity-80 group-hover:opacity-95"
+                                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out z-0"
                                                 >
                                             </template>
                                             
-                                            <!-- Cinematic Vignette for High Text Contrast and Rich Video Exposure -->
-                                            <div class="absolute inset-0 bg-gradient-to-r from-black/95 via-black/65 to-black/15 z-10 pointer-events-none"></div>
-                                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 z-10 pointer-events-none"></div>
+                                            <!-- Top Clear for Video Brilliance, Deep Dark Gradient at Bottom for Text Legibility -->
+                                            <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/85 via-50% to-transparent z-10 pointer-events-none"></div>
+                                            <div class="absolute inset-0 bg-gradient-to-r from-black/60 via-transparent to-black/30 z-10 pointer-events-none"></div>
                                         </div>
 
-                                        <!-- Bottom Row: Title, Price & Action Buttons -->
-                                        <div class="relative z-20 mt-auto pt-4">
-                                            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+                                        <!-- Bottom Row: Title, Description, Price & Action Buttons -->
+                                        <div class="relative z-20 pt-6">
+                                            <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-5">
                                                 <div class="max-w-2xl">
-                                                    <h4 class="font-display font-black text-2xl sm:text-3xl md:text-4xl text-brand uppercase tracking-tight drop-shadow-[0_4px_12px_rgba(0,0,0,1)] leading-tight mb-2 group-hover:text-brand transition-colors"
+                                                    <h4 class="font-display font-black text-2xl sm:text-3xl md:text-4xl text-brand uppercase tracking-tight drop-shadow-[0_4px_12px_rgba(0,0,0,1)] leading-tight mb-2.5 group-hover:text-brand transition-colors"
                                                         x-text="getServiceLevelTitle(srv, index)"></h4>
+                                                    
+                                                    <p x-show="srv.description" class="text-sm sm:text-base text-white/90 drop-shadow-[0_2px_8px_rgba(0,0,0,1)] leading-relaxed font-medium mb-3"
+                                                       x-text="srv.description"></p>
                                                     
                                                     <!-- Price Display Matching Parent Aesthetics -->
                                                     <div class="flex items-baseline gap-2 mb-2 sm:mb-0">
                                                         <span class="text-white/60 text-xs sm:text-sm font-bold uppercase tracking-wider">Desde</span>
-                                                        <span class="font-display font-black text-2xl sm:text-3xl text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]"
+                                                        <span class="font-display font-black text-2xl sm:text-3xl md:text-4xl text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]"
                                                               x-text="onlinePaymentsActive ? formatCLP(getAdjustedPrice(srv)) : 'A Cotizar'"></span>
                                                     </div>
                                                 </div>
@@ -232,7 +236,7 @@
                                                     <button 
                                                         type="button" 
                                                         @click.stop="openDetailsModal(srv)"
-                                                        class="px-4 py-2 sm:px-5 sm:py-2.5 rounded-full bg-black/80 hover:bg-zinc-900 border border-white/20 hover:border-brand/60 text-white hover:text-brand text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-200 backdrop-blur-md shadow-lg flex items-center gap-2 group/btn"
+                                                        class="px-5 py-2.5 sm:px-6 sm:py-3 rounded-full bg-black/80 hover:bg-zinc-900 border border-white/20 hover:border-brand/60 text-white hover:text-brand text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-200 backdrop-blur-md shadow-lg flex items-center gap-2 group/btn"
                                                     >
                                                         <span>Detalles</span>
                                                         <svg class="w-4 h-4 text-brand group-hover/btn:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
@@ -241,7 +245,7 @@
                                                     <div class="flex items-center gap-2 text-xs sm:text-sm font-black uppercase tracking-wider text-brand">
                                                         <span class="hidden md:inline" x-text="selectedService && selectedService.id === srv.id ? 'Seleccionado' : 'Elegir'"></span>
                                                         <div 
-                                                            class="w-9 h-9 sm:w-11 sm:h-11 rounded-full flex items-center justify-center transition-all duration-300 shadow-xl"
+                                                            class="w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center transition-all duration-300 shadow-xl"
                                                             :class="selectedService && selectedService.id === srv.id 
                                                                 ? 'bg-brand text-white shadow-brand/50 scale-110' 
                                                                 : 'bg-brand text-white group-hover:scale-110 shadow-brand/40'"
@@ -366,6 +370,23 @@
                 <!-- PASO 2: TAMAÑO DEL VEHÍCULO + ¿SE TE OLVIDÓ ALGO? + DATOS DE CONTACTO (FINAL STEP) -->
                 <div x-show="currentStep === 2" x-transition>
                     
+                    <!-- Header de Navegación Superior: Botón Volver a Servicios -->
+                    <div class="mb-6 pb-4 border-b border-white/10 flex items-center justify-between flex-wrap gap-4">
+                        <button 
+                            type="button" 
+                            @click="prevStep()"
+                            class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-zinc-900 border border-white/20 text-white hover:bg-brand hover:border-brand text-xs sm:text-sm font-bold uppercase tracking-wider transition-all duration-300 shadow-lg group cursor-pointer"
+                        >
+                            <svg class="w-4 h-4 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                            <span>Volver a Servicios</span>
+                        </button>
+
+                        <div class="flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
+                            <span class="text-xs font-bold uppercase tracking-widest text-white/50">Paso 2 de 2 • Configuración & Datos</span>
+                        </div>
+                    </div>
+
                     <!-- Top Live Price Indicator (Dynamically updates when selecting vehicle or extras) -->
                     <div class="mb-8 p-6 rounded-3xl bg-zinc-900 border-2 border-brand/40 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
                         <div>
@@ -472,21 +493,6 @@
                                     <div x-show="isExtraSelected(extra)" class="absolute -top-16 -right-16 w-44 h-44 bg-brand/25 rounded-full blur-3xl pointer-events-none"></div>
 
                                     <div class="flex items-start gap-4 sm:gap-5">
-                                        <!-- Large 3D Artwork Emblem (Crisp 100px-112px display for stunning detailing visuals) -->
-                                        <div class="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full p-1 shrink-0 transition-all duration-500 group-hover:scale-105 shadow-xl"
-                                             :class="isExtraSelected(extra) 
-                                                ? 'bg-gradient-to-tr from-brand via-pink-500 to-rose-400 shadow-[0_0_25px_rgba(251,44,107,0.7)]' 
-                                                : 'bg-gradient-to-b from-white/20 to-white/5 group-hover:from-brand/70 group-hover:to-brand/30'">
-                                            <div class="w-full h-full rounded-full overflow-hidden bg-black flex items-center justify-center relative shadow-inner">
-                                                <template x-if="extra.image">
-                                                    <img :src="extra.image" :alt="extra.name" class="w-full h-full object-cover rounded-full transition-transform duration-700 group-hover:scale-115">
-                                                </template>
-                                                <template x-if="!extra.image">
-                                                    <span class="text-4xl" x-text="extra.icon || '✨'"></span>
-                                                </template>
-                                            </div>
-                                        </div>
-
                                         <!-- Info: Title, Description & Badge -->
                                         <div class="min-w-0 flex-1">
                                             <div class="flex items-start justify-between gap-2">
@@ -771,22 +777,23 @@
                     <div class="p-6 sm:p-8 flex flex-col items-center justify-center text-center relative z-10 w-full overflow-hidden">
                         
                         <!-- Top Floating Video Badge (Cinematic Luxury Detailing Preview) -->
-                        <div class="relative w-full h-36 sm:h-40 rounded-2xl overflow-hidden mb-4 border border-brand/40 shadow-inner bg-black shrink-0">
+                        <div class="relative w-full h-40 sm:h-44 rounded-2xl overflow-hidden mb-4 border border-brand/40 shadow-inner bg-black shrink-0">
                             <video 
+                                x-ref="popupVideo"
+                                :src="getPopupVideo()"
                                 autoplay 
                                 loop 
                                 muted 
                                 playsinline 
-                                class="w-full h-full object-cover opacity-80 pointer-events-none scale-105"
+                                class="w-full h-full object-cover opacity-85 pointer-events-none scale-105"
                             >
-                                <source :src="getPopupVideo()" type="video/mp4">
                             </video>
                             
                             <!-- Gradient overlay on video for smooth modal blend -->
-                            <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent"></div>
+                            <div class="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent pointer-events-none"></div>
 
                             <!-- Exclusive Deal Badge on Video -->
-                            <div class="absolute top-3 left-3 bg-brand text-white text-[10px] font-black uppercase px-3 py-1 rounded-full shadow-lg flex items-center gap-1.5 tracking-wider border border-white/20">
+                            <div class="absolute top-3 left-3 bg-brand text-white text-[10px] font-black uppercase px-3 py-1 rounded-full shadow-lg flex items-center gap-1.5 tracking-wider border border-white/20 z-10">
                                 <span>⚡</span>
                                 <span>ASESORÍA EXCLUSIVA</span>
                             </div>
@@ -799,7 +806,7 @@
 
                         <!-- Subtitle with dynamic service reference -->
                         <p class="text-xs sm:text-sm text-white/75 leading-relaxed max-w-sm mb-4">
-                            Un especialista de <strong class="text-brand">High Contrast</strong> puede asesorarte directamente para elegir el mejor tratamiento para tu auto.
+                            Un especialista de <strong class="text-brand">High Contrast Detailing Center</strong> puede asesorarte directamente para elegir el mejor tratamiento para tu auto.
                         </p>
 
                         <!-- Live Quote Summary Pill -->
@@ -903,7 +910,7 @@ function bookingWizard() {
                 icon: '💎',
                 description: 'Sellados cerámicos 9H y Crystal Serum Ultra de ultra duración, hidrofobia extrema y brillo espejo.',
                 image: '/assets/images/services/service_ceramico.png',
-                video: '/assets/videos/sellado-ceramico-aplicacion.mp4'
+                video: '/assets/videos/bmw-horizontal.mp4'
             },
             {
                 key: 'especiales',
@@ -912,7 +919,7 @@ function bookingWizard() {
                 icon: '🛡️',
                 description: 'Película nanotecnológica TPU de protección contra impactos de piedras, gravilla y rayas en parabrisas.',
                 image: '/assets/images/services/service_exoshield.png',
-                video: '/assets/videos/exoshield-web.mp4'
+                video: '/assets/videos/exoshield-brand.mp4'
             }
         ],
 
@@ -941,13 +948,27 @@ function bookingWizard() {
             });
         },
 
+        pushWizardHistory(step, catKey) {
+            try {
+                history.pushState({ wizardStep: step, wizardCategory: catKey }, '');
+            } catch(e) {}
+        },
+
+        replaceWizardHistory(step, catKey) {
+            try {
+                history.replaceState({ wizardStep: step, wizardCategory: catKey }, '');
+            } catch(e) {}
+        },
+
         selectCategory(catKey) {
             this.selectedCategory = catKey;
+            this.pushWizardHistory(1, catKey);
             this.scrollToTop();
         },
 
         backToCategories() {
             this.selectedCategory = null;
+            this.pushWizardHistory(1, null);
             this.scrollToTop();
         },
 
@@ -1011,6 +1032,36 @@ function bookingWizard() {
 
             this.saveDraftLead(1);
             this.setupExitIntent();
+
+            // Dynamic video playback refresh when exit modal appears
+            this.$watch('showExitModal', (val) => {
+                if (val && this.$refs.popupVideo) {
+                    this.$nextTick(() => {
+                        this.$refs.popupVideo.load();
+                        this.$refs.popupVideo.play().catch(() => {});
+                    });
+                }
+            });
+
+            // Initialize History API state
+            this.replaceWizardHistory(this.currentStep, this.selectedCategory);
+
+            // Handle browser Back and Forward navigation inside cotizador
+            window.addEventListener('popstate', (event) => {
+                if (event.state && typeof event.state.wizardStep === 'number') {
+                    this.currentStep = event.state.wizardStep;
+                    this.selectedCategory = event.state.wizardCategory || null;
+                    this.scrollToTop();
+                } else {
+                    if (this.currentStep === 2) {
+                        this.currentStep = 1;
+                        this.scrollToTop();
+                    } else if (this.currentStep === 1 && this.selectedCategory) {
+                        this.selectedCategory = null;
+                        this.scrollToTop();
+                    }
+                }
+            });
         },
 
         dismissExitModal() {
@@ -1057,6 +1108,68 @@ function bookingWizard() {
             const client = this.name ? ` Mi nombre es ${this.name}.` : '';
             const msg = `Hola High Contrast Detailing! Estoy en el cotizador web revisando ${srvName}${vtName}${total}.${client} ¿Me pueden asesorar por favor?`;
             return `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
+        },
+
+        getPopupVideo() {
+            if (!this.selectedService) {
+                if (this.selectedCategory === 'ceramico') return '/assets/videos/bmw.mp4';
+                if (this.selectedCategory === 'pulido') return '/assets/videos/bmwblanco.mp4';
+                if (this.selectedCategory === 'especiales') return '/assets/videos/exoshield-brand.mp4';
+                return '/assets/videos/lavado-premium.mp4';
+            }
+
+            const name = (this.selectedService.name || '').toUpperCase();
+            const slug = (this.selectedService.slug || '').toLowerCase();
+            const cat = this.getServiceCatKey(this.selectedService);
+
+            // 1. Ceramic Coating
+            if (cat === 'ceramico' || slug.includes('ceramic') || slug.includes('sellado') || name.includes('NIVEL') || name.includes('COATING')) {
+                if (slug.includes('nivel-3') || name.includes('NIVEL 3') || name.includes('NUEVE') || name.includes('ULTRA')) {
+                    return '/assets/videos/ceramic-coating-nivel3.mp4';
+                }
+                if (slug.includes('nivel-2') || name.includes('NIVEL 2') || name.includes('CINCO')) {
+                    return '/assets/videos/ceramic-coating-nivel2.mp4';
+                }
+                if (slug.includes('artura') || name.includes('ARTURA') || slug.includes('mclaren')) {
+                    return '/assets/videos/mclaren-artura-gtechniq.mp4';
+                }
+                return '/assets/videos/bmw.mp4';
+            }
+
+            // 2. Limpieza y Detallado
+            if (cat === 'limpieza' || slug.includes('lavado') || slug.includes('interior') || slug.includes('detailing')) {
+                if (slug.includes('interior') || name.includes('INTERIOR')) {
+                    return '/assets/videos/detailing-terminacion.mp4';
+                }
+                if (slug.includes('avanzado') || name.includes('AVANZADO')) {
+                    return '/assets/videos/lavado-avanzado.mp4';
+                }
+                if (slug.includes('completo') || name.includes('COMPLETO')) {
+                    return '/assets/videos/pulido-correccion-2.mp4';
+                }
+                return '/assets/videos/lavado-premium.mp4';
+            }
+
+            // 3. Corrección de Pintura / Pulido
+            if (cat === 'pulido' || slug.includes('pulido') || slug.includes('correccion') || slug.includes('focos')) {
+                if (slug.includes('multi-etapa') || name.includes('MULTI ETAPA')) {
+                    return '/assets/videos/pulido-correccion-2.mp4';
+                }
+                if (slug.includes('una-etapa') || slug.includes('un-paso') || name.includes('UN PASO') || name.includes('UNA ETAPA')) {
+                    return '/assets/videos/pulido-correccion.mp4';
+                }
+                if (slug.includes('focos') || name.includes('FOCOS')) {
+                    return '/assets/videos/correcion-pintura-1080p.mp4';
+                }
+                return '/assets/videos/bmwblanco.mp4';
+            }
+
+            // 4. ExoShield
+            if (cat === 'especiales' || slug.includes('exoshield') || name.includes('EXOSHIELD')) {
+                return '/assets/videos/exoshield-brand.mp4';
+            }
+
+            return '/assets/videos/lavado-premium.mp4';
         },
         
         getServiceCatKey(srv) {
@@ -1125,16 +1238,13 @@ function bookingWizard() {
 
             // 1. Ceramic Coating Category (Cerámico)
             if (cat === 'ceramico') {
-                if (name.includes('nivel 1') || slug.includes('nivel-1') || slug.includes('dos-anos') || slug.includes('2-anos')) {
-                    return '/assets/videos/sellado-ceramico-aplicacion.mp4';
+                if (name.includes('nivel 3') || slug.includes('nivel-3') || slug.includes('ultra') || name.includes('nueve') || slug.includes('nueve')) {
+                    return '/assets/videos/ceramic-nivel3-horizontal.mp4';
                 }
-                if (name.includes('nivel 2') || slug.includes('nivel-2') || slug.includes('cinco-anos') || slug.includes('5-anos')) {
-                    return '/assets/videos/crosslink.mp4';
+                if (name.includes('nivel 2') || slug.includes('nivel-2') || slug.includes('cinco') || slug.includes('light') || name.includes('cinco')) {
+                    return '/assets/videos/bmwblanco-horizontal.mp4';
                 }
-                if (name.includes('nivel 3') || slug.includes('nivel-3') || slug.includes('nueve-anos') || slug.includes('9-anos') || slug.includes('crystal-serum-ultra')) {
-                    return '/assets/videos/hero-gtechniq.mp4';
-                }
-                return '/assets/videos/sellado-ceramico-aplicacion.mp4';
+                return '/assets/videos/bmw-horizontal.mp4';
             }
 
             // 2. Limpieza & Detallado Category
@@ -1169,14 +1279,14 @@ function bookingWizard() {
 
             // 4. Especiales / ExoShield
             if (cat === 'especiales' || slug.includes('exoshield') || name.includes('exoshield') || name.includes('parabrisas')) {
-                return '/assets/videos/exoshield-web.mp4';
+                return '/assets/videos/exoshield-brand.mp4';
             }
 
             const fallbackVideos = {
                 limpieza: '/assets/videos/lavado-premium.mp4',
                 pulido: '/assets/videos/pulido-correccion.mp4',
                 ceramico: '/assets/videos/sellado-ceramico-aplicacion.mp4',
-                especiales: '/assets/videos/exoshield-web.mp4'
+                especiales: '/assets/videos/exoshield-brand.mp4'
             };
             return fallbackVideos[cat] || '/assets/videos/lavado-premium.mp4';
         },
@@ -1528,7 +1638,7 @@ function bookingWizard() {
             const sCat = this.getServiceCatKey(this.selectedService);
 
             if (sSlug.includes('exoshield') || sName.includes('exoshield') || sCat === 'especiales') {
-                return '/assets/videos/exoshield-web.mp4';
+                return '/assets/videos/exoshield-brand.mp4';
             }
             if (sCat === 'ceramico' || sSlug.includes('nivel') || sName.includes('protección') || sName.includes('proteccion')) {
                 return '/assets/videos/sellado-ceramico-aplicacion.mp4';
@@ -1921,6 +2031,7 @@ function bookingWizard() {
             this.submitError = null;
             this.currentStep++;
             this.maxStepReached = Math.max(this.maxStepReached, this.currentStep);
+            this.pushWizardHistory(this.currentStep, this.selectedCategory);
             this.saveDraftLead(this.currentStep);
             this.scrollToTop();
         },
@@ -1928,6 +2039,7 @@ function bookingWizard() {
         prevStep() {
             if (this.currentStep > 1) {
                 this.currentStep--;
+                this.pushWizardHistory(this.currentStep, this.selectedCategory);
                 this.saveDraftLead(this.currentStep);
                 this.scrollToTop();
             }
@@ -1936,6 +2048,7 @@ function bookingWizard() {
         goToStep(stepNum) {
             if (stepNum <= this.maxStepReached) {
                 this.currentStep = stepNum;
+                this.pushWizardHistory(this.currentStep, this.selectedCategory);
                 this.saveDraftLead(stepNum);
                 this.scrollToTop();
             }
