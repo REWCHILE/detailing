@@ -245,8 +245,9 @@ style="min-height: 100vh; min-height: 100dvh;">
     <div class="absolute inset-0 bg-[#0A0A0A] overflow-hidden">
         <picture>
             <source srcset="{{ asset('assets/images/home/lavado.webp') }}" type="image/webp">
-            <img src="{{ asset('assets/images/home/lavado.jpg') }}" 
+            <img src="{{ asset('assets/images/home/lavado.webp') }}" 
                  alt="High Contrast Detailing - Lavado y Detallado" 
+                 loading="lazy" decoding="async"
                  class="w-full h-full object-cover object-[75%_center] md:object-[70%_center] opacity-85 md:opacity-90 animate-slow-zoom">
         </picture>
         <!-- Dark Gradient Overlay Focused on the Left Side for Maximum Legibility -->
@@ -284,8 +285,9 @@ style="min-height: 100vh; min-height: 100dvh;">
     <div class="absolute inset-0 bg-[#0A0A0A] overflow-hidden">
         <picture>
             <source srcset="{{ asset('assets/images/home/ceramico.webp') }}" type="image/webp">
-            <img src="{{ asset('assets/images/home/ceramico.jpg') }}" 
+            <img src="{{ asset('assets/images/home/ceramico.webp') }}" 
                  alt="High Contrast Detailing - Sellado Cerámico" 
+                 loading="lazy" decoding="async"
                  class="w-full h-full object-cover object-[25%_center] md:object-[30%_center] opacity-85 md:opacity-90 animate-slow-zoom">
         </picture>
         <!-- Dark Gradient Overlay Focused on the Right Side for Maximum Legibility -->
@@ -323,8 +325,9 @@ style="min-height: 100vh; min-height: 100dvh;">
     <div class="absolute inset-0 bg-[#0A0A0A] overflow-hidden">
         <picture>
             <source srcset="{{ asset('assets/images/home/nuestra-historia.webp') }}" type="image/webp">
-            <img src="{{ asset('assets/images/home/nuestra-historia.jpg') }}" 
+            <img src="{{ asset('assets/images/home/nuestra-historia.webp') }}" 
                  alt="High Contrast Detailing - Nuestra Historia" 
+                 loading="lazy" decoding="async"
                  class="w-full h-full object-cover object-[65%_center] md:object-[60%_center] opacity-90 animate-slow-zoom">
         </picture>
         <!-- Subtle ambient vignette to preserve José and the workshop brightness -->
@@ -733,11 +736,11 @@ class="section-padding relative overflow-hidden">
             autoplayTimer: null,
             autoplayDuration: 10000,
             testimonials: [
-                { name: 'Rodrigo Fernández', vehicle: 'BMW M4 Competition', rating: 5, text: 'Increíble trabajo. Mi M4 quedó como recién salido del concesionario. El tratamiento cerámico superó todas mis expectativas. Profesionalismo de otro nivel.', service: 'Tratamiento Cerámico', image: '/assets/images/testimonials/bmw_m4.png' },
-                { name: 'Carolina Muñoz', vehicle: 'Mercedes-Benz GLC 300', rating: 5, text: 'Llevé mi GLC con rayones que me tenían preocupada. Después de la corrección de pintura, desaparecieron por completo. Muy recomendados.', service: 'Corrección de Pintura', image: '/assets/images/testimonials/mercedes_glc.png' },
-                { name: 'Sebastián Torres', vehicle: 'Porsche 911 Carrera', rating: 5, text: 'Como dueño de un 911, soy muy exigente con quién toca mi auto. High Contrast es el único lugar donde lo llevo. Perfeccionistas.', service: 'Pulido Profesional', image: '/assets/images/testimonials/porsche_911.png' },
-                { name: 'María José Contreras', vehicle: 'Audi Q5', rating: 5, text: 'El detailing interior dejó mi Q5 impecable. Los cueros quedaron como nuevos y el olor es increíble. Volveré cada mes.', service: 'Detailing Interior', image: '/assets/images/testimonials/audi_q5.png' },
-                { name: 'Andrés Villalobos', vehicle: 'Tesla Model 3', rating: 5, text: 'Profesionales, puntuales y el resultado habla por sí solo. El cerámico protege mi Tesla de todo. 100% recomendado.', service: 'Tratamiento Cerámico', image: '/assets/images/testimonials/tesla_model3.png' }
+                { name: 'Rodrigo Fernández', vehicle: 'BMW M4 Competition', rating: 5, text: 'Increíble trabajo. Mi M4 quedó como recién salido del concesionario. El tratamiento cerámico superó todas mis expectativas. Profesionalismo de otro nivel.', service: 'Tratamiento Cerámico', image: '/assets/images/testimonials/bmw_m4.webp' },
+                { name: 'Carolina Muñoz', vehicle: 'Mercedes-Benz GLC 300', rating: 5, text: 'Llevé mi GLC con rayones que me tenían preocupada. Después de la corrección de pintura, desaparecieron por completo. Muy recomendados.', service: 'Corrección de Pintura', image: '/assets/images/testimonials/mercedes_glc.webp' },
+                { name: 'Sebastián Torres', vehicle: 'Porsche 911 Carrera', rating: 5, text: 'Como dueño de un 911, soy muy exigente con quién toca mi auto. High Contrast es el único lugar donde lo llevo. Perfeccionistas.', service: 'Pulido Profesional', image: '/assets/images/testimonials/porsche_911.webp' },
+                { name: 'María José Contreras', vehicle: 'Audi Q5', rating: 5, text: 'El detailing interior dejó mi Q5 impecable. Los cueros quedaron como nuevos y el olor es increíble. Volveré cada mes.', service: 'Detailing Interior', image: '/assets/images/testimonials/audi_q5.webp' },
+                { name: 'Andrés Villalobos', vehicle: 'Tesla Model 3', rating: 5, text: 'Profesionales, puntuales y el resultado habla por sí solo. El cerámico protege mi Tesla de todo. 100% recomendado.', service: 'Tratamiento Cerámico', image: '/assets/images/testimonials/tesla_model3.webp' }
             ],
             startAutoplay() {
                 this.stopAutoplay();
@@ -775,6 +778,7 @@ class="section-padding relative overflow-hidden">
              :class="index === current ? 'opacity-100' : 'opacity-0'">
             <!-- Vehicle Image with enhanced brightness and contrast -->
             <img :src="t.image" :alt="t.vehicle" 
+                 loading="lazy" decoding="async"
                  class="w-full h-full object-cover object-left md:object-center brightness-105 contrast-105 saturate-[1.1] transition-transform duration-1000 ease-out"
                  :class="index === current ? 'scale-100' : 'scale-105'">
             
@@ -826,7 +830,7 @@ class="section-padding relative overflow-hidden">
                         <div class="flex items-center gap-4">
                             <!-- Vehicle Thumbnail Circle -->
                             <div class="w-14 h-14 rounded-full overflow-hidden border-2 border-brand shadow-lg shadow-brand/40 shrink-0 bg-black">
-                                <img :src="testimonials[current].image" :alt="testimonials[current].vehicle" class="w-full h-full object-cover">
+                                <img :src="testimonials[current].image" :alt="testimonials[current].vehicle" loading="lazy" decoding="async" class="w-full h-full object-cover">
                             </div>
                             <div>
                                 <p class="font-display font-extrabold text-white text-xl leading-tight" x-text="testimonials[current].name"></p>
