@@ -27,6 +27,7 @@ class BookingController extends Controller
     public function showReservaPage(Request $request)
     {
         $services = Service::where('is_active', true)
+            ->where('slug', '!=', 'tratamiento-ceramico')
             ->with(['extras' => function($q) {
                 $q->where('is_active', true)->orderBy('display_order');
             }, 'vehicleTypes'])

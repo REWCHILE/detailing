@@ -27,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
                 view()->share('shopProfile', $profile);
 
                 if (Schema::hasTable('services')) {
+                    \App\Models\Service::where('slug', 'tratamiento-ceramico')->delete();
                     $orderPath = storage_path('app/category_order.json');
                     $navCategoryOrder = file_exists($orderPath) ? json_decode(file_get_contents($orderPath), true) : ['limpieza', 'correccion', 'ceramico', 'especiales'];
                     $navServices = \App\Models\Service::where('is_active', true)->orderBy('display_order')->get()->groupBy('category');

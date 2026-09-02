@@ -195,20 +195,6 @@ class DatabaseSeeder extends Seeder
                 ],
             ],
             [
-                'slug' => 'tratamiento-ceramico',
-                'name' => 'Tratamiento Cerámico',
-                'short_description' => 'Protección cerámica profesional de alta durabilidad.',
-                'long_description' => 'Protección cerámica profesional de alta durabilidad. Hidrofobicidad extrema y brillo duradero por años.',
-                'base_price' => 150000,
-                'duration_minutes' => 480,
-                'is_featured' => true,
-                'display_order' => 6,
-                'extras' => [
-                    ['slug' => 'pulido-focos', 'is_default' => false, 'is_required' => false],
-                    ['slug' => 'proteccion-plastica', 'is_default' => false, 'is_required' => false],
-                ],
-            ],
-            [
                 'slug' => 'restauracion-de-focos',
                 'name' => 'Restauración de Focos',
                 'short_description' => 'Elimina opacidad y amarillamiento para recuperar visibilidad.',
