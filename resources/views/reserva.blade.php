@@ -33,21 +33,27 @@
         </div>
 
         <!-- 2-Step Stepper Indicator -->
-        <div class="max-w-md mx-auto mb-10" x-show="currentStep <= 2" id="cotizador-wizard">
-            <div class="flex items-center justify-center">
+        <div class="max-w-xs sm:max-w-sm mx-auto mb-10 px-2" x-show="currentStep <= 2" id="cotizador-wizard">
+            <div class="relative flex items-start justify-between">
+                
+                <!-- Connecting Line between circles (positioned cleanly behind) -->
+                <div class="absolute top-5 left-12 right-12 h-[3px] bg-white/15 z-0 rounded-full overflow-hidden">
+                    <div class="h-full bg-brand transition-all duration-500 rounded-full" 
+                         :style="'width: ' + (currentStep >= 2 ? '100%' : '0%')"></div>
+                </div>
                 
                 <!-- Step 1 Circle & Label -->
-                <div class="flex flex-col items-center">
+                <div class="relative z-10 flex flex-col items-center w-28 sm:w-36 text-center">
                     <button 
                         type="button"
                         @click="goToStep(1)"
-                        class="w-11 h-11 rounded-full border-2 flex items-center justify-center text-sm font-extrabold transition-all duration-300 cursor-pointer shrink-0"
+                        class="w-10 h-10 sm:w-11 sm:h-11 rounded-full border-2 flex items-center justify-center text-sm font-extrabold transition-all duration-300 cursor-pointer shrink-0"
                         :class="currentStep >= 1 
                             ? 'bg-brand border-brand text-white shadow-lg shadow-brand/40 scale-105' 
                             : 'bg-zinc-900 border-white/15 text-white/40'"
                     >
                         <template x-if="currentStep > 1">
-                            <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
+                            <svg class="w-4 h-4 sm:w-5 sm:h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
                             </svg>
                         </template>
@@ -55,34 +61,28 @@
                             <span>1</span>
                         </template>
                     </button>
-                    <span class="text-xs mt-2 font-bold uppercase tracking-wider text-center" 
+                    <span class="text-[11px] sm:text-xs mt-2.5 font-bold uppercase tracking-wider text-center leading-tight block" 
                           :class="currentStep >= 1 ? 'text-brand' : 'text-white/40'">
-                        Servicios
+                        1. Servicios
                     </span>
                 </div>
 
-                <!-- Connecting Line strictly between Step 1 and Step 2 (Starts at Circle 1 and ends at Circle 2, zero overflow) -->
-                <div class="w-24 sm:w-36 h-[3px] bg-white/15 mx-3 -mt-6 rounded-full overflow-hidden shrink-0">
-                    <div class="h-full bg-brand transition-all duration-500 rounded-full" 
-                         :style="'width: ' + (currentStep >= 2 ? '100%' : '0%')"></div>
-                </div>
-
                 <!-- Step 2 Circle & Label (Final Step) -->
-                <div class="flex flex-col items-center">
+                <div class="relative z-10 flex flex-col items-center w-28 sm:w-36 text-center">
                     <button 
                         type="button"
                         @click="goToStep(2)"
                         :disabled="2 > maxStepReached"
-                        class="w-11 h-11 rounded-full border-2 flex items-center justify-center text-sm font-extrabold transition-all duration-300 disabled:cursor-not-allowed cursor-pointer shrink-0"
+                        class="w-10 h-10 sm:w-11 sm:h-11 rounded-full border-2 flex items-center justify-center text-sm font-extrabold transition-all duration-300 disabled:cursor-not-allowed cursor-pointer shrink-0"
                         :class="currentStep >= 2 
                             ? 'bg-brand border-brand text-white shadow-lg shadow-brand/40 scale-105' 
                             : 'bg-zinc-900 border-white/15 text-white/40'"
                     >
                         <span>2</span>
                     </button>
-                    <span class="text-xs mt-2 font-bold uppercase tracking-wider text-center" 
+                    <span class="text-[11px] sm:text-xs mt-2.5 font-bold uppercase tracking-wider text-center leading-tight block" 
                           :class="currentStep >= 2 ? 'text-brand' : 'text-white/40'">
-                        Tus Datos & Vehículo
+                        2. Datos & Auto
                     </span>
                 </div>
 
@@ -492,11 +492,11 @@
                             </p>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-5xl mx-auto">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
                             <template x-for="extra in availableExtras" :key="getExtraIdentifier(extra)">
                                 <div 
                                     @click="toggleExtra(extra)"
-                                    class="relative flex flex-col justify-between p-6 rounded-[2rem] border-2 cursor-pointer transition-all duration-300 group select-none shadow-xl overflow-hidden"
+                                    class="relative flex flex-col justify-between p-6 sm:p-7 rounded-[2rem] border-2 cursor-pointer transition-all duration-300 group select-none shadow-xl overflow-hidden min-h-[170px]"
                                     :class="isExtraSelected(extra) 
                                         ? 'bg-zinc-950 border-brand ring-2 ring-brand/40 shadow-[0_0_30px_rgba(251,44,107,0.3)] scale-[1.015]' 
                                         : 'bg-zinc-950/70 border-white/10 hover:border-brand/50 hover:bg-zinc-900/90 hover:scale-[1.01]'"
@@ -512,30 +512,30 @@
                                                       :class="isExtraSelected(extra) ? 'text-brand' : 'text-white group-hover:text-brand'" 
                                                       x-text="extra.name"></span>
                                             </div>
-                                            <p class="text-xs sm:text-sm text-white/65 font-normal leading-relaxed mt-2" x-text="extra.description || ''"></p>
+                                            <p class="text-xs sm:text-sm text-white/65 font-normal leading-relaxed mt-2.5" x-text="extra.description || ''"></p>
                                         </div>
                                     </div>
 
                                     <!-- Bottom Row: Status Indicator & Price -->
-                                    <div class="mt-5 pt-3.5 border-t border-white/10 flex items-center justify-between gap-3">
-                                        <div class="flex items-center gap-2.5 min-w-0">
-                                            <div class="w-5 h-5 rounded-md border flex items-center justify-center transition-all duration-300 shrink-0"
+                                    <div class="mt-6 pt-5 border-t border-white/10 flex items-center justify-between gap-4">
+                                        <div class="flex items-center gap-3 min-w-0">
+                                            <div class="w-6 h-6 rounded-lg border flex items-center justify-center transition-all duration-300 shrink-0"
                                                  :class="isExtraSelected(extra) 
-                                                    ? 'bg-brand border-brand text-white shadow-[0_0_8px_rgba(251,44,107,0.8)]' 
+                                                    ? 'bg-brand border-brand text-white shadow-[0_0_10px_rgba(251,44,107,0.8)]' 
                                                     : 'border-white/30 bg-black/40 text-transparent group-hover:border-brand/70'">
                                                 <template x-if="isExtraSelected(extra)">
-                                                    <svg class="w-3.5 h-3.5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5">
+                                                    <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3.5">
                                                         <polyline points="20 6 9 17 4 12"/>
                                                     </svg>
                                                 </template>
                                             </div>
-                                            <span class="text-[11px] sm:text-xs uppercase font-extrabold tracking-wider transition-colors truncate"
-                                                  :class="isExtraSelected(extra) ? 'text-brand' : 'text-white/50 group-hover:text-white'"
+                                            <span class="text-xs sm:text-sm uppercase font-extrabold tracking-wider transition-colors truncate"
+                                                  :class="isExtraSelected(extra) ? 'text-brand' : 'text-white/60 group-hover:text-white'"
                                                   x-text="isExtraSelected(extra) ? '✓ Agregado' : 'Agregar'">
                                             </span>
                                         </div>
 
-                                        <span class="whitespace-nowrap shrink-0 px-3.5 py-1.5 sm:px-4 sm:py-1.5 rounded-full font-display font-black text-xs sm:text-sm tracking-wide border transition-all inline-flex items-center justify-center text-center"
+                                        <span class="whitespace-nowrap shrink-0 px-4 py-2 sm:px-5 sm:py-2 rounded-full font-display font-black text-xs sm:text-sm tracking-wide border transition-all inline-flex items-center justify-center text-center shadow-sm"
                                               :class="isExtraSelected(extra) 
                                                 ? 'bg-brand text-white border-brand shadow-[0_0_15px_rgba(251,44,107,0.5)]' 
                                                 : 'bg-brand/15 text-brand border-brand/30 group-hover:bg-brand/25 group-hover:border-brand/60'"
