@@ -493,7 +493,7 @@
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-5xl mx-auto">
-                            <template x-for="extra in availableExtras" :key="extra.id || extra.name">
+                            <template x-for="extra in availableExtras" :key="getExtraIdentifier(extra)">
                                 <div 
                                     @click="toggleExtra(extra)"
                                     class="relative flex flex-col justify-between p-6 rounded-[2rem] border-2 cursor-pointer transition-all duration-300 group select-none shadow-xl overflow-hidden"
@@ -1259,14 +1259,8 @@ function bookingWizard() {
         
         getServiceCatKey(srv) {
             if (!srv) return 'limpieza';
-            const cat = (srv.category || '').toLowerCase();
-            if (cat === 'correccion' || cat === 'pulido') return 'pulido';
-            if (cat === 'ceramico') return 'ceramico';
-            if (cat === 'limpieza') return 'limpieza';
-            if (cat === 'especiales') return 'especiales';
-            
             const text = ((srv.name || '') + ' ' + (srv.slug || '') + ' ' + (srv.short_description || '')).toLowerCase();
-            if (text.includes('exoshield') || text.includes('parabrisas') || text.includes('vidrio')) {
+            if (text.includes('exoshield') || text.includes('sprint') || text.includes('parabrisas') || text.includes('windshield')) {
                 return 'especiales';
             }
             if (text.includes('nivel 1') || text.includes('nivel 2') || text.includes('nivel 3') || text.includes('ceramic') || text.includes('cerámico') || text.includes('glass') || text.includes('gtechniq') || text.includes('sellado') || text.includes('coating')) {
@@ -1275,12 +1269,28 @@ function bookingWizard() {
             if (text.includes('pulido') || text.includes('corrección') || text.includes('correccion') || text.includes('paint') || text.includes('pintura') || text.includes('focos')) {
                 return 'pulido';
             }
+            if (text.includes('lavado') || text.includes('interior') || text.includes('limpieza') || text.includes('vapor')) {
+                return 'limpieza';
+            }
+            const cat = (srv.category || '').toLowerCase();
+            if (cat === 'correccion' || cat === 'pulido') return 'pulido';
+            if (cat === 'ceramico') return 'ceramico';
+            if (cat === 'limpieza') return 'limpieza';
+            if (cat === 'especiales') return 'especiales';
             return 'limpieza';
         },
 
         get filteredServices() {
             if (!this.selectedCategory) return [];
-            return this.services.filter(s => this.getServiceCatKey(s) === this.selectedCategory);
+            let list = this.services.filter(s => this.getServiceCatKey(s) === this.selectedCategory);
+            // En ExoShield solo debe existir y mostrarse el producto oficial ExoShield SPRINT
+            if (this.selectedCategory === 'especiales') {
+                return list.filter(s => {
+                    const text = ((s.name || '') + ' ' + (s.slug || '')).toLowerCase();
+                    return text.includes('sprint') || (text.includes('exoshield') && !text.includes('ultra') && !text.includes('gt3'));
+                });
+            }
+            return list;
         },
 
         getServiceImage(srv) {
@@ -1596,6 +1606,7 @@ function bookingWizard() {
             // Official extras catalog with José's exact prices and images
             const masterExtras = [
                 {
+                    id: 'extra_limpieza_motor',
                     slug: 'limpieza-motor',
                     name: 'Lavado de Motor',
                     price: 25000,
@@ -1604,6 +1615,7 @@ function bookingWizard() {
                     icon: '⚙️'
                 },
                 {
+                    id: 'extra_pulido_focos',
                     slug: 'pulido-focos',
                     name: 'Pulido de focos (delanteros y traseros)',
                     price: 40000,
@@ -1612,6 +1624,7 @@ function bookingWizard() {
                     icon: '💡'
                 },
                 {
+                    id: 'extra_tratamiento_ozono',
                     slug: 'tratamiento-ozono',
                     name: 'Tratamiento Ozono',
                     price: 25000,
@@ -1620,6 +1633,7 @@ function bookingWizard() {
                     icon: '💨'
                 },
                 {
+                    id: 'extra_eliminador_olores',
                     slug: 'eliminador-olores',
                     name: 'Eliminador de olores',
                     price: 18000,
@@ -1628,6 +1642,7 @@ function bookingWizard() {
                     icon: '✨'
                 },
                 {
+                    id: 'extra_ceramico_neumaticos',
                     slug: 'ceramico-neumaticos',
                     name: 'Protección cerámico en neumáticos',
                     price: 60000,
@@ -1636,6 +1651,7 @@ function bookingWizard() {
                     icon: '🛞'
                 },
                 {
+                    id: 'extra_ceramico_vidrios',
                     slug: 'ceramico-vidrios',
                     name: 'Protección cerámico en todos los vidrios',
                     price: 60000,
@@ -1644,6 +1660,7 @@ function bookingWizard() {
                     icon: '🪟'
                 },
                 {
+                    id: 'extra_ceramico_cueros',
                     slug: 'ceramico-cueros',
                     name: 'Protección con cerámico en cueros',
                     price: 80000,
@@ -1652,6 +1669,7 @@ function bookingWizard() {
                     icon: '💺'
                 },
                 {
+                    id: 'extra_ceramico_telas',
                     slug: 'ceramico-telas',
                     name: 'Protección con cerámico en telas',
                     price: 40000,
@@ -1660,6 +1678,7 @@ function bookingWizard() {
                     icon: '🛡️'
                 },
                 {
+                    id: 'extra_lavado_tapiz',
                     slug: 'lavado-tapiz',
                     name: 'Lavado de tapiz',
                     price: 35000,
@@ -1957,9 +1976,18 @@ function bookingWizard() {
             this.nextStep();
         },
 
+        getExtraIdentifier(extra) {
+            if (!extra) return '';
+            if (extra.id) return String(extra.id);
+            if (extra.slug) return String(extra.slug);
+            return String(extra.name || '').trim().toLowerCase();
+        },
+
         toggleExtra(extra) {
             if (extra.pivot && (extra.pivot.is_required == 1 || extra.pivot.is_courtesy == 1 || extra.pivot.is_included == 1)) return;
-            const idx = this.selectedExtras.findIndex(e => (e.id === extra.id || e.name === extra.name));
+            const targetId = this.getExtraIdentifier(extra);
+            if (!targetId) return;
+            const idx = this.selectedExtras.findIndex(e => this.getExtraIdentifier(e) === targetId);
             if (idx > -1) {
                 this.selectedExtras.splice(idx, 1);
             } else {
@@ -1969,7 +1997,9 @@ function bookingWizard() {
         },
 
         isExtraSelected(extra) {
-            return this.selectedExtras.some(e => (e.id === extra.id || e.name === extra.name));
+            const targetId = this.getExtraIdentifier(extra);
+            if (!targetId) return false;
+            return this.selectedExtras.some(e => this.getExtraIdentifier(e) === targetId);
         },
 
         isCourtesy(item) {
