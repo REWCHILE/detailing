@@ -344,7 +344,7 @@ style="min-height: 100vh; min-height: 100dvh;">
 
                 <!-- Headline (Refined size, solid vibrant pink, no stroke artifacts) -->
                 <h2 class="font-display text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold leading-[1.08] tracking-tight uppercase mb-6">
-                    <span class="block text-white" style="text-shadow: 0 3px 14px rgba(0,0,0,0.95);">SOMOS MÁS QUE UN TALLER DE DETAILING,</span>
+                    <span class="block text-white" style="text-shadow: 0 3px 14px rgba(0,0,0,0.95);">MÁS QUE UN TALLER DE DETAILING,</span>
                     <span class="block mt-2" style="color: #FB2C6B; text-shadow: 0 3px 14px rgba(0,0,0,0.95);">
                         SOMOS APASIONADOS POR LOS AUTOMÓVILES
                     </span>
