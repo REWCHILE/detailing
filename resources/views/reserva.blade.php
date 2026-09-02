@@ -517,8 +517,8 @@
                                     </div>
 
                                     <!-- Bottom Row: Status Indicator & Price -->
-                                    <div class="mt-5 pt-3.5 border-t border-white/10 flex items-center justify-between">
-                                        <div class="flex items-center gap-2">
+                                    <div class="mt-5 pt-3.5 border-t border-white/10 flex items-center justify-between gap-3">
+                                        <div class="flex items-center gap-2.5 min-w-0">
                                             <div class="w-5 h-5 rounded-md border flex items-center justify-center transition-all duration-300 shrink-0"
                                                  :class="isExtraSelected(extra) 
                                                     ? 'bg-brand border-brand text-white shadow-[0_0_8px_rgba(251,44,107,0.8)]' 
@@ -529,13 +529,13 @@
                                                     </svg>
                                                 </template>
                                             </div>
-                                            <span class="text-xs uppercase font-extrabold tracking-wider transition-colors"
+                                            <span class="text-[11px] sm:text-xs uppercase font-extrabold tracking-wider transition-colors truncate"
                                                   :class="isExtraSelected(extra) ? 'text-brand' : 'text-white/50 group-hover:text-white'"
-                                                  x-text="isExtraSelected(extra) ? '✓ Agregado al tratamiento' : 'Agregar tratamiento'">
+                                                  x-text="isExtraSelected(extra) ? '✓ Agregado' : 'Agregar'">
                                             </span>
                                         </div>
 
-                                        <span class="px-4 py-1.5 rounded-full font-display font-black text-sm sm:text-base tracking-wide border transition-all"
+                                        <span class="whitespace-nowrap shrink-0 px-3.5 py-1.5 sm:px-4 sm:py-1.5 rounded-full font-display font-black text-xs sm:text-sm tracking-wide border transition-all inline-flex items-center justify-center text-center"
                                               :class="isExtraSelected(extra) 
                                                 ? 'bg-brand text-white border-brand shadow-[0_0_15px_rgba(251,44,107,0.5)]' 
                                                 : 'bg-brand/15 text-brand border-brand/30 group-hover:bg-brand/25 group-hover:border-brand/60'"
