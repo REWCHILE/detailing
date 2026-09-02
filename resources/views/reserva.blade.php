@@ -908,7 +908,7 @@ function bookingWizard() {
                 icon: '💎',
                 description: 'Sellados cerámicos 9H y Crystal Serum Ultra de ultra duración, hidrofobia extrema y brillo espejo.',
                 image: '/assets/images/services/service_ceramico.png',
-                video: '/assets/videos/bmw-horizontal.mp4'
+                video: '/assets/videos/bmwblanco-horizontal.mp4'
             },
             {
                 key: 'especiales',
@@ -1110,7 +1110,7 @@ function bookingWizard() {
 
         getPopupVideo() {
             if (!this.selectedService) {
-                if (this.selectedCategory === 'ceramico') return '/assets/videos/bmw.mp4';
+                if (this.selectedCategory === 'ceramico') return '/assets/videos/bmwblanco.mp4';
                 if (this.selectedCategory === 'pulido') return '/assets/videos/bmwblanco.mp4';
                 if (this.selectedCategory === 'especiales') return '/assets/videos/exoshield-brand.mp4';
                 return '/assets/videos/lavado-premium.mp4';
