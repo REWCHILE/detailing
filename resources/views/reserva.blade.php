@@ -1098,8 +1098,8 @@ function bookingWizard() {
         },
 
         getExitWhatsAppUrl() {
-            const rawPhone = '{{ preg_replace("/[^0-9]/", "", $businessProfile->phone ?? "+56912345678") }}';
-            const phone = rawPhone.length >= 8 ? rawPhone : '56912345678';
+            const rawPhone = '{{ preg_replace("/[^0-9]/", "", $businessProfile->whatsapp ?? $businessProfile->phone ?? "+56951024782") }}';
+            const phone = rawPhone.length >= 8 ? rawPhone : '56951024782';
             const srvName = this.selectedService ? this.selectedService.name : 'un servicio de detailing';
             const vtName = this.selectedVehicle ? ` (${this.selectedVehicle.name})` : '';
             const total = this.getTotalPrice() > 0 ? ` [Presupuesto estimado: ${this.formatCLP(this.getTotalPrice())}]` : '';

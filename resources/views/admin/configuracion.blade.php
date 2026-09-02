@@ -74,7 +74,7 @@
                 </div>
                 <div>
                     <label class="block text-xs uppercase text-black/55 dark:text-white/50 font-bold mb-1.5">WhatsApp (Internacional)</label>
-                    <input type="text" name="whatsapp" value="{{ $profile->whatsapp }}" placeholder="e.g. 56912345678" class="w-full rounded-xl border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-surface/50 px-4 py-2.5 text-sm text-black dark:text-white outline-none focus:border-brand">
+                    <input type="text" name="whatsapp" value="{{ $profile->whatsapp }}" placeholder="e.g. 56951024782" class="w-full rounded-xl border border-black/10 dark:border-white/10 bg-black/[0.02] dark:bg-surface/50 px-4 py-2.5 text-sm text-black dark:text-white outline-none focus:border-brand">
                 </div>
                 <div>
                     <label class="block text-xs uppercase text-black/55 dark:text-white/50 font-bold mb-1.5">Instagram (Nombre de usuario)</label>

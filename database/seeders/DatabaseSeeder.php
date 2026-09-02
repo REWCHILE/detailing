@@ -21,8 +21,8 @@ class DatabaseSeeder extends Seeder
             [
                 'business_name' => 'High Contrast Detailing Center',
                 'email' => 'contacto@highcontrastdetailing.cl',
-                'phone' => '+56 9 1234 5678',
-                'whatsapp' => '56912345678',
+                'phone' => '+56 9 5102 4782',
+                'whatsapp' => '56951024782',
                 'instagram' => '@highcontrastdc',
                 'website' => 'https://highcontrastdetailing.cl',
                 'address_line1' => 'Chicureo, Colina',

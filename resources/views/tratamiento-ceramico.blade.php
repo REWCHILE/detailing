@@ -329,7 +329,7 @@
                 <a href="/reserva?category=ceramico" class="w-full sm:w-auto px-10 py-4.5 bg-brand hover:bg-brand-dark text-white font-display font-black text-base uppercase tracking-wider rounded-full shadow-xl shadow-brand/40 transition-all hover:scale-105">
                     Cotizar Cerámico Ahora
                 </a>
-                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $profile->phone ?? '56912345678') }}?text={{ urlencode('Hola! Quisiera consultar por Tratamiento Cerámico 9H para mi vehículo en Las Condes/Chicureo.') }}" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto px-8 py-4.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-base rounded-full shadow-lg transition-all flex items-center justify-center gap-2">
+                <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $profile->whatsapp ?? $profile->phone ?? '56951024782') }}?text={{ urlencode('Hola! Quisiera consultar por Tratamiento Cerámico 9H para mi vehículo en Las Condes/Chicureo.') }}" target="_blank" rel="noopener noreferrer" class="w-full sm:w-auto px-8 py-4.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-base rounded-full shadow-lg transition-all flex items-center justify-center gap-2">
                     <span>Consultar por WhatsApp</span>
                 </a>
             </div>
@@ -348,7 +348,7 @@
         'provider' => [
             '@type' => 'AutoRepair',
             'name' => $schemaProfile->business_name ?? 'High Contrast Detailing Center',
-            'telephone' => $schemaProfile->phone ?? '+56912345678',
+            'telephone' => $schemaProfile->phone ?? '+56 9 5102 4782',
             'address' => [
                 '@type' => 'PostalAddress',
                 'streetAddress' => $schemaProfile->address ?? 'Chicureo',

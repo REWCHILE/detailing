@@ -25,7 +25,7 @@
                 'name' => $schemaProfile->business_name ?? 'High Contrast Detailing Center',
                 'image' => $schemaProfile->logo ? asset($schemaProfile->logo) : asset('assets/logos/main-logo.png'),
                 'url' => url('/'),
-                'telephone' => $schemaProfile->phone ?? '+56912345678',
+                'telephone' => $schemaProfile->phone ?? '+56 9 5102 4782',
                 'email' => $schemaProfile->email ?? 'info@highcontrastdetailing.cl',
                 'sameAs' => $sameAs,
                 'address' => [

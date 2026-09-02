@@ -248,7 +248,7 @@
         </div>
 
         <div class="btn-container">
-          <a href="https://wa.me/{{ preg_replace('/\D/', '', $businessWhatsApp ?? '56912345678') }}" class="btn-primary" target="_blank">
+          <a href="https://wa.me/{{ preg_replace('/\D/', '', $businessWhatsApp ?? '56951024782') }}" class="btn-primary" target="_blank">
             Hablar por WhatsApp
           </a>
         </div>
