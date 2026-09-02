@@ -6,6 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="theme-color" content="#E8508A">
     <link rel="manifest" href="/manifest.json">
+    <link rel="alternate" type="text/markdown" href="/llms.txt" title="LLMs.txt">
     @php
         $profile = \App\Models\BusinessProfile::first();
         

@@ -6,4 +6,20 @@ Disallow: /login
 Disallow: /register
 Disallow: /password/
 
+# AI Crawlers & LLM Ingestion
+User-agent: GPTBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
 Sitemap: https://highcontrastdetailingcenter.cl/sitemap.xml
+# LLMs.txt for Agentic Browsing & AI Search
+# https://highcontrastdetailingcenter.cl/llms.txt
+# https://highcontrastdetailingcenter.cl/llms-full.txt

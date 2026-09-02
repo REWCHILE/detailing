@@ -20,6 +20,24 @@ Route::get('/detailing-interior', [PageController::class, 'detailingInterior'])-
 Route::get('/tratamiento-ceramico', [PageController::class, 'tratamientoCeramico'])->name('tratamiento-ceramico');
 Route::get('/restauracion-de-focos', [PageController::class, 'restauracionDeFocos'])->name('restauracion-de-focos');
 Route::get('/sitemap.xml', [PageController::class, 'sitemap'])->name('sitemap');
+Route::get('/llms.txt', function () {
+    $path = public_path('llms.txt');
+    if (file_exists($path)) {
+        return response(file_get_contents($path), 200)
+            ->header('Content-Type', 'text/markdown; charset=utf-8')
+            ->header('Access-Control-Allow-Origin', '*');
+    }
+    abort(404);
+})->name('llms.txt');
+Route::get('/llms-full.txt', function () {
+    $path = public_path('llms-full.txt');
+    if (file_exists($path)) {
+        return response(file_get_contents($path), 200)
+            ->header('Content-Type', 'text/markdown; charset=utf-8')
+            ->header('Access-Control-Allow-Origin', '*');
+    }
+    abort(404);
+})->name('llms-full.txt');
 
 // Redirects for legacy SEO/Next.js paths
 Route::redirect('/cotizar', '/reserva');
