@@ -108,6 +108,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
     @yield('styles')
     
     <!-- Initial script to prevent theme flash -->
@@ -170,7 +173,16 @@
             || request()->is('proteccion-parabrisas-santiago');
     @endphp
 </head>
-<body class="antialiased bg-gray-50 text-black dark:bg-[#0A0A0A] dark:text-[#F5F5F5] transition-colors duration-300" x-data="{ isMobileOpen: false, mobileServicesOpen: {{ $isServicesActive ? 'true' : 'false' }} }">
+<body class="antialiased bg-gray-50 text-black dark:bg-[#0A0A0A] dark:text-[#F5F5F5] transition-colors duration-300" 
+      x-data="{ 
+          isMobileOpen: false, 
+          isScrolled: {{ $forceSolidNav ? 'true' : 'false' }}, 
+          isServicesOpen: false, 
+          mobileServicesOpen: {{ $isServicesActive ? 'true' : 'false' }} 
+      }"
+      @toggle-mobile-menu.window="isMobileOpen = !isMobileOpen"
+      @close-mobile-menu.window="isMobileOpen = false"
+      @keydown.escape.window="isMobileOpen = false">
     @if($profile && !empty($profile->google_tag_manager_id))
         <!-- Google Tag Manager (noscript) -->
         <noscript><iframe src="https://www.googletagmanager.com/ns.html?id={{ $profile->google_tag_manager_id }}"
@@ -179,13 +191,10 @@
     @endif
 
     <!-- Navbar -->
-    <nav x-data="{ 
-        isScrolled: {{ $forceSolidNav ? 'true' : 'false' }}, 
-        isServicesOpen: false 
-    }" 
-    @scroll.window="isScrolled = {{ $forceSolidNav ? 'true' : 'window.pageYOffset > 50' }}"
-    :class="isScrolled ? 'bg-white/90 dark:bg-[#111111]/95 border-b border-black/5 dark:border-white/5 py-3 shadow-sm backdrop-blur-md' : 'bg-transparent py-5'"
-    class="fixed left-0 right-0 top-0 z-40 transition-all duration-500">
+    <nav 
+        @scroll.window="isScrolled = {{ $forceSolidNav ? 'true' : 'window.pageYOffset > 50' }}"
+        :class="isScrolled ? 'bg-white/90 dark:bg-[#111111]/95 border-b border-black/5 dark:border-white/5 py-3 shadow-sm backdrop-blur-md' : 'bg-transparent py-5'"
+        class="fixed left-0 right-0 top-0 z-40 transition-all duration-500">
         <div class="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 flex items-center justify-between">
             <!-- Brand Logo -->
             <a href="/" class="group flex items-center gap-3">
@@ -307,7 +316,6 @@
     <!-- Mobile Navigation Slide-Over Drawer (Right to Left - Luxury Edition) -->
     <div x-show="isMobileOpen" 
          class="md:hidden fixed inset-0 z-[99999] overflow-hidden" 
-         style="display: none;"
          x-cloak>
         
         <!-- Backdrop Overlay with Deep Blur -->
