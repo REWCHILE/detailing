@@ -504,9 +504,6 @@
                         <li><a href="/sellado-ceramico" class="text-white/60 hover:text-brand transition-colors text-sm font-light">Sellado Cerámico Gtechniq</a></li>
                         <li><a href="/pulido-de-autos-santiago" class="text-white/60 hover:text-brand transition-colors text-sm font-light">Corrección de Pintura</a></li>
                         <li><a href="/proteccion-parabrisas-santiago" class="text-white/60 hover:text-brand transition-colors text-sm font-light">Protección ExoShield SPRINT</a></li>
-                        <li><a href="/detailing-interior" class="text-white/60 hover:text-brand transition-colors text-sm font-light">Detailing Interior a Vapor</a></li>
-                        <li><a href="/tratamiento-ceramico" class="text-white/60 hover:text-brand transition-colors text-sm font-light">Tratamiento Cerámico 9H</a></li>
-                        <li><a href="/restauracion-de-focos" class="text-white/60 hover:text-brand transition-colors text-sm font-light">Restauración de Focos</a></li>
                     </ul>
                 </div>
 
