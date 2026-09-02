@@ -39,7 +39,7 @@
     @else
         <title>@yield('title', 'High Contrast Detailing Center | Car Detailing Premium en Chicureo')</title>
     @endif
-    <link rel="icon" type="image/png" href="{{ $profile && $profile->logo ? asset($profile->logo) : asset('assets/logos/main-logo-optimized.png') }}">
+    <link rel="icon" type="image/png" href="{{ $profile && $profile->logo ? asset($profile->logo) : asset('assets/logos/main-logo.png') }}">
     
     <!-- Meta tags for SEO -->
     @if($__seo && $__seo->seo_description)
@@ -206,7 +206,7 @@
             <!-- Brand Logo -->
             <a href="/" class="group flex items-center gap-3">
                 <div class="relative h-10 w-10">
-                    <img src="{{ $profile->logo ? asset($profile->logo) : asset('assets/logos/main-logo.webp') }}" width="40" height="40" alt="{{ $profile->business_name ?? 'High Contrast' }}" class="object-contain w-full h-full">
+                    <img src="{{ $profile->logo ? asset($profile->logo) : asset('assets/logos/main-logo.png') }}" width="40" height="40" alt="{{ $profile->business_name ?? 'High Contrast' }}" class="object-contain w-full h-full">
                 </div>
                 <div class="flex flex-col">
                     <span :class="isScrolled ? 'text-black dark:text-white' : 'text-white'" class="font-display text-lg font-bold leading-tight tracking-tight transition-colors group-hover:text-brand">
@@ -350,7 +350,7 @@
             <div class="w-full flex items-center justify-between pb-4 border-b border-white/10">
                 <div class="flex items-center gap-3">
                     <div class="w-9 h-9 rounded-xl bg-white/5 border border-white/10 p-1.5 flex items-center justify-center">
-                        <img src="{{ $profile->logo ? asset($profile->logo) : asset('assets/logos/main-logo.webp') }}" width="36" height="36" alt="{{ $profile->business_name ?? 'High Contrast' }}" class="h-full w-full object-contain">
+                        <img src="{{ $profile->logo ? asset($profile->logo) : asset('assets/logos/main-logo.png') }}" width="36" height="36" alt="{{ $profile->business_name ?? 'High Contrast' }}" class="h-full w-full object-contain">
                     </div>
                     <div>
                         <span class="font-display font-black text-white text-sm tracking-tight block leading-tight">HIGH CONTRAST</span>
@@ -487,7 +487,7 @@
                 <div class="lg:col-span-1">
                     <div class="flex items-center gap-3.5 mb-5">
                         <div class="w-12 h-12 rounded-2xl bg-white/5 border border-white/15 p-2 flex items-center justify-center shadow-xl backdrop-blur-md">
-                            <img src="{{ $profile->logo ? asset($profile->logo) : asset('assets/logos/main-logo.webp') }}" width="48" height="48" loading="lazy" decoding="async" alt="{{ $profile->business_name ?? 'High Contrast' }}" class="object-contain w-full h-full">
+                            <img src="{{ $profile->logo ? asset($profile->logo) : asset('assets/logos/main-logo.png') }}" width="48" height="48" loading="lazy" decoding="async" alt="{{ $profile->business_name ?? 'High Contrast' }}" class="object-contain w-full h-full">
                         </div>
                         <div>
                             <p class="font-display font-extrabold text-white tracking-tight text-lg">

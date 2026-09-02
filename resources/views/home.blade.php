@@ -245,7 +245,7 @@ style="min-height: 100vh; min-height: 100dvh;">
     <div class="absolute inset-0 bg-[#0A0A0A] overflow-hidden">
         <picture>
             <source srcset="{{ asset('assets/images/home/lavado.webp') }}" type="image/webp">
-            <img src="{{ asset('assets/images/home/lavado.webp') }}" 
+            <img src="{{ asset('assets/images/home/lavado.jpg') }}" 
                  alt="High Contrast Detailing - Lavado y Detallado" 
                  loading="lazy" decoding="async"
                  class="w-full h-full object-cover object-[75%_center] md:object-[70%_center] opacity-85 md:opacity-90 animate-slow-zoom">
@@ -285,7 +285,7 @@ style="min-height: 100vh; min-height: 100dvh;">
     <div class="absolute inset-0 bg-[#0A0A0A] overflow-hidden">
         <picture>
             <source srcset="{{ asset('assets/images/home/ceramico.webp') }}" type="image/webp">
-            <img src="{{ asset('assets/images/home/ceramico.webp') }}" 
+            <img src="{{ asset('assets/images/home/ceramico.jpg') }}" 
                  alt="High Contrast Detailing - Sellado Cerámico" 
                  loading="lazy" decoding="async"
                  class="w-full h-full object-cover object-[25%_center] md:object-[30%_center] opacity-85 md:opacity-90 animate-slow-zoom">
@@ -325,7 +325,7 @@ style="min-height: 100vh; min-height: 100dvh;">
     <div class="absolute inset-0 bg-[#0A0A0A] overflow-hidden">
         <picture>
             <source srcset="{{ asset('assets/images/home/nuestra-historia.webp') }}" type="image/webp">
-            <img src="{{ asset('assets/images/home/nuestra-historia.webp') }}" 
+            <img src="{{ asset('assets/images/home/nuestra-historia.jpg') }}" 
                  alt="High Contrast Detailing - Nuestra Historia" 
                  loading="lazy" decoding="async"
                  class="w-full h-full object-cover object-[65%_center] md:object-[60%_center] opacity-90 animate-slow-zoom">
@@ -736,11 +736,11 @@ class="section-padding relative overflow-hidden">
             autoplayTimer: null,
             autoplayDuration: 10000,
             testimonials: [
-                { name: 'Rodrigo Fernández', vehicle: 'BMW M4 Competition', rating: 5, text: 'Increíble trabajo. Mi M4 quedó como recién salido del concesionario. El tratamiento cerámico superó todas mis expectativas. Profesionalismo de otro nivel.', service: 'Tratamiento Cerámico', image: '/assets/images/testimonials/bmw_m4.webp' },
-                { name: 'Carolina Muñoz', vehicle: 'Mercedes-Benz GLC 300', rating: 5, text: 'Llevé mi GLC con rayones que me tenían preocupada. Después de la corrección de pintura, desaparecieron por completo. Muy recomendados.', service: 'Corrección de Pintura', image: '/assets/images/testimonials/mercedes_glc.webp' },
-                { name: 'Sebastián Torres', vehicle: 'Porsche 911 Carrera', rating: 5, text: 'Como dueño de un 911, soy muy exigente con quién toca mi auto. High Contrast es el único lugar donde lo llevo. Perfeccionistas.', service: 'Pulido Profesional', image: '/assets/images/testimonials/porsche_911.webp' },
-                { name: 'María José Contreras', vehicle: 'Audi Q5', rating: 5, text: 'El detailing interior dejó mi Q5 impecable. Los cueros quedaron como nuevos y el olor es increíble. Volveré cada mes.', service: 'Detailing Interior', image: '/assets/images/testimonials/audi_q5.webp' },
-                { name: 'Andrés Villalobos', vehicle: 'Tesla Model 3', rating: 5, text: 'Profesionales, puntuales y el resultado habla por sí solo. El cerámico protege mi Tesla de todo. 100% recomendado.', service: 'Tratamiento Cerámico', image: '/assets/images/testimonials/tesla_model3.webp' }
+                { name: 'Rodrigo Fernández', vehicle: 'BMW M4 Competition', rating: 5, text: 'Increíble trabajo. Mi M4 quedó como recién salido del concesionario. El tratamiento cerámico superó todas mis expectativas. Profesionalismo de otro nivel.', service: 'Tratamiento Cerámico', image: '/assets/images/testimonials/bmw_m4.png' },
+                { name: 'Carolina Muñoz', vehicle: 'Mercedes-Benz GLC 300', rating: 5, text: 'Llevé mi GLC con rayones que me tenían preocupada. Después de la corrección de pintura, desaparecieron por completo. Muy recomendados.', service: 'Corrección de Pintura', image: '/assets/images/testimonials/mercedes_glc.png' },
+                { name: 'Sebastián Torres', vehicle: 'Porsche 911 Carrera', rating: 5, text: 'Como dueño de un 911, soy muy exigente con quién toca mi auto. High Contrast es el único lugar donde lo llevo. Perfeccionistas.', service: 'Pulido Profesional', image: '/assets/images/testimonials/porsche_911.png' },
+                { name: 'María José Contreras', vehicle: 'Audi Q5', rating: 5, text: 'El detailing interior dejó mi Q5 impecable. Los cueros quedaron como nuevos y el olor es increíble. Volveré cada mes.', service: 'Detailing Interior', image: '/assets/images/testimonials/audi_q5.png' },
+                { name: 'Andrés Villalobos', vehicle: 'Tesla Model 3', rating: 5, text: 'Profesionales, puntuales y el resultado habla por sí solo. El cerámico protege mi Tesla de todo. 100% recomendado.', service: 'Tratamiento Cerámico', image: '/assets/images/testimonials/tesla_model3.png' }
             ],
             startAutoplay() {
                 this.stopAutoplay();
