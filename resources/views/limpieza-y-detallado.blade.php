@@ -172,17 +172,47 @@
                         }
                     }
 
-                    $categoryServices = $services->where('category', 'limpieza')->where('is_active', true)->sortBy('display_order')->take(3);
+                    // Ensure the 3 standard services for limpieza are always present
+                    $expectedSlugs = ['paquete-lavado', 'paquete-lavado-avanzado', 'paquete-detallado-interior'];
+                    $categoryServices = collect();
+                    foreach ($expectedSlugs as $slug) {
+                        $srv = $services->get($slug) 
+                            ?? $services->first(fn($s) => $s->slug === $slug || str_contains($s->slug, str_replace('paquete-', '', $slug)))
+                            ?? \App\Models\Service::with('vehicleTypes')->where('slug', $slug)->first();
+                        if ($srv) {
+                            $categoryServices->push($srv);
+                        } else {
+                            if ($slug === 'paquete-lavado') {
+                                $mock = new \App\Models\Service([
+                                    'id' => '01kwfafhqzp9pn17fgt5y6fhrb',
+                                    'name' => 'Lavado Premium',
+                                    'slug' => 'paquete-lavado',
+                                    'category' => 'limpieza',
+                                    'base_price' => 35000,
+                                    'short_description' => 'Lavado técnico artesanal con método de dos baldes, shampoo pH neutro, descontaminado de llantas y acondicionador.',
+                                    'long_description' => "- Lavado a mano artesanal con shampoo neutro\n- Limpieza profunda de llantas y calipers\n- Limpieza de cristales y espejos\n- Aplicación de dressing protector en neumáticos\n- Aspirado interior básico y protección de plásticos"
+                                ]);
+                                $mock->vehicleTypes = collect([
+                                    (object)['name' => 'Pequeños', 'slug' => 'autos', 'pivot' => (object)['price' => 35000]],
+                                    (object)['name' => 'Medianos', 'slug' => 'medianos', 'pivot' => (object)['price' => 45000]],
+                                    (object)['name' => 'Grandes', 'slug' => 'grandes', 'pivot' => (object)['price' => 55000]],
+                                ]);
+                                $categoryServices->push($mock);
+                            }
+                        }
+                    }
                     
                     $servicesData = $categoryServices->map(function($s) {
                         $features = parseServiceFeatures($s->long_description);
                         $vPrices = [];
-                        foreach($s->vehicleTypes as $vt) {
-                            $vPrices[] = [
-                                'name' => $vt->name,
-                                'slug' => $vt->slug,
-                                'price' => (int)$vt->pivot->price,
-                            ];
+                        if ($s->vehicleTypes) {
+                            foreach($s->vehicleTypes as $vt) {
+                                $vPrices[] = [
+                                    'name' => $vt->name,
+                                    'slug' => $vt->slug,
+                                    'price' => (int)$vt->pivot->price,
+                                ];
+                            }
                         }
                         $minPrice = !empty($vPrices) ? min(array_column($vPrices, 'price')) : (int)$s->base_price;
                         return [
@@ -217,7 +247,7 @@
                                 if (str_contains($slug, 'avanzado')) {
                                     $srvVideo = '/assets/videos/lavado-avanzado.mp4';
                                 } elseif (str_contains($slug, 'interior')) {
-                                    $srvVideo = '/assets/videos/detailing-terminacion.mp4';
+                                    $srvVideo = '/assets/videos/interior.mp4';
                                 } elseif (str_contains($slug, 'completo')) {
                                     $srvVideo = '/assets/videos/pulido-correccion-2.mp4';
                                 }
@@ -247,9 +277,9 @@
                                 <!-- Bottom Area: Starting Price & Action Buttons -->
                                 <div class="relative z-20 pt-4">
                                     <!-- Price Display -->
-                                    <div class="flex items-baseline gap-2 mb-6">
-                                        <span class="text-white/60 text-xs sm:text-sm font-bold uppercase tracking-wider">Desde</span>
-                                        <span class="font-display font-black text-3xl sm:text-4xl md:text-5xl text-white drop-shadow-[0_2px_12px_rgba(0,0,0,1)]">
+                                    <div class="flex items-center gap-2 mb-6">
+                                        <span class="text-white/60 text-xs sm:text-sm font-bold uppercase tracking-wider leading-none">Desde</span>
+                                        <span class="font-display font-black text-3xl sm:text-4xl md:text-5xl text-white drop-shadow-[0_2px_12px_rgba(0,0,0,1)] leading-none">
                                             ${{ number_format($minPrice, 0, ',', '.') }}
                                         </span>
                                     </div>
@@ -284,14 +314,15 @@
                     <template x-teleport="body">
                         <div 
                             x-show="modalService" 
+                            x-cloak
                             x-transition:enter="transition ease-out duration-300"
                             x-transition:enter-start="opacity-0"
                             x-transition:enter-end="opacity-100"
                             x-transition:leave="transition ease-in duration-200"
                             x-transition:leave-start="opacity-100"
                             x-transition:leave-end="opacity-0"
-                            class="fixed inset-0 z-[99999] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-6"
-                            style="display: none;"
+                            class="fixed inset-0 z-[999999] bg-black/90 backdrop-blur-xl flex items-center justify-center p-4 sm:p-6"
+                            style="z-index: 999999; display: none;"
                         >
                             <div 
                                 @click.away="closeModal()"
@@ -303,6 +334,7 @@
                                 x-transition:leave-start="opacity-100 scale-100 translate-y-0"
                                 x-transition:leave-end="opacity-0 scale-95 translate-y-4"
                                 class="bg-zinc-900 border-2 border-white/20 rounded-[2.5rem] max-w-2xl w-full shadow-2xl relative text-white max-h-[88vh] flex flex-col my-auto overflow-hidden"
+                                style="z-index: 1000000;"
                             >
                                 <!-- Header -->
                                 <div class="p-6 sm:p-8 pb-4 border-b border-white/10 shrink-0 relative text-center">

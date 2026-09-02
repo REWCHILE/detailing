@@ -221,24 +221,24 @@
                                                 >
                                             </template>
                                             
-                                            <!-- Soft bottom-only gradient: 100% clear video, soft fade behind text -->
-                                            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 via-25% to-transparent z-10 pointer-events-none"></div>
+                                            <!-- Soft bottom-only gradient: 100% clear video, strong fade behind text for legibility -->
+                                            <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/75 via-50% to-transparent z-10 pointer-events-none"></div>
                                         </div>
 
                                         <!-- Bottom Row: Title, Description, Price & Action Buttons -->
                                         <div class="relative z-20 pt-6">
                                             <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-5">
                                                 <div class="max-w-2xl">
-                                                    <h4 class="font-display font-black text-2xl sm:text-3xl md:text-4xl text-brand uppercase tracking-tight drop-shadow-[0_4px_12px_rgba(0,0,0,1)] leading-tight mb-2.5 group-hover:text-brand transition-colors"
+                                                    <h4 class="font-display font-black text-2xl sm:text-3xl md:text-4xl text-white uppercase tracking-tight drop-shadow-[0_4px_16px_rgba(0,0,0,1)] leading-tight mb-2.5"
                                                         x-text="getServiceLevelTitle(srv, index)"></h4>
                                                     
                                                     <p x-show="srv.description" class="text-sm sm:text-base text-white/90 drop-shadow-[0_2px_8px_rgba(0,0,0,1)] leading-relaxed font-medium mb-3"
                                                        x-text="srv.description"></p>
                                                     
                                                     <!-- Price Display Matching Parent Aesthetics -->
-                                                    <div class="flex items-baseline gap-2 mb-2 sm:mb-0">
-                                                        <span class="text-white/60 text-xs sm:text-sm font-bold uppercase tracking-wider">Desde</span>
-                                                        <span class="font-display font-black text-2xl sm:text-3xl md:text-4xl text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)]"
+                                                    <div class="flex items-center gap-2 mb-2 sm:mb-0">
+                                                        <span class="text-white/60 text-xs sm:text-sm font-bold uppercase tracking-wider leading-none">Desde</span>
+                                                        <span class="font-display font-black text-2xl sm:text-3xl md:text-4xl text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.9)] leading-none"
                                                               x-text="onlinePaymentsActive ? formatCLP(getAdjustedPrice(srv)) : 'A Cotizar'"></span>
                                                     </div>
                                                 </div>
@@ -1224,7 +1224,7 @@ function bookingWizard() {
             // 2. Limpieza y Detallado
             if (cat === 'limpieza' || slug.includes('lavado') || slug.includes('interior') || slug.includes('detailing')) {
                 if (slug.includes('interior') || name.includes('INTERIOR')) {
-                    return '/assets/videos/detailing-terminacion.mp4';
+                    return '/assets/videos/interior.mp4';
                 }
                 if (slug.includes('avanzado') || name.includes('AVANZADO')) {
                     return '/assets/videos/lavado-avanzado.mp4';
@@ -1238,7 +1238,7 @@ function bookingWizard() {
             // 3. Corrección de Pintura / Pulido
             if (cat === 'pulido' || slug.includes('pulido') || slug.includes('correccion') || slug.includes('focos')) {
                 if (slug.includes('multi-etapa') || name.includes('MULTI ETAPA')) {
-                    return '/assets/videos/pulido-correccion-2.mp4';
+                    return '/assets/videos/bmwblanco_actualizado.mp4';
                 }
                 if (slug.includes('una-etapa') || slug.includes('un-paso') || name.includes('UN PASO') || name.includes('UNA ETAPA')) {
                     return '/assets/videos/pulido-correccion.mp4';
@@ -1348,7 +1348,7 @@ function bookingWizard() {
                     return '/assets/videos/lavado-avanzado.mp4';
                 }
                 if (name.includes('interior') || slug.includes('interior')) {
-                    return '/assets/videos/detailing-terminacion.mp4';
+                    return '/assets/videos/interior.mp4';
                 }
                 if (name.includes('completo') || slug.includes('completo')) {
                     return '/assets/videos/pulido-correccion-2.mp4';
@@ -1363,7 +1363,7 @@ function bookingWizard() {
                     return '/assets/videos/pulido-rupes.mp4';
                 }
                 if (name.includes('multi') || slug.includes('multi')) {
-                    return '/assets/videos/pulido-correccion-2.mp4';
+                    return '/assets/videos/bmwblanco_actualizado.mp4';
                 }
                 if (name.includes('focos') || slug.includes('focos')) {
                     return '/assets/videos/detailing-terminacion.mp4';
@@ -1450,8 +1450,9 @@ function bookingWizard() {
 
         isExoShieldService(srv) {
             if (!srv) return false;
-            const text = ((srv.name || '') + ' ' + (srv.slug || '') + ' ' + (srv.short_description || '') + ' ' + (srv.category || '')).toLowerCase();
-            return text.includes('exoshield') || text.includes('parabrisas') || text.includes('especiales');
+            const name = (srv.name || '').toLowerCase();
+            const slug = (srv.slug || '').toLowerCase();
+            return name.includes('exoshield') || slug.includes('exoshield') || slug.includes('sprint');
         },
 
         get displayedVehicleTypes() {

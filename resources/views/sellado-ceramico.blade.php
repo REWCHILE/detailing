@@ -546,9 +546,9 @@
                         <!-- Bottom Area: Starting Price & Action Buttons -->
                         <div class="relative z-20 pt-4">
                             <!-- Price Display -->
-                            <div class="flex items-baseline gap-2 mb-6">
-                                <span class="text-white/60 text-xs sm:text-sm font-bold uppercase tracking-wider">Desde</span>
-                                <span class="font-display font-black text-3xl sm:text-4xl md:text-5xl text-white drop-shadow-[0_2px_12px_rgba(0,0,0,1)]">
+                            <div class="flex items-center gap-2 mb-6">
+                                <span class="text-white/60 text-xs sm:text-sm font-bold uppercase tracking-wider leading-none">Desde</span>
+                                <span class="font-display font-black text-3xl sm:text-4xl md:text-5xl text-white drop-shadow-[0_2px_12px_rgba(0,0,0,1)] leading-none">
                                     ${{ number_format($minPrice, 0, ',', '.') }}
                                 </span>
                             </div>
@@ -583,14 +583,15 @@
             <template x-teleport="body">
                 <div 
                     x-show="modalService" 
+                    x-cloak
                     x-transition:enter="transition ease-out duration-300"
                     x-transition:enter-start="opacity-0"
                     x-transition:enter-end="opacity-100"
                     x-transition:leave="transition ease-in duration-200"
                     x-transition:leave-start="opacity-100"
                     x-transition:leave-end="opacity-0"
-                    class="fixed inset-0 z-[99999] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-6"
-                    style="display: none;"
+                    class="fixed inset-0 z-[999999] bg-black/90 backdrop-blur-xl flex items-center justify-center p-4 sm:p-6"
+                    style="z-index: 999999; display: none;"
                 >
                     <div 
                         @click.away="closeModal()"
@@ -602,6 +603,7 @@
                         x-transition:leave-start="opacity-100 scale-100 translate-y-0"
                         x-transition:leave-end="opacity-0 scale-95 translate-y-4"
                         class="bg-zinc-900 border-2 border-white/20 rounded-[2.5rem] max-w-2xl w-full shadow-2xl relative text-white max-h-[88vh] flex flex-col my-auto overflow-hidden"
+                        style="z-index: 1000000;"
                     >
                         <!-- Header -->
                         <div class="p-6 sm:p-8 pb-4 border-b border-white/10 shrink-0 relative text-center">
