@@ -100,7 +100,7 @@
                                 <template x-for="cat in categories" :key="cat.key">
                                     <div 
                                         @click="selectCategory(cat.key)"
-                                        class="relative group rounded-[2.5rem] sm:rounded-[3.2rem] overflow-hidden min-h-[380px] sm:min-h-[280px] md:min-h-[310px] border-2 border-white/20 bg-zinc-950 hover:border-brand hover:shadow-2xl hover:scale-[1.005] cursor-pointer shadow-2xl flex flex-col justify-end p-6 sm:p-8 md:p-10 transition-all duration-300"
+                                        class="scroll-card-item relative group rounded-[2.5rem] sm:rounded-[3.2rem] overflow-hidden min-h-[380px] sm:min-h-[280px] md:min-h-[310px] border-2 border-white/20 bg-zinc-950 hover:border-brand hover:shadow-2xl hover:scale-[1.005] cursor-pointer shadow-2xl flex flex-col justify-end p-6 sm:p-8 md:p-10 transition-all duration-300"
                                     >
                                         <!-- Video Background with Autoplay & High Visual Clarity -->
                                         <template x-if="cat.video">
@@ -110,7 +110,7 @@
                                                 muted 
                                                 playsinline 
                                                 :poster="cat.image || '/assets/images/cotizador_banner.png'"
-                                                class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out z-0 pointer-events-none"
+                                                class="card-video absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out z-0 pointer-events-none"
                                             >
                                                 <source :src="cat.video" type="video/mp4">
                                             </video>
@@ -180,7 +180,7 @@
                                 <template x-for="(srv, index) in filteredServices" :key="srv.id">
                                     <div 
                                         @click="selectService(srv)"
-                                        class="relative group rounded-[2.5rem] sm:rounded-[3.2rem] overflow-hidden min-h-[380px] sm:min-h-[280px] md:min-h-[310px] border-2 transition-all duration-300 bg-zinc-950 shadow-2xl cursor-pointer flex flex-col justify-end p-6 sm:p-8 md:p-10"
+                                        class="scroll-card-item relative group rounded-[2.5rem] sm:rounded-[3.2rem] overflow-hidden min-h-[380px] sm:min-h-[280px] md:min-h-[310px] border-2 transition-all duration-300 bg-zinc-950 shadow-2xl cursor-pointer flex flex-col justify-end p-6 sm:p-8 md:p-10"
                                         :class="selectedService && selectedService.id === srv.id
                                             ? 'border-brand ring-4 ring-brand/40 shadow-2xl shadow-brand/40 scale-[1.005] bg-brand/5'
                                             : 'border-white/20 hover:border-brand/70 hover:shadow-2xl hover:scale-[1.005]'"
@@ -194,7 +194,7 @@
                                                     muted 
                                                     playsinline 
                                                     :poster="getServiceImage(srv) || '/assets/images/cotizador_banner.png'"
-                                                    class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out z-0 pointer-events-none"
+                                                    class="card-video w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out z-0 pointer-events-none"
                                                 >
                                                     <source :src="getServiceVideo(srv)" type="video/mp4">
                                                 </video>
@@ -962,12 +962,14 @@ function bookingWizard() {
             this.selectedCategory = catKey;
             this.pushWizardHistory(1, catKey);
             this.scrollToTop();
+            this.refreshScrollVideos();
         },
 
         backToCategories() {
             this.selectedCategory = null;
             this.pushWizardHistory(1, null);
             this.scrollToTop();
+            this.refreshScrollVideos();
         },
 
         getCategoryServicesCount(catKey) {
@@ -977,6 +979,50 @@ function bookingWizard() {
         getCategoryTitle(catKey) {
             const found = this.categories.find(c => c.key === catKey);
             return found ? found.name : 'Servicios';
+        },
+
+        _videoObserver: null,
+
+        setupScrollVideoObserver() {
+            if (this._videoObserver) {
+                this._videoObserver.disconnect();
+            }
+
+            const options = {
+                root: null,
+                rootMargin: '0px 0px 0px 0px',
+                threshold: [0, 0.25, 0.5, 0.75, 1.0]
+            };
+
+            this._videoObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const video = entry.target.querySelector('video.card-video') || (entry.target.tagName === 'VIDEO' ? entry.target : null);
+                    if (!video) return;
+
+                    // When card occupies 35% or more of the viewport, play; when it exits below 20%, pause
+                    if (entry.isIntersecting && entry.intersectionRatio >= 0.35) {
+                        if (video.paused) {
+                            const p = video.play();
+                            if (p !== undefined) p.catch(() => {});
+                        }
+                    } else if (!entry.isIntersecting || entry.intersectionRatio < 0.2) {
+                        if (!video.paused) {
+                            video.pause();
+                        }
+                    }
+                });
+            }, options);
+
+            const items = document.querySelectorAll('.scroll-card-item');
+            items.forEach(item => this._videoObserver.observe(item));
+        },
+
+        refreshScrollVideos() {
+            this.$nextTick(() => {
+                setTimeout(() => {
+                    this.setupScrollVideoObserver();
+                }, 100);
+            });
         },
 
         init() {
@@ -1031,6 +1077,11 @@ function bookingWizard() {
             this.saveDraftLead(1);
             this.setupExitIntent();
 
+            // Intelligent scroll video playback activation
+            this.refreshScrollVideos();
+            this.$watch('selectedCategory', () => this.refreshScrollVideos());
+            this.$watch('currentStep', () => this.refreshScrollVideos());
+
             // Dynamic video playback refresh when exit modal appears
             this.$watch('showExitModal', (val) => {
                 if (val && this.$refs.popupVideo) {
@@ -1050,13 +1101,16 @@ function bookingWizard() {
                     this.currentStep = event.state.wizardStep;
                     this.selectedCategory = event.state.wizardCategory || null;
                     this.scrollToTop();
+                    this.refreshScrollVideos();
                 } else {
                     if (this.currentStep === 2) {
                         this.currentStep = 1;
                         this.scrollToTop();
+                        this.refreshScrollVideos();
                     } else if (this.currentStep === 1 && this.selectedCategory) {
                         this.selectedCategory = null;
                         this.scrollToTop();
+                        this.refreshScrollVideos();
                     }
                 }
             });
