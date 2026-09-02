@@ -64,7 +64,7 @@
             <div class="absolute inset-0 bg-gradient-to-r from-[#0A0A0A]/40 via-transparent to-[#0A0A0A]/40"></div>
         </div>
 
-        <div class="relative z-10 container-custom text-center px-4">
+        <div class="relative z-10 container-custom text-center px-4 flex flex-col items-center justify-center">
             <div>
                 <h1 class="font-display text-5xl md:text-8xl lg:text-9xl font-black text-white mb-6 tracking-tighter leading-none">
                     NUESTRA <span class="text-gradient">HISTORIA</span>
@@ -75,17 +75,24 @@
                 </p>
             </div>
 
-            <div class="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2">
-                <span class="text-white/30 text-[10px] uppercase tracking-[0.3em] font-bold">Descubre más</span>
-                <div class="text-white/30 animate-bounce">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-                </div>
+            <!-- Botón y Flecha 'Descubre Más' con color de la marca y scroll suave -->
+            <div class="mt-8 md:mt-12">
+                <a href="#historia-origen" class="group inline-flex flex-col items-center gap-2.5 transition-all duration-300">
+                    <span class="text-brand text-xs uppercase tracking-[0.3em] font-black group-hover:tracking-[0.35em] transition-all duration-300">
+                        Descubre más
+                    </span>
+                    <div class="w-11 h-11 rounded-full bg-brand/15 border-2 border-brand/50 flex items-center justify-center text-brand group-hover:bg-brand group-hover:text-white group-hover:border-brand shadow-lg shadow-brand/30 group-hover:scale-110 transition-all duration-300 animate-bounce">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="m6 9 6 6 6-6"/>
+                        </svg>
+                    </div>
+                </a>
             </div>
         </div>
     </section>
 
     <!-- Story Split Section -->
-    <section class="section-padding relative overflow-hidden bg-white dark:bg-surface-900 transition-colors duration-300">
+    <section id="historia-origen" class="section-padding relative overflow-hidden bg-white dark:bg-surface-900 transition-colors duration-300 scroll-mt-24">
         <div class="container-custom">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
                 <div>
