@@ -5,6 +5,20 @@
 @section('meta_keywords', 'cotizar detailing online, agendar detailing chicureo, reserva detailing santiago, precios detailing colina, cotizador detailing')
 
 @section('content')
+<style>
+    .scroll-card-item {
+        scroll-margin-top: 110px;
+        transition: border-color 0.35s ease, box-shadow 0.35s ease, transform 0.35s ease, opacity 0.35s ease;
+        opacity: 0.78;
+    }
+    .scroll-card-item.is-active-scroll-block,
+    .scroll-card-item:hover {
+        border-color: #FB2C6B !important;
+        box-shadow: 0 0 0 3px rgba(251, 44, 107, 0.45), 0 25px 60px -15px rgba(251, 44, 107, 0.35) !important;
+        transform: scale(1.008);
+        opacity: 1 !important;
+    }
+</style>
 <main class="min-h-screen bg-[#070707] text-white transition-colors duration-300 pt-28 pb-20">
     <div class="container-custom max-w-7xl px-4" x-data="bookingWizard()">
         
@@ -981,47 +995,58 @@ function bookingWizard() {
             return found ? found.name : 'Servicios';
         },
 
-        _videoObserver: null,
+        _scrollSpyBound: false,
+        _scrollRaf: null,
 
-        setupScrollVideoObserver() {
-            if (this._videoObserver) {
-                this._videoObserver.disconnect();
+        handleScrollSpy() {
+            const items = Array.from(document.querySelectorAll('.scroll-card-item'));
+            if (!items.length) return;
+
+            // Focal point at 45% of viewport height
+            const focalY = window.innerHeight * 0.45;
+            let closestItem = null;
+            let minDistance = Infinity;
+
+            items.forEach((item) => {
+                const rect = item.getBoundingClientRect();
+                // Element is within the screen bounds
+                if (rect.bottom > 80 && rect.top < window.innerHeight - 80) {
+                    const itemCenterY = rect.top + (rect.height / 2);
+                    const dist = Math.abs(focalY - itemCenterY);
+                    if (dist < minDistance) {
+                        minDistance = dist;
+                        closestItem = item;
+                    }
+                }
+            });
+
+            // Default to first item if at top of page
+            if (!closestItem && items.length > 0 && window.scrollY < 300) {
+                closestItem = items[0];
             }
 
-            const options = {
-                root: null,
-                rootMargin: '0px 0px 0px 0px',
-                threshold: [0, 0.25, 0.5, 0.75, 1.0]
-            };
-
-            this._videoObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    const video = entry.target.querySelector('video.card-video') || (entry.target.tagName === 'VIDEO' ? entry.target : null);
-                    if (!video) return;
-
-                    // When card occupies 35% or more of the viewport, play; when it exits below 20%, pause
-                    if (entry.isIntersecting && entry.intersectionRatio >= 0.35) {
-                        if (video.paused) {
-                            const p = video.play();
-                            if (p !== undefined) p.catch(() => {});
-                        }
-                    } else if (!entry.isIntersecting || entry.intersectionRatio < 0.2) {
-                        if (!video.paused) {
-                            video.pause();
-                        }
+            items.forEach((item) => {
+                const video = item.querySelector('video.card-video');
+                if (item === closestItem) {
+                    item.classList.add('is-active-scroll-block');
+                    if (video && video.paused) {
+                        const p = video.play();
+                        if (p !== undefined) p.catch(() => {});
                     }
-                });
-            }, options);
-
-            const items = document.querySelectorAll('.scroll-card-item');
-            items.forEach(item => this._videoObserver.observe(item));
+                } else {
+                    item.classList.remove('is-active-scroll-block');
+                    if (video && !video.paused) {
+                        video.pause();
+                    }
+                }
+            });
         },
 
         refreshScrollVideos() {
             this.$nextTick(() => {
                 setTimeout(() => {
-                    this.setupScrollVideoObserver();
-                }, 100);
+                    this.handleScrollSpy();
+                }, 120);
             });
         },
 
@@ -1077,7 +1102,15 @@ function bookingWizard() {
             this.saveDraftLead(1);
             this.setupExitIntent();
 
-            // Intelligent scroll video playback activation
+            // Intelligent scroll video playback activation and pink focus ring
+            if (!this._scrollSpyBound) {
+                this._scrollSpyBound = true;
+                window.addEventListener('scroll', () => {
+                    if (this._scrollRaf) cancelAnimationFrame(this._scrollRaf);
+                    this._scrollRaf = requestAnimationFrame(() => this.handleScrollSpy());
+                }, { passive: true });
+            }
+
             this.refreshScrollVideos();
             this.$watch('selectedCategory', () => this.refreshScrollVideos());
             this.$watch('currentStep', () => this.refreshScrollVideos());
