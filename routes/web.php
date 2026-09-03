@@ -141,5 +141,38 @@ Route::middleware(['auth', 'role:ADMIN'])->group(function () {
     Route::delete('/admin/sliders/{id}', [\App\Http\Controllers\AdminHeroController::class, 'destroy'])->name('admin.sliders.destroy');
 });
 
+// Fallback video streaming route to guarantee video delivery across different server docroots (e.g. cPanel public_html vs detailing-app)
+Route::get('/assets/videos/{filename}', function ($filename) {
+    $filename = basename($filename);
+    $candidates = [
+        public_path('assets/videos/' . $filename),
+        base_path('public/assets/videos/' . $filename),
+        dirname(base_path()) . '/public_html/assets/videos/' . $filename,
+        dirname(base_path()) . '/detailing-app/public/assets/videos/' . $filename,
+    ];
+    
+    if (str_contains($filename, 'interior')) {
+        $candidates[] = public_path('assets/videos/interior.mp4');
+        $candidates[] = public_path('assets/videos/interior_nuevo.mp4');
+        $candidates[] = base_path('public/assets/videos/interior.mp4');
+        $candidates[] = base_path('public/assets/videos/interior_nuevo.mp4');
+        $candidates[] = dirname(base_path()) . '/public_html/assets/videos/interior.mp4';
+        $candidates[] = dirname(base_path()) . '/public_html/assets/videos/interior_nuevo.mp4';
+        $candidates[] = dirname(base_path()) . '/detailing-app/public/assets/videos/interior.mp4';
+        $candidates[] = dirname(base_path()) . '/detailing-app/public/assets/videos/interior_nuevo.mp4';
+    }
+
+    foreach ($candidates as $path) {
+        if (file_exists($path) && is_file($path)) {
+            return response()->file($path, [
+                'Content-Type' => 'video/mp4',
+                'Accept-Ranges' => 'bytes',
+                'Cache-Control' => 'public, max-age=86400',
+            ]);
+        }
+    }
+    abort(404);
+})->where('filename', '[a-zA-Z0-9_\-\.]+');
+
 require __DIR__.'/auth.php';
 
