@@ -417,7 +417,15 @@ style="min-height: 100vh; min-height: 100dvh;">
                      } else {
                          this.singleSetWidth = el.scrollWidth / 3;
                      }
-                     el.scrollLeft = this.singleSetWidth;
+
+                     const targetCard = el.children[4] || el.children[0];
+                     if (targetCard) {
+                         const containerWidth = el.clientWidth;
+                         const cardWidth = targetCard.offsetWidth;
+                         el.scrollLeft = targetCard.offsetLeft - (containerWidth / 2) + (cardWidth / 2);
+                     } else {
+                         el.scrollLeft = this.singleSetWidth;
+                     }
 
                      if ('IntersectionObserver' in window) {
                          this._observer = new IntersectionObserver((entries) => {
@@ -456,6 +464,20 @@ style="min-height: 100vh; min-height: 100dvh;">
                  this._scrollRaf = requestAnimationFrame(() => {
                      this.updateActiveVideo();
                  });
+             },
+
+             handleCardClick(e, cardEl, url) {
+                 if (!cardEl.classList.contains('is-active-showcase-card')) {
+                     e.preventDefault();
+                     const el = this.$refs.slider;
+                     const containerWidth = el.clientWidth;
+                     const cardWidth = cardEl.offsetWidth;
+                     el.scrollTo({
+                         left: cardEl.offsetLeft - (containerWidth / 2) + (cardWidth / 2),
+                         behavior: 'smooth'
+                     });
+                     this.triggerSmoothCheck();
+                 }
              },
 
              updateActiveVideo() {
@@ -519,7 +541,7 @@ style="min-height: 100vh; min-height: 100dvh;">
                  const el = this.$refs.slider;
                  if (!el) return;
                  this.checkBounds();
-                 const cardWidth = el.children[0]?.offsetWidth || 380;
+                 const cardWidth = el.querySelector('.showcase-card')?.offsetWidth || 300;
                  const step = cardWidth + 24;
                  el.scrollBy({ left: -step, behavior: 'smooth' });
                  this.triggerSmoothCheck();
@@ -529,7 +551,7 @@ style="min-height: 100vh; min-height: 100dvh;">
                  const el = this.$refs.slider;
                  if (!el) return;
                  this.checkBounds();
-                 const cardWidth = el.children[0]?.offsetWidth || 380;
+                 const cardWidth = el.querySelector('.showcase-card')?.offsetWidth || 300;
                  const step = cardWidth + 24;
                  el.scrollBy({ left: step, behavior: 'smooth' });
                  this.triggerSmoothCheck();
@@ -555,23 +577,23 @@ style="min-height: 100vh; min-height: 100dvh;">
         .showcase-card {
             transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.5s ease, box-shadow 0.5s ease;
             opacity: 0.55;
-            transform: scale(0.975);
+            transform: scale(0.95);
             border-color: rgba(255, 255, 255, 0.12);
         }
         .showcase-card.is-active-showcase-card {
             opacity: 1 !important;
-            transform: scale(1.025) !important;
+            transform: scale(1.03) !important;
             border-color: #FB2C6B !important;
             box-shadow: 0 0 45px rgba(251, 44, 107, 0.4), 0 25px 50px -12px rgba(0, 0, 0, 0.8) !important;
             z-index: 20;
         }
         .showcase-card:hover {
             opacity: 0.85;
-            transform: scale(0.99);
+            transform: scale(0.98);
         }
         .showcase-card.is-active-showcase-card:hover {
             opacity: 1 !important;
-            transform: scale(1.035) !important;
+            transform: scale(1.04) !important;
         }
     </style>
 
@@ -614,12 +636,14 @@ style="min-height: 100vh; min-height: 100dvh;">
         <div x-ref="slider" 
              @scroll.passive="handleScroll()"
              @wheel.passive="handleWheel($event)"
-             class="flex gap-6 overflow-x-auto scrollbar-none py-6 snap-x snap-mandatory cursor-grab active:cursor-grabbing select-none -mx-4 px-4 sm:mx-0 sm:px-0 items-center">
+             class="flex gap-6 overflow-x-auto scrollbar-none py-6 snap-x snap-mandatory cursor-grab active:cursor-grabbing select-none items-center"
+             style="scroll-padding: 0 calc(50% - 150px); padding-left: calc(50% - 150px); padding-right: calc(50% - 150px);">
             
             @for($set = 0; $set < 3; $set++)
                 @foreach($showcaseCards as $card)
                     <a href="{{ $card['url'] }}" 
-                       class="showcase-card w-[300px] sm:w-[380px] h-[480px] shrink-0 snap-start rounded-[2.5rem] overflow-hidden relative group shadow-2xl border-2 block">
+                       @click="handleCardClick($event, $el, '{{ $card['url'] }}')"
+                       class="showcase-card w-[300px] sm:w-[380px] h-[480px] shrink-0 snap-center rounded-[2.5rem] overflow-hidden relative group shadow-2xl border-2 block">
                         <video muted loop playsinline preload="metadata" class="showcase-video w-full h-full object-cover transition-transform duration-700 pointer-events-none">
                             <source src="{{ $card['video'] }}" type="video/mp4">
                         </video>

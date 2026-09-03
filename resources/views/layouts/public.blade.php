@@ -354,8 +354,8 @@
     <!-- Mobile Navigation Slide-Over Drawer -->
     <div 
         x-show="isMobileOpen" 
-        class="fixed inset-0 z-[99999] md:hidden"
-        style="display: none;"
+        class="fixed inset-0 md:hidden"
+        style="display: none; z-index: 999999 !important;"
     >
         <!-- Backdrop Overlay with Deep Blur -->
         <div 
@@ -368,6 +368,7 @@
             x-transition:leave-end="opacity-0"
             @click="isMobileOpen = false"
             class="fixed inset-0 bg-black/85 backdrop-blur-md"
+            style="z-index: 1;"
         ></div>
 
         <!-- Slide-in Drawer Container -->
@@ -379,7 +380,8 @@
             x-transition:leave="transition ease-in duration-200 transform"
             x-transition:leave-start="translate-x-0"
             x-transition:leave-end="translate-x-full"
-            class="fixed inset-y-0 right-0 z-10 w-full max-w-[340px] sm:max-w-sm bg-[#0C0C0C] border-l border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.9)] flex flex-col justify-between overflow-y-auto px-6 py-6 text-left"
+            class="fixed inset-y-0 right-0 w-full max-w-[340px] sm:max-w-sm bg-[#0C0C0C] border-l border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.9)] flex flex-col justify-between overflow-y-auto px-6 py-6 text-left"
+            style="z-index: 2;"
         >
             
             <!-- Drawer Header (Logo & Close Button) -->
