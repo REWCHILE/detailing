@@ -174,5 +174,21 @@ Route::get('/assets/videos/{filename}', function ($filename) {
     abort(404);
 })->where('filename', '[a-zA-Z0-9_\-\.]+');
 
+Route::get('/icon.svg', function () {
+    $path = public_path('icon.svg');
+    if (file_exists($path)) {
+        return response()->file($path, ['Content-Type' => 'image/svg+xml']);
+    }
+    abort(404);
+});
+
+Route::get('/manifest.json', function () {
+    $path = public_path('manifest.json');
+    if (file_exists($path)) {
+        return response()->file($path, ['Content-Type' => 'application/manifest+json']);
+    }
+    abort(404);
+});
+
 require __DIR__.'/auth.php';
 

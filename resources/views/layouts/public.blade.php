@@ -404,10 +404,10 @@
             <div class="w-full py-5 space-y-1 overflow-y-auto">
                 
                 <!-- 1. Inicio Link -->
-                <a href="/" @click="isMobileOpen = false" class="group flex items-center py-2.5 px-3 rounded-2xl transition-all duration-200 {{ request()->is('/') ? 'bg-brand/10 text-brand border border-brand/30' : 'text-white/85 hover:text-white hover:bg-white/5' }}">
+                <a href="/" @click="isMobileOpen = false" class="group flex items-center py-2.5 px-3 rounded-2xl transition-all duration-200 {{ request()->is('/') ? 'bg-brand/10 text-brand border border-brand/30' : 'text-white hover:bg-white/5' }}">
                     <div class="flex items-center gap-3">
                         <span class="w-1.5 h-1.5 rounded-full {{ request()->is('/') ? 'bg-brand shadow-[0_0_8px_rgba(251,44,107,0.8)]' : 'bg-transparent group-hover:bg-brand/60' }} transition-all"></span>
-                        <span class="font-display text-lg font-bold tracking-tight">Inicio</span>
+                        <span class="font-display text-lg font-bold tracking-tight text-white">Inicio</span>
                     </div>
                 </a>
 
@@ -416,13 +416,13 @@
                     <button 
                         type="button" 
                         @click="mobileServicesOpen = !mobileServicesOpen" 
-                        class="w-full group flex items-center justify-between py-2.5 px-3 rounded-2xl transition-all duration-200 cursor-pointer {{ $isServicesActive ? 'bg-brand/10 text-brand border border-brand/30' : 'text-white/85 hover:text-white hover:bg-white/5' }}"
+                        class="w-full group flex items-center justify-between py-2.5 px-3 rounded-2xl transition-all duration-200 cursor-pointer {{ $isServicesActive ? 'bg-brand/10 text-brand border border-brand/30' : 'text-white hover:bg-white/5' }}"
                     >
                         <div class="flex items-center gap-3">
                             <span class="w-1.5 h-1.5 rounded-full {{ $isServicesActive ? 'bg-brand shadow-[0_0_8px_rgba(251,44,107,0.8)]' : 'bg-transparent group-hover:bg-brand/60' }} transition-all"></span>
-                            <span class="font-display text-lg font-bold tracking-tight">Servicios</span>
+                            <span class="font-display text-lg font-bold tracking-tight text-white">Servicios</span>
                         </div>
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform duration-300 {{ $isServicesActive ? 'text-brand' : 'text-white/40' }}" :class="mobileServicesOpen ? 'rotate-180 text-brand' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 transition-transform duration-300 {{ $isServicesActive ? 'text-brand' : 'text-white/60' }}" :class="mobileServicesOpen ? 'rotate-180 text-brand' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7" /></svg>
                     </button>
 
                     <!-- Collapsible Sub-Services List -->
@@ -439,7 +439,7 @@
                                             <div class="w-7 h-7 rounded-lg flex items-center justify-center shrink-0 shadow-inner" style="background-color: {{ $detail['bg_raw'] }}; color: {{ $detail['color_raw'] }}">
                                                 {!! $detail['icon'] !!}
                                             </div>
-                                            <span class="text-xs font-bold tracking-tight">{{ $detail['label'] }}</span>
+                                            <span class="text-xs font-bold tracking-tight text-white">{{ $detail['label'] }}</span>
                                         </div>
                                     </a>
                                 @endif
@@ -449,24 +449,24 @@
                 </div>
 
                 <!-- 3. Nosotros Link -->
-                <a href="/nosotros" @click="isMobileOpen = false" class="group flex items-center py-2.5 px-3 rounded-2xl transition-all duration-200 {{ request()->is('nosotros') ? 'bg-brand/10 text-brand border border-brand/30' : 'text-white/85 hover:text-white hover:bg-white/5' }}">
+                <a href="/nosotros" @click="isMobileOpen = false" class="group flex items-center py-2.5 px-3 rounded-2xl transition-all duration-200 {{ request()->is('nosotros') ? 'bg-brand/10 text-brand border border-brand/30' : 'text-white hover:bg-white/5' }}">
                     <div class="flex items-center gap-3">
                         <span class="w-1.5 h-1.5 rounded-full {{ request()->is('nosotros') ? 'bg-brand shadow-[0_0_8px_rgba(251,44,107,0.8)]' : 'bg-transparent group-hover:bg-brand/60' }} transition-all"></span>
-                        <span class="font-display text-lg font-bold tracking-tight">Nosotros</span>
+                        <span class="font-display text-lg font-bold tracking-tight text-white">Nosotros</span>
                     </div>
                 </a>
 
                 <!-- Secondary Section (Galería, Testimonios, Preguntas) -->
                 <div class="pt-3 mt-2 border-t border-white/10 space-y-1">
-                    <span class="text-[9px] font-bold uppercase tracking-[0.2em] text-white/30 px-3 block mb-1">Explora el Taller</span>
+                    <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-white/50 px-3 block mb-1">Explora el Taller</span>
                     
-                    <a href="/#galeria" @click="isMobileOpen = false" class="flex items-center py-2 px-3 rounded-xl text-xs font-semibold text-white/70 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="/#galeria" @click="isMobileOpen = false" class="flex items-center py-2 px-3 rounded-xl text-sm font-semibold text-white/80 hover:text-white hover:bg-white/5 transition-colors">
                         <span>Galería de Trabajos</span>
                     </a>
-                    <a href="/#testimonios" @click="isMobileOpen = false" class="flex items-center py-2 px-3 rounded-xl text-xs font-semibold text-white/70 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="/#testimonios" @click="isMobileOpen = false" class="flex items-center py-2 px-3 rounded-xl text-sm font-semibold text-white/80 hover:text-white hover:bg-white/5 transition-colors">
                         <span>Testimonios de Clientes</span>
                     </a>
-                    <a href="/#faq" @click="isMobileOpen = false" class="flex items-center py-2 px-3 rounded-xl text-xs font-semibold text-white/70 hover:text-white hover:bg-white/5 transition-colors">
+                    <a href="/#faq" @click="isMobileOpen = false" class="flex items-center py-2 px-3 rounded-xl text-sm font-semibold text-white/80 hover:text-white hover:bg-white/5 transition-colors">
                         <span>Preguntas Frecuentes</span>
                     </a>
 
@@ -484,23 +484,23 @@
             </div>
 
             <!-- Drawer Bottom Actions (Fast WhatsApp & Online Booking) -->
-            <div class="w-full pt-4 border-t border-white/10 space-y-2.5 shrink-0">
+            <div class="w-full pt-4 border-t border-white/10 space-y-3.5 shrink-0">
                 <!-- 1. Main Booking Button -->
                 <a href="/reserva" @click="isMobileOpen = false" class="w-full py-3.5 px-5 rounded-full bg-brand hover:bg-brand-dark text-white font-display italic font-black text-sm uppercase tracking-wider shadow-xl shadow-brand/30 flex items-center justify-center gap-2 transition-all hover:scale-[1.02]">
                     <span>COTIZAR AHORA</span>
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
                 </a>
 
-                <!-- 2. Quick WhatsApp Chat -->
-                <a href="https://wa.me/{{ $whatsappNumber }}?text={{ $whatsappMsg }}" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 rounded-full bg-zinc-900/90 border border-emerald-500/30 hover:border-emerald-500/60 text-emerald-400 font-display font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 transition-all shadow-md">
-                    <svg class="w-4 h-4 fill-current text-emerald-400 shrink-0" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.993.585 1.771.884 2.802.884l.006.001c3.18 0 5.767-2.586 5.768-5.766 0-3.18-2.587-5.772-5.78-5.772zm3.393 8.245c-.144.405-.837.774-1.17.824-.312.045-.694.073-1.905-.429-1.547-.643-2.534-2.213-2.61-2.316-.076-.103-.625-.833-.625-1.59 0-.756.397-1.127.538-1.282.14-.156.307-.195.41-.195.102 0 .205.001.294.005.093.004.218-.035.34.258.125.297.424 1.036.46 1.112.038.077.063.167.013.268-.052.102-.078.166-.155.257-.078.09-.163.2-.234.269-.078.077-.16.16-.068.318.092.158.408.672.875 1.088.6.536 1.106.702 1.264.78.158.077.25-.067.34-.171.092-.104.394-.462.499-.619.104-.157.208-.13.348-.078.14.052.888.419 1.04.496.152.078.254.116.29.181.037.065.037.377-.107.782z"/></svg>
-                    <span>Hablar por WhatsApp</span>
+                <!-- 2. Quick WhatsApp Chat (Official WhatsApp Green #25D366) -->
+                <a href="https://wa.me/{{ $whatsappNumber }}?text={{ $whatsappMsg }}" target="_blank" rel="noopener noreferrer" class="w-full py-3.5 px-5 rounded-full bg-[#25D366] hover:bg-[#20ba59] text-white font-display font-black text-xs uppercase tracking-wider shadow-lg shadow-[#25D366]/30 flex items-center justify-center gap-2.5 transition-all hover:scale-[1.02]">
+                    <svg class="w-5 h-5 fill-white shrink-0" viewBox="0 0 24 24"><path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.698c.993.585 1.771.884 2.802.884l.006.001c3.18 0 5.767-2.586 5.768-5.766 0-3.18-2.587-5.772-5.78-5.772zm3.393 8.245c-.144.405-.837.774-1.17.824-.312.045-.694.073-1.905-.429-1.547-.643-2.534-2.213-2.61-2.316-.076-.103-.625-.833-.625-1.59 0-.756.397-1.127.538-1.282.14-.156.307-.195.41-.195.102 0 .205.001.294.005.093.004.218-.035.34.258.125.297.424 1.036.46 1.112.038.077.063.167.013.268-.052.102-.078.166-.155.257-.078.09-.163.2-.234.269-.078.077-.16.16-.068.318.092.158.408.672.875 1.088.6.536 1.106.702 1.264.78.158.077.25-.067.34-.171.092-.104.394-.462.499-.619.104-.157.208-.13.348-.078.14.052.888.419 1.04.496.152.078.254.116.29.181.037.065.037.377-.107.782z"/></svg>
+                    <span>HABLAR POR WHATSAPP</span>
                 </a>
 
                 <!-- 3. Location & Micro footer -->
-                <div class="pt-2 flex items-center justify-between text-[11px] text-white/40">
+                <div class="pt-2 flex items-center justify-between text-[11px] text-white/50">
                     <span class="flex items-center gap-1">📍 Chicureo, Colina</span>
-                    <a href="https://instagram.com/{{ ltrim($profile->instagram ?? 'highcontrastdc', '@') }}" target="_blank" rel="noopener noreferrer" class="text-white/60 hover:text-brand transition-colors">
+                    <a href="https://instagram.com/{{ ltrim($profile->instagram ?? 'highcontrastdc', '@') }}" target="_blank" rel="noopener noreferrer" class="text-white/70 hover:text-brand transition-colors">
                         {{ '@' . ltrim($profile->instagram ?? 'highcontrastdc', '@') }}
                     </a>
                 </div>
