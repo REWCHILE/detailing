@@ -16,6 +16,8 @@
             @endphp
             <video autoplay muted loop playsinline class="w-full h-full object-cover opacity-50">
                 <source src="{{ $interiorVideo }}" type="video/mp4">
+                <source src="/assets/videos/interior_nuevo.mp4" type="video/mp4">
+                <source src="/assets/videos/interior.mp4" type="video/mp4">
             </video>
             <div class="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/85 via-transparent to-[#0A0A0A]"></div>
             <div class="absolute inset-0 bg-gradient-to-r from-[#0A0A0A]/60 via-transparent to-[#0A0A0A]/60"></div>

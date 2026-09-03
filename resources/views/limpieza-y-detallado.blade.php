@@ -283,6 +283,10 @@
                                 <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
                                     <video autoplay loop muted playsinline poster="/assets/images/cotizador_banner.png" class="w-full h-full object-cover opacity-60 group-hover:opacity-80 group-hover:scale-105 transition-all duration-700">
                                         <source src="{{ $srvVideo }}" type="video/mp4">
+                                        @if(str_contains($slug, 'interior') || str_contains($srv->name, 'Interior'))
+                                            <source src="/assets/videos/interior_nuevo.mp4" type="video/mp4">
+                                            <source src="/assets/videos/interior.mp4" type="video/mp4">
+                                        @endif
                                     </video>
                                     <div class="absolute inset-0 bg-black/45 pointer-events-none z-10"></div>
                                     <div class="absolute inset-x-0 top-0 h-44 bg-gradient-to-b from-black/90 via-black/50 to-transparent pointer-events-none z-10"></div>

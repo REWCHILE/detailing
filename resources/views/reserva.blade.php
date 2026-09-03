@@ -133,20 +133,22 @@
                                             <img :src="cat.image || '/assets/images/cotizador_banner.png'" :alt="cat.name" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out z-0">
                                         </template>
                                         
-                                        <!-- Soft bottom-only gradient: 100% clear video, soft fade behind text -->
-                                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 via-25% to-transparent z-10 pointer-events-none"></div>
+                                        <!-- Panoramic Video Background with Dark Tint and Cinematic Vignettes -->
+                                        <div class="absolute inset-0 bg-black/40 pointer-events-none z-10"></div>
+                                        <div class="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/80 via-black/30 to-transparent pointer-events-none z-10"></div>
+                                        <div class="absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-black/95 via-black/75 via-45% to-transparent pointer-events-none z-10"></div>
 
-                                        <!-- Bottom Row: Title in Pink, Full Description & CTA Button -->
+                                        <!-- Bottom Row: Title in Pure White, Full Description & CTA Button -->
                                         <div class="relative z-20 pt-4">
                                             <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
                                                 <div class="max-w-2xl">
-                                                    <h4 class="font-display font-black text-2xl sm:text-3xl md:text-4xl text-brand uppercase tracking-tight drop-shadow-[0_4px_12px_rgba(0,0,0,1)] leading-tight mb-2 group-hover:text-brand transition-colors"
+                                                    <h4 class="font-display font-black text-2xl sm:text-3xl md:text-4xl text-white uppercase tracking-tight drop-shadow-[0_4px_16px_rgba(0,0,0,1)] leading-tight mb-2 transition-colors"
                                                         x-text="cat.name"></h4>
                                                     <p class="text-sm sm:text-base text-white/95 drop-shadow-[0_2px_8px_rgba(0,0,0,1)] leading-relaxed font-medium"
                                                        x-text="cat.description"></p>
                                                 </div>
 
-                                                <div class="flex items-center gap-3 text-xs sm:text-sm font-black uppercase tracking-wider text-brand shrink-0">
+                                                <div class="flex items-center gap-3 text-xs sm:text-sm font-black uppercase tracking-wider text-white shrink-0">
                                                     <span class="drop-shadow-[0_2px_6px_rgba(0,0,0,1)]">Explorar Servicios</span>
                                                     <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-brand text-white flex items-center justify-center transition-all duration-300 shadow-xl shadow-brand/40 group-hover:scale-110">
                                                         <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3"/></svg>
@@ -211,6 +213,7 @@
                                                     class="card-video w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out z-0 pointer-events-none"
                                                 >
                                                     <source :src="getServiceVideo(srv)" type="video/mp4">
+                                                    <source :src="getServiceVideoFallback(srv)" type="video/mp4">
                                                 </video>
                                             </template>
                                             <template x-if="!getServiceVideo(srv)">
@@ -221,8 +224,10 @@
                                                 >
                                             </template>
                                             
-                                            <!-- Soft bottom-only gradient: 100% clear video, strong fade behind text for legibility -->
-                                            <div class="absolute inset-0 bg-gradient-to-t from-black/95 via-black/75 via-50% to-transparent z-10 pointer-events-none"></div>
+                                            <!-- Cinematic Vignettes & Subtle Dark Tint so the video is super clear yet high contrast -->
+                                            <div class="absolute inset-0 bg-black/40 pointer-events-none z-10"></div>
+                                            <div class="absolute inset-x-0 top-0 h-40 bg-gradient-to-b from-black/80 via-black/30 to-transparent pointer-events-none z-10"></div>
+                                            <div class="absolute inset-x-0 bottom-0 h-56 bg-gradient-to-t from-black/95 via-black/75 via-45% to-transparent pointer-events-none z-10"></div>
                                         </div>
 
                                         <!-- Bottom Row: Title, Description, Price & Action Buttons -->
@@ -1343,11 +1348,11 @@ function bookingWizard() {
             }
 
             // 2. Limpieza & Detallado Category
-            if (cat === 'limpieza') {
+            if (cat === 'limpieza' || slug.includes('interior') || name.includes('interior') || slug.includes('detallado') || name.includes('detallado') || slug.includes('lavado') || name.includes('lavado')) {
                 if (name.includes('avanzado') || slug.includes('avanzado')) {
                     return '/assets/videos/lavado-avanzado.mp4';
                 }
-                if (name.includes('interior') || slug.includes('interior')) {
+                if (name.includes('interior') || slug.includes('interior') || name.includes('detallado') || slug.includes('detallado') || slug.includes('tapiz') || name.includes('tapiz')) {
                     return '/assets/videos/interior.mp4';
                 }
                 if (name.includes('completo') || slug.includes('completo')) {
@@ -1384,6 +1389,19 @@ function bookingWizard() {
                 especiales: '/assets/videos/exoshield-brand.mp4'
             };
             return fallbackVideos[cat] || '/assets/videos/lavado-premium.mp4';
+        },
+
+        getServiceVideoFallback(srv) {
+            if (!srv) return '';
+            const vid = this.getServiceVideo(srv);
+            if (!vid) return '';
+            if (vid.includes('interior.mp4')) {
+                return '/assets/videos/interior_nuevo.mp4';
+            }
+            if (vid.includes('interior_nuevo.mp4')) {
+                return '/assets/videos/interior.mp4';
+            }
+            return '';
         },
 
         getCategoryBadgeLabel(srv) {
@@ -1754,8 +1772,8 @@ function bookingWizard() {
             if (sSlug.includes('avanzado') || sName.includes('avanzado')) {
                 return '/assets/videos/lavado-avanzado.mp4';
             }
-            if (sSlug.includes('interior') || sName.includes('interior')) {
-                return '/assets/videos/detailing-terminacion.mp4';
+            if (sSlug.includes('interior') || sName.includes('interior') || sSlug.includes('detallado') || sName.includes('detallado')) {
+                return '/assets/videos/interior.mp4';
             }
             return '/assets/videos/lavado-premium.mp4';
         },
