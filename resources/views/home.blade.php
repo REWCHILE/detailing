@@ -402,6 +402,10 @@ style="min-height: 100vh; min-height: 100dvh;">
          x-data="{
              singleSetWidth: 0,
              isResetting: false,
+             _scrollRaf: null,
+             _observer: null,
+             isSectionVisible: true,
+
              initCarousel() {
                  this.$nextTick(() => {
                      const el = this.$refs.slider;
@@ -414,8 +418,23 @@ style="min-height: 100vh; min-height: 100dvh;">
                          this.singleSetWidth = el.scrollWidth / 3;
                      }
                      el.scrollLeft = this.singleSetWidth;
+
+                     if ('IntersectionObserver' in window) {
+                         this._observer = new IntersectionObserver((entries) => {
+                             entries.forEach(entry => {
+                                 this.isSectionVisible = entry.isIntersecting;
+                                 this.updateActiveVideo();
+                             });
+                         }, { threshold: 0.15 });
+                         this._observer.observe(this.$el);
+                     }
+
+                     setTimeout(() => {
+                         this.updateActiveVideo();
+                     }, 150);
                  });
              },
+
              checkBounds() {
                  if (this.isResetting) return;
                  const el = this.$refs.slider;
@@ -430,6 +449,72 @@ style="min-height: 100vh; min-height: 100dvh;">
                      setTimeout(() => { this.isResetting = false; }, 50);
                  }
              },
+
+             handleScroll() {
+                 this.checkBounds();
+                 if (this._scrollRaf) cancelAnimationFrame(this._scrollRaf);
+                 this._scrollRaf = requestAnimationFrame(() => {
+                     this.updateActiveVideo();
+                 });
+             },
+
+             updateActiveVideo() {
+                 const el = this.$refs.slider;
+                 if (!el) return;
+
+                 const cards = Array.from(el.querySelectorAll('.showcase-card'));
+                 if (!cards.length) return;
+
+                 // If section is not visible on screen, pause all videos
+                 if (!this.isSectionVisible) {
+                     cards.forEach(c => {
+                         const v = c.querySelector('video');
+                         if (v && !v.paused) v.pause();
+                     });
+                     return;
+                 }
+
+                 const containerRect = el.getBoundingClientRect();
+                 const focalX = containerRect.left + (containerRect.width / 2);
+
+                 let closestCard = null;
+                 let minDistance = Infinity;
+
+                 cards.forEach(card => {
+                     const rect = card.getBoundingClientRect();
+                     if (rect.right > containerRect.left && rect.left < containerRect.right) {
+                         const cardCenterX = rect.left + (rect.width / 2);
+                         const dist = Math.abs(focalX - cardCenterX);
+                         if (dist < minDistance) {
+                             minDistance = dist;
+                             closestCard = card;
+                         }
+                     }
+                 });
+
+                 if (!closestCard && cards.length > 0) {
+                     closestCard = cards[0];
+                 }
+
+                 cards.forEach(card => {
+                     const video = card.querySelector('video');
+                     if (card === closestCard) {
+                         card.classList.add('is-active-showcase-card');
+                         card.classList.remove('is-inactive-showcase-card');
+                         if (video && video.paused) {
+                             const p = video.play();
+                             if (p !== undefined) p.catch(() => {});
+                         }
+                     } else {
+                         card.classList.remove('is-active-showcase-card');
+                         card.classList.add('is-inactive-showcase-card');
+                         if (video && !video.paused) {
+                             video.pause();
+                         }
+                     }
+                 });
+             },
+
              scrollLeft() {
                  const el = this.$refs.slider;
                  if (!el) return;
@@ -437,7 +522,9 @@ style="min-height: 100vh; min-height: 100dvh;">
                  const cardWidth = el.children[0]?.offsetWidth || 380;
                  const step = cardWidth + 24;
                  el.scrollBy({ left: -step, behavior: 'smooth' });
+                 this.triggerSmoothCheck();
              },
+
              scrollRight() {
                  const el = this.$refs.slider;
                  if (!el) return;
@@ -445,17 +532,49 @@ style="min-height: 100vh; min-height: 100dvh;">
                  const cardWidth = el.children[0]?.offsetWidth || 380;
                  const step = cardWidth + 24;
                  el.scrollBy({ left: step, behavior: 'smooth' });
+                 this.triggerSmoothCheck();
              },
+
+             triggerSmoothCheck() {
+                 [100, 250, 450, 650].forEach(delay => {
+                     setTimeout(() => this.updateActiveVideo(), delay);
+                 });
+             },
+
              handleWheel(e) {
                  if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
                      this.$refs.slider.scrollLeft += e.deltaY * 1.2;
-                     this.checkBounds();
+                     this.handleScroll();
                  }
              }
          }"
          x-init="initCarousel()"
          @resize.window.debounce.200ms="initCarousel()"
          class="py-24 md:py-32 relative overflow-hidden bg-white dark:bg-[#0A0A0A] transition-colors duration-300">
+    <style>
+        .showcase-card {
+            transition: opacity 0.5s ease, transform 0.5s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.5s ease, box-shadow 0.5s ease;
+            opacity: 0.55;
+            transform: scale(0.975);
+            border-color: rgba(255, 255, 255, 0.12);
+        }
+        .showcase-card.is-active-showcase-card {
+            opacity: 1 !important;
+            transform: scale(1.025) !important;
+            border-color: #FB2C6B !important;
+            box-shadow: 0 0 45px rgba(251, 44, 107, 0.4), 0 25px 50px -12px rgba(0, 0, 0, 0.8) !important;
+            z-index: 20;
+        }
+        .showcase-card:hover {
+            opacity: 0.85;
+            transform: scale(0.99);
+        }
+        .showcase-card.is-active-showcase-card:hover {
+            opacity: 1 !important;
+            transform: scale(1.035) !important;
+        }
+    </style>
+
     <!-- Glow accent -->
     <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-brand/10 dark:bg-brand/15 rounded-full blur-[160px] pointer-events-none"></div>
 
@@ -479,12 +598,12 @@ style="min-height: 100vh; min-height: 100dvh;">
             <!-- Interactive Scroll Navigation Arrows -->
             <div class="flex items-center gap-3 shrink-0">
                 <button @click="scrollLeft()" 
-                        class="w-12 h-12 rounded-full border border-black/10 dark:border-white/20 bg-black/5 dark:bg-white/5 hover:bg-brand dark:hover:bg-brand hover:border-brand hover:text-white text-black dark:text-white flex items-center justify-center transition-all duration-300 shadow-md hover:scale-105 active:scale-95" 
+                        class="w-12 h-12 rounded-full border border-black/10 dark:border-white/20 bg-black/5 dark:bg-white/5 hover:bg-brand dark:hover:bg-brand hover:border-brand hover:text-white text-black dark:text-white flex items-center justify-center transition-all duration-300 shadow-md hover:scale-105 active:scale-95 cursor-pointer" 
                         aria-label="Anterior card">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
                 </button>
                 <button @click="scrollRight()" 
-                        class="w-12 h-12 rounded-full border border-black/10 dark:border-white/20 bg-black/5 dark:bg-white/5 hover:bg-brand dark:hover:bg-brand hover:border-brand hover:text-white text-black dark:text-white flex items-center justify-center transition-all duration-300 shadow-md hover:scale-105 active:scale-95" 
+                        class="w-12 h-12 rounded-full border border-black/10 dark:border-white/20 bg-black/5 dark:bg-white/5 hover:bg-brand dark:hover:bg-brand hover:border-brand hover:text-white text-black dark:text-white flex items-center justify-center transition-all duration-300 shadow-md hover:scale-105 active:scale-95 cursor-pointer" 
                         aria-label="Siguiente card">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
                 </button>
@@ -493,15 +612,15 @@ style="min-height: 100vh; min-height: 100dvh;">
 
         <!-- EVOKN Horizontal Scroll Track (Infinite Cloned Loop) -->
         <div x-ref="slider" 
-             @scroll.debounce.150ms="checkBounds()"
+             @scroll.passive="handleScroll()"
              @wheel.passive="handleWheel($event)"
-             class="flex gap-6 overflow-x-auto scrollbar-none py-4 snap-x snap-mandatory cursor-grab active:cursor-grabbing select-none -mx-4 px-4 sm:mx-0 sm:px-0">
+             class="flex gap-6 overflow-x-auto scrollbar-none py-6 snap-x snap-mandatory cursor-grab active:cursor-grabbing select-none -mx-4 px-4 sm:mx-0 sm:px-0 items-center">
             
             @for($set = 0; $set < 3; $set++)
                 @foreach($showcaseCards as $card)
                     <a href="{{ $card['url'] }}" 
-                       class="w-[300px] sm:w-[380px] h-[480px] shrink-0 snap-start rounded-[2.5rem] overflow-hidden relative group shadow-2xl border border-black/10 dark:border-white/10 transition-all duration-500 hover:scale-[1.02] hover:border-brand/50 block">
-                        <video autoplay muted loop playsinline class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                       class="showcase-card w-[300px] sm:w-[380px] h-[480px] shrink-0 snap-start rounded-[2.5rem] overflow-hidden relative group shadow-2xl border-2 block">
+                        <video muted loop playsinline preload="metadata" class="showcase-video w-full h-full object-cover transition-transform duration-700 pointer-events-none">
                             <source src="{{ $card['video'] }}" type="video/mp4">
                         </video>
                         <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent"></div>
