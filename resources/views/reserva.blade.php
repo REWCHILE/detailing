@@ -1312,11 +1312,11 @@ function bookingWizard() {
             if (name.includes('multi')) return '/assets/images/galeria/HCD-70.jpg';
             if (name.includes('un paso') || name.includes('1 etapa')) return '/assets/images/galeria/MVW00751.jpg';
             if (name.includes('focos')) return '/assets/images/galeria/White Rcf-7.jpg';
-            if (name.includes('lavado premium')) return '/assets/images/galeria/Wash.jpg';
-            if (name.includes('lavado avanzado')) return '/assets/images/galeria/Red ZO6-20.jpg';
-            if (name.includes('detailing interior')) return '/assets/images/galeria/HCD-17.jpg';
-            if (name.includes('detailing completo')) return '/assets/images/galeria/1-22-25-39.jpg';
-            if (name.includes('exoshield')) return '/assets/images/exoshield/gt3-box.png';
+            if (name.includes('lavado premium') || slug.includes('lavado-premium') || slug.includes('paquete-lavado')) return '/assets/images/galeria/Wash.jpg';
+            if (name.includes('avanzado') || slug.includes('avanzado')) return '/assets/images/galeria/Red ZO6-20.jpg';
+            if (name.includes('interior') || slug.includes('interior') || name.includes('detallado') || slug.includes('detallado')) return '/assets/images/galeria/HCD-17.jpg';
+            if (name.includes('completo') || slug.includes('completo')) return '/assets/images/galeria/1-22-25-39.jpg';
+            if (name.includes('exoshield') || slug.includes('exoshield')) return '/assets/images/exoshield/gt3-box.png';
             
             const key = this.getServiceCatKey(srv);
             const fallbackImages = {
