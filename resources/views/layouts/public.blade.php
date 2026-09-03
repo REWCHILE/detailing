@@ -178,6 +178,37 @@
             || request()->is('sellado-ceramico') 
             || request()->is('pulido-de-autos-santiago') 
             || request()->is('proteccion-parabrisas-santiago');
+
+        $catDetails = [
+            'limpieza' => [
+                'label' => 'Limpieza & Detallado', 
+                'url' => '/limpieza-y-detallado', 
+                'bg_raw' => 'rgba(59, 130, 246, 0.08)',
+                'color_raw' => '#3b82f6',
+                'icon' => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z" /></svg>'
+            ],
+            'correccion' => [
+                'label' => 'Corrección de Pintura', 
+                'url' => '/pulido-de-autos-santiago', 
+                'bg_raw' => 'rgba(245, 158, 11, 0.08)',
+                'color_raw' => '#f59e0b',
+                'icon' => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3M12 18v3M3 12H6M21 12h-3"/><path d="M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/><circle cx="12" cy="12" r="3.5"/></svg>'
+            ],
+            'ceramico' => [
+                'label' => 'Ceramic Coating', 
+                'url' => '/sellado-ceramico', 
+                'bg_raw' => 'rgba(16, 185, 129, 0.08)',
+                'color_raw' => '#10b981',
+                'icon' => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>'
+            ],
+            'especiales' => [
+                'label' => 'Protección ExoShield', 
+                'url' => '/proteccion-parabrisas-santiago', 
+                'bg_raw' => 'rgba(139, 92, 246, 0.08)',
+                'color_raw' => '#8b5cf6',
+                'icon' => '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 18h20L19 7H5L2 18z"/><path d="M12 18A6 6 0 0 0 6 12"/></svg>'
+            ],
+        ];
     @endphp
 </head>
 <body class="antialiased bg-gray-50 text-black dark:bg-[#0A0A0A] dark:text-[#F5F5F5] transition-colors duration-300" 
@@ -320,31 +351,36 @@
 
     </nav>
 
-    <!-- Mobile Navigation Slide-Over Drawer (Right to Left - Luxury Edition) -->
-    <div x-show="isMobileOpen" 
-         class="md:hidden fixed inset-0 z-[99999] overflow-hidden" 
-         x-cloak>
-        
+    <!-- Mobile Navigation Slide-Over Drawer -->
+    <div 
+        x-show="isMobileOpen" 
+        class="fixed inset-0 z-[99999] md:hidden"
+        style="display: none;"
+    >
         <!-- Backdrop Overlay with Deep Blur -->
-        <div x-show="isMobileOpen"
-             x-transition:enter="transition-opacity ease-out duration-300"
-             x-transition:enter-start="opacity-0"
-             x-transition:enter-end="opacity-100"
-             x-transition:leave="transition-opacity ease-in duration-200"
-             x-transition:leave-start="opacity-100"
-             x-transition:leave-end="opacity-0"
-             @click="isMobileOpen = false"
-             class="fixed inset-0 bg-black/85 backdrop-blur-md"></div>
+        <div 
+            x-show="isMobileOpen"
+            x-transition:enter="transition-opacity ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition-opacity ease-in duration-200"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+            @click="isMobileOpen = false"
+            class="fixed inset-0 bg-black/85 backdrop-blur-md"
+        ></div>
 
         <!-- Slide-in Drawer Container -->
-        <div x-show="isMobileOpen"
-             x-transition:enter="transform transition ease-out duration-300"
-             x-transition:enter-start="translate-x-full"
-             x-transition:enter-end="translate-x-0"
-             x-transition:leave="transform transition ease-in duration-200"
-             x-transition:leave-start="translate-x-0"
-             x-transition:leave-end="translate-x-full"
-             class="fixed inset-y-0 right-0 w-full max-w-[340px] sm:max-w-sm bg-[#0C0C0C]/98 border-l border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.9)] backdrop-blur-2xl flex flex-col justify-between overflow-y-auto px-6 py-6 text-left">
+        <div 
+            x-show="isMobileOpen"
+            x-transition:enter="transition ease-out duration-300 transform"
+            x-transition:enter-start="translate-x-full"
+            x-transition:enter-end="translate-x-0"
+            x-transition:leave="transition ease-in duration-200 transform"
+            x-transition:leave-start="translate-x-0"
+            x-transition:leave-end="translate-x-full"
+            class="fixed inset-y-0 right-0 z-10 w-full max-w-[340px] sm:max-w-sm bg-[#0C0C0C] border-l border-white/10 shadow-[0_0_50px_rgba(0,0,0,0.9)] flex flex-col justify-between overflow-y-auto px-6 py-6 text-left"
+        >
             
             <!-- Drawer Header (Logo & Close Button) -->
             <div class="w-full flex items-center justify-between pb-4 border-b border-white/10">
