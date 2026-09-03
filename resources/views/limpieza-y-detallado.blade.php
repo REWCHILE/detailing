@@ -172,34 +172,57 @@
                         }
                     }
 
-                    // Ensure the 3 standard services for limpieza are always present
-                    $expectedSlugs = ['paquete-lavado', 'paquete-lavado-avanzado', 'paquete-detallado-interior'];
+                    // Ensure the 3 standard services for limpieza are always present without duplicates
+                    $usedIds = [];
                     $categoryServices = collect();
-                    foreach ($expectedSlugs as $slug) {
-                        $srv = $services->get($slug) 
-                            ?? $services->first(fn($s) => $s->slug === $slug || str_contains($s->slug, str_replace('paquete-', '', $slug)))
-                            ?? \App\Models\Service::with('vehicleTypes')->where('slug', $slug)->first();
-                        if ($srv) {
-                            $categoryServices->push($srv);
-                        } else {
-                            if ($slug === 'paquete-lavado') {
-                                $mock = new \App\Models\Service([
-                                    'id' => '01kwfafhqzp9pn17fgt5y6fhrb',
-                                    'name' => 'Lavado Premium',
-                                    'slug' => 'paquete-lavado',
-                                    'category' => 'limpieza',
-                                    'base_price' => 35000,
-                                    'short_description' => 'Lavado técnico artesanal con método de dos baldes, shampoo pH neutro, descontaminado de llantas y acondicionador.',
-                                    'long_description' => "- Lavado a mano artesanal con shampoo neutro\n- Limpieza profunda de llantas y calipers\n- Limpieza de cristales y espejos\n- Aplicación de dressing protector en neumáticos\n- Aspirado interior básico y protección de plásticos"
-                                ]);
-                                $mock->vehicleTypes = collect([
-                                    (object)['name' => 'Pequeños', 'slug' => 'autos', 'pivot' => (object)['price' => 35000]],
-                                    (object)['name' => 'Medianos', 'slug' => 'medianos', 'pivot' => (object)['price' => 45000]],
-                                    (object)['name' => 'Grandes', 'slug' => 'grandes', 'pivot' => (object)['price' => 55000]],
-                                ]);
-                                $categoryServices->push($mock);
-                            }
-                        }
+
+                    // 1. Tier 1: Lavado Básico / Premium
+                    $tier1 = $services->get('paquete-lavado')
+                        ?? $services->get('lavado-premium')
+                        ?? $services->get('paquete-lavado-premium')
+                        ?? $services->first(fn($s) => in_array($s->slug, ['paquete-lavado', 'lavado-premium', 'paquete-lavado-premium']))
+                        ?? $services->first(fn($s) => ($s->category === 'limpieza' || str_contains($s->slug, 'lavado')) && !str_contains($s->slug, 'avanzado') && !str_contains($s->slug, 'interior') && !in_array($s->id, $usedIds))
+                        ?? \App\Models\Service::with('vehicleTypes')->whereIn('slug', ['paquete-lavado', 'lavado-premium'])->first();
+
+                    if (!$tier1) {
+                        $tier1 = new \App\Models\Service([
+                            'id' => '01kwfafhqzp9pn17fgt5y6fhrb',
+                            'name' => 'Lavado Premium',
+                            'slug' => 'paquete-lavado',
+                            'category' => 'limpieza',
+                            'base_price' => 35000,
+                            'short_description' => 'Lavado técnico artesanal con método de dos baldes, shampoo pH neutro, descontaminado de llantas y acondicionador.',
+                            'long_description' => "- Lavado a mano artesanal con shampoo neutro\n- Limpieza profunda de llantas y calipers\n- Limpieza de cristales y espejos\n- Aplicación de dressing protector en neumáticos\n- Aspirado interior básico y protección de plásticos"
+                        ]);
+                        $tier1->vehicleTypes = collect([
+                            (object)['name' => 'Pequeños', 'slug' => 'autos', 'pivot' => (object)['price' => 35000]],
+                            (object)['name' => 'Medianos', 'slug' => 'medianos', 'pivot' => (object)['price' => 45000]],
+                            (object)['name' => 'Grandes', 'slug' => 'grandes', 'pivot' => (object)['price' => 55000]],
+                        ]);
+                    }
+                    $categoryServices->push($tier1);
+                    $usedIds[] = $tier1->id;
+
+                    // 2. Tier 2: Lavado Avanzado
+                    $tier2 = $services->get('paquete-lavado-avanzado')
+                        ?? $services->get('lavado-avanzado')
+                        ?? $services->first(fn($s) => !in_array($s->id, $usedIds) && (str_contains($s->slug, 'avanzado') || str_contains(strtolower($s->name), 'avanzado')))
+                        ?? \App\Models\Service::with('vehicleTypes')->where('slug', 'paquete-lavado-avanzado')->first();
+
+                    if ($tier2 && !in_array($tier2->id, $usedIds)) {
+                        $categoryServices->push($tier2);
+                        $usedIds[] = $tier2->id;
+                    }
+
+                    // 3. Tier 3: Detallado Interior
+                    $tier3 = $services->get('paquete-detallado-interior')
+                        ?? $services->get('detailing-interior')
+                        ?? $services->first(fn($s) => !in_array($s->id, $usedIds) && (str_contains($s->slug, 'interior') || str_contains(strtolower($s->name), 'interior')))
+                        ?? \App\Models\Service::with('vehicleTypes')->where('slug', 'paquete-detallado-interior')->first();
+
+                    if ($tier3 && !in_array($tier3->id, $usedIds)) {
+                        $categoryServices->push($tier3);
+                        $usedIds[] = $tier3->id;
                     }
                     
                     $servicesData = $categoryServices->map(function($s) {
@@ -247,7 +270,9 @@
                                 if (str_contains($slug, 'avanzado')) {
                                     $srvVideo = '/assets/videos/lavado-avanzado.mp4';
                                 } elseif (str_contains($slug, 'interior')) {
-                                    $srvVideo = '/assets/videos/interior.mp4';
+                                    $srvVideo = file_exists(public_path('assets/videos/interior.mp4')) 
+                                        ? '/assets/videos/interior.mp4' 
+                                        : (file_exists(public_path('assets/videos/interior_nuevo.mp4')) ? '/assets/videos/interior_nuevo.mp4' : '/assets/videos/interior.mp4');
                                 } elseif (str_contains($slug, 'completo')) {
                                     $srvVideo = '/assets/videos/pulido-correccion-2.mp4';
                                 }
@@ -256,7 +281,7 @@
                             <div style="height: 600px; min-height: 600px;" class="relative flex flex-col justify-between h-[600px] rounded-[40px] overflow-hidden p-8 sm:p-9 md:p-10 transition-all duration-500 group border-2 border-white/15 hover:border-brand/70 hover:shadow-2xl hover:scale-[1.015] bg-zinc-950 shadow-2xl">
                                 <!-- Panoramic Video Background with Dark Tint and Cinematic Vignettes -->
                                 <div class="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-                                    <video autoplay loop muted playsinline class="w-full h-full object-cover opacity-60 group-hover:opacity-80 group-hover:scale-105 transition-all duration-700">
+                                    <video autoplay loop muted playsinline poster="/assets/images/cotizador_banner.png" class="w-full h-full object-cover opacity-60 group-hover:opacity-80 group-hover:scale-105 transition-all duration-700">
                                         <source src="{{ $srvVideo }}" type="video/mp4">
                                     </video>
                                     <div class="absolute inset-0 bg-black/45 pointer-events-none z-10"></div>
