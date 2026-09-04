@@ -519,7 +519,13 @@
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-7xl mx-auto items-stretch justify-center">
                 @foreach($categoryServices as $srv)
                     @php
-                        $srvVideo = '/assets/videos/bmw.mp4';
+                        $srvVideo = '/assets/videos/ceramic-coating-nivel1.mp4';
+                        $nameUpper = strtoupper($srv->name);
+                        if (str_contains($nameUpper, 'NIVEL 3') || str_contains($srv->slug, 'nivel-3') || str_contains($nameUpper, 'NUEVE') || str_contains($nameUpper, 'ULTRA')) {
+                            $srvVideo = '/assets/videos/ceramic-coating-nivel3.mp4';
+                        } elseif (str_contains($nameUpper, 'NIVEL 2') || str_contains($srv->slug, 'nivel-2') || str_contains($nameUpper, 'CINCO') || str_contains($nameUpper, 'LIGHT')) {
+                            $srvVideo = '/assets/videos/ceramic-coating-nivel2.mp4';
+                        }
                         $minPrice = $srv->vehicleTypes->min('pivot.price') ?? $srv->base_price;
                     @endphp
                     <div style="height: 600px; min-height: 600px;" class="relative flex flex-col justify-between h-[600px] rounded-[40px] overflow-hidden p-8 sm:p-9 md:p-10 transition-all duration-500 group border-2 border-white/15 hover:border-brand/70 hover:shadow-2xl hover:scale-[1.015] bg-zinc-950 shadow-2xl">
