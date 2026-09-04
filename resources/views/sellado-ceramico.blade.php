@@ -522,7 +522,7 @@
                         $srvVideo = '/assets/videos/ceramic-coating-nivel1.mp4';
                         $nameUpper = strtoupper($srv->name);
                         if (str_contains($nameUpper, 'NIVEL 3') || str_contains($srv->slug, 'nivel-3') || str_contains($nameUpper, 'NUEVE') || str_contains($nameUpper, 'ULTRA')) {
-                            $srvVideo = '/assets/videos/ceramic-coating-nivel3.mp4';
+                            $srvVideo = '/assets/videos/bmwblanco_actualizado.mp4';
                         } elseif (str_contains($nameUpper, 'NIVEL 2') || str_contains($srv->slug, 'nivel-2') || str_contains($nameUpper, 'CINCO') || str_contains($nameUpper, 'LIGHT')) {
                             $srvVideo = '/assets/videos/ceramic-coating-nivel2.mp4';
                         }
